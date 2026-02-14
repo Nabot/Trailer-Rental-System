@@ -42,6 +42,12 @@
                             <x-input-error :messages="$errors->get('id_number')" class="mt-2" />
                         </div>
 
+                        <div>
+                            <x-input-label for="driver_licence" :value="__('Driver\'s Licence No')" />
+                            <x-text-input id="driver_licence" name="driver_licence" type="text" class="mt-1 block w-full" :value="old('driver_licence', $customer->driver_licence)" />
+                            <x-input-error :messages="$errors->get('driver_licence')" class="mt-2" />
+                        </div>
+
                         <div class="md:col-span-2">
                             <x-input-label for="address" :value="__('Address')" />
                             <textarea id="address" name="address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600">{{ old('address', $customer->address) }}</textarea>

@@ -47,6 +47,12 @@
                                 <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $customer->id_number }}</dd>
                             </div>
                             @endif
+                            @if($customer->driver_licence)
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Driver's Licence No</dt>
+                                <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $customer->driver_licence }}</dd>
+                            </div>
+                            @endif
                             @if($customer->address)
                             <div class="col-span-2">
                                 <dt class="text-sm font-medium text-gray-500">Address</dt>

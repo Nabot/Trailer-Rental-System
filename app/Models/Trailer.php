@@ -20,6 +20,9 @@ class Trailer extends Model
         'status',
         'description',
         'registration_number',
+        'colour',
+        'load_capacity_kg',
+        'trailer_value',
         'notes',
     ];
 
@@ -27,6 +30,7 @@ class Trailer extends Model
         'size_m' => 'decimal:2',
         'rate_per_day' => 'decimal:2',
         'required_deposit' => 'decimal:2',
+        'trailer_value' => 'decimal:2',
     ];
 
     public function photos(): HasMany

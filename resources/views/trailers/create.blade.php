@@ -72,6 +72,24 @@
                             <x-input-error :messages="$errors->get('registration_number')" class="mt-2" />
                         </div>
 
+                        <div>
+                            <x-input-label for="colour" :value="__('Colour (Optional)')" />
+                            <x-text-input id="colour" name="colour" type="text" class="mt-1 block w-full" :value="old('colour')" placeholder="e.g. Silver, White" />
+                            <x-input-error :messages="$errors->get('colour')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="load_capacity_kg" :value="__('Load Capacity (kg) - Optional')" />
+                            <x-text-input id="load_capacity_kg" name="load_capacity_kg" type="number" min="0" step="1" class="mt-1 block w-full" :value="old('load_capacity_kg')" placeholder="e.g. 750" />
+                            <x-input-error :messages="$errors->get('load_capacity_kg')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="trailer_value" :value="__('Trailer Value (N$) - Optional')" />
+                            <x-text-input id="trailer_value" name="trailer_value" type="number" step="0.01" min="0" class="mt-1 block w-full" :value="old('trailer_value')" placeholder="Replacement value" />
+                            <x-input-error :messages="$errors->get('trailer_value')" class="mt-2" />
+                        </div>
+
                         <div class="md:col-span-2">
                             <x-input-label for="description" :value="__('Description (Optional)')" />
                             <textarea id="description" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600">{{ old('description') }}</textarea>

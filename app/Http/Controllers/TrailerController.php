@@ -73,6 +73,9 @@ class TrailerController extends Controller
             'status' => 'required|in:available,maintenance,unavailable',
             'description' => 'nullable|string',
             'registration_number' => 'nullable|string|max:255',
+            'colour' => 'nullable|string|max:100',
+            'load_capacity_kg' => 'nullable|integer|min:0',
+            'trailer_value' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
 
@@ -124,6 +127,9 @@ class TrailerController extends Controller
             'status' => 'required|in:available,maintenance,unavailable',
             'description' => 'nullable|string',
             'registration_number' => 'nullable|string|max:255',
+            'colour' => 'nullable|string|max:100',
+            'load_capacity_kg' => 'nullable|integer|min:0',
+            'trailer_value' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
 

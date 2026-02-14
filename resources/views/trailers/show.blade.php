@@ -59,6 +59,24 @@
                                 <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $trailer->registration_number }}</dd>
                             </div>
                             @endif
+                            @if($trailer->colour)
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Colour</dt>
+                                <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $trailer->colour }}</dd>
+                            </div>
+                            @endif
+                            @if($trailer->load_capacity_kg)
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Load Capacity</dt>
+                                <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ number_format($trailer->load_capacity_kg) }} kg</dd>
+                            </div>
+                            @endif
+                            @if($trailer->trailer_value)
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Trailer Value</dt>
+                                <dd class="mt-1 text-gray-900 dark:text-gray-100">N${{ number_format($trailer->trailer_value, 2) }}</dd>
+                            </div>
+                            @endif
                         </dl>
                         @if($trailer->description)
                         <div class="mt-4">
