@@ -19,6 +19,7 @@ class ReportController extends Controller
      */
     public function index()
     {
+        $this->authorize('reports.view');
         return view('reports.index');
     }
 
@@ -27,6 +28,7 @@ class ReportController extends Controller
      */
     public function revenue(Request $request)
     {
+        $this->authorize('reports.view');
         $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
         $groupBy = $request->get('group_by', 'day'); // day, week, month, year
@@ -73,6 +75,7 @@ class ReportController extends Controller
      */
     public function utilization(Request $request)
     {
+        $this->authorize('reports.view');
         $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
 
@@ -117,6 +120,7 @@ class ReportController extends Controller
      */
     public function customers(Request $request)
     {
+        $this->authorize('reports.view');
         $sortBy = $request->get('sort_by', 'revenue'); // revenue, bookings, balance
 
         $customers = Customer::with(['bookings.payments', 'invoices'])->get();
@@ -168,6 +172,7 @@ class ReportController extends Controller
      */
     public function leads(Request $request)
     {
+        $this->authorize('reports.view');
         $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
         $statusFilter = $request->get('status', '');
@@ -233,6 +238,7 @@ class ReportController extends Controller
      */
     public function balances(Request $request)
     {
+        $this->authorize('reports.view');
         $query = Invoice::with(['customer', 'booking'])
             ->where('balance', '>', 0);
 
@@ -253,6 +259,7 @@ class ReportController extends Controller
      */
     public function exportRevenue(Request $request)
     {
+        $this->authorize('reports.view');
         $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
 

@@ -17,6 +17,7 @@ class InquiryController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('inquiries.view');
         try {
             $query = Inquiry::with(['customer', 'assignedTo', 'createdBy']);
 
@@ -75,6 +76,7 @@ class InquiryController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('inquiries.create');
         $customers = Customer::all();
         $trailers = Trailer::where('status', 'available')->get();
         $users = User::all();
@@ -90,6 +92,7 @@ class InquiryController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('inquiries.create');
         $validated = $request->validate([
             'source' => 'required|in:website,phone,referral,walk_in,social_media,google_ads,other',
             'status' => 'nullable|in:new,contacted,quoted,follow_up,converted,lost,on_hold',
@@ -135,6 +138,7 @@ class InquiryController extends Controller
      */
     public function show(Inquiry $inquiry)
     {
+        $this->authorize('inquiries.view');
         $inquiry->load(['customer', 'assignedTo', 'createdBy', 'quotes.trailer', 'activities.createdBy', 'convertedToBooking']);
         $trailers = Trailer::where('status', 'available')->get();
         $customers = Customer::all();
@@ -148,6 +152,7 @@ class InquiryController extends Controller
      */
     public function edit(Inquiry $inquiry)
     {
+        $this->authorize('inquiries.edit');
         $customers = Customer::all();
         $trailers = Trailer::where('status', 'available')->get();
         $users = User::all();
@@ -160,6 +165,7 @@ class InquiryController extends Controller
      */
     public function update(Request $request, Inquiry $inquiry)
     {
+        $this->authorize('inquiries.edit');
         $validated = $request->validate([
             'source' => 'required|in:website,phone,referral,walk_in,social_media,google_ads,other',
             'status' => 'required|in:new,contacted,quoted,follow_up,converted,lost,on_hold',
@@ -190,6 +196,7 @@ class InquiryController extends Controller
      */
     public function destroy(Inquiry $inquiry)
     {
+        $this->authorize('inquiries.delete');
         if ($inquiry->status === 'converted') {
             return redirect()->back()
                 ->with('error', 'Cannot delete converted inquiries.');
@@ -206,6 +213,7 @@ class InquiryController extends Controller
      */
     public function addActivity(Request $request, Inquiry $inquiry)
     {
+        $this->authorize('inquiries.edit');
         $validated = $request->validate([
             'type' => 'required|in:call,email,whatsapp,meeting,note,follow_up',
             'subject' => 'nullable|string|max:255',
@@ -229,6 +237,7 @@ class InquiryController extends Controller
      */
     public function convertToCustomer(Inquiry $inquiry)
     {
+        $this->authorize('inquiries.edit');
         // Check if customer already exists
         $customer = Customer::where('email', $inquiry->email)
             ->orWhere('phone', $inquiry->phone)

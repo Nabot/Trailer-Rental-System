@@ -93,7 +93,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <div class="flex justify-end gap-2">
                                         <a href="{{ route('invoices.show', $invoice) }}" class="text-blue-600 dark:text-blue-400 hover:underline">View</a>
-                                        @can('invoices.update')
+                                        @can('invoices.edit')
                                         @if($invoice->status === 'pending')
                                         <a href="{{ route('invoices.edit', $invoice) }}" class="text-green-600 dark:text-green-400 hover:underline">Edit</a>
                                         @endif

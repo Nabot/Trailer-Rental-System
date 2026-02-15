@@ -16,6 +16,8 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Invoice::class);
+
         $query = Invoice::with(['booking.trailer', 'customer']);
 
         if ($request->has('status')) {
@@ -45,6 +47,8 @@ class InvoiceController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('create', Invoice::class);
+
         $bookingId = $request->get('booking_id');
         $booking = $bookingId ? Booking::with(['trailer', 'customer'])->findOrFail($bookingId) : null;
         
@@ -75,6 +79,8 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Invoice::class);
+
         $validated = $request->validate([
             'booking_id' => 'required_without:customer_id|exists:bookings,id',
             'customer_id' => 'required_without:booking_id|exists:customers,id',
@@ -142,6 +148,8 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
+        $this->authorize('view', $invoice);
+
         $invoice->load([
             'booking.trailer',
             'customer',
@@ -157,6 +165,8 @@ class InvoiceController extends Controller
      */
     public function edit(Invoice $invoice)
     {
+        $this->authorize('update', $invoice);
+
         if ($invoice->status !== 'pending') {
             return redirect()->route('invoices.show', $invoice)
                 ->with('error', 'Only pending invoices can be edited.');
@@ -172,6 +182,8 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, Invoice $invoice)
     {
+        $this->authorize('update', $invoice);
+
         if ($invoice->status !== 'pending') {
             return redirect()->route('invoices.show', $invoice)
                 ->with('error', 'Only pending invoices can be edited.');
@@ -234,6 +246,8 @@ class InvoiceController extends Controller
      */
     public function destroy(Invoice $invoice)
     {
+        $this->authorize('delete', $invoice);
+
         if ($invoice->status !== 'pending') {
             return redirect()->back()
                 ->with('error', 'Only pending invoices can be deleted.');
@@ -251,6 +265,8 @@ class InvoiceController extends Controller
      */
     public function download(Invoice $invoice)
     {
+        $this->authorize('view', $invoice);
+
         $invoice->load([
             'booking.trailer',
             'customer',
@@ -288,6 +304,8 @@ class InvoiceController extends Controller
      */
     public function generateForBooking(Booking $booking)
     {
+        $this->authorize('create', Invoice::class);
+
         // Check if invoice already exists
         $existingInvoice = Invoice::where('booking_id', $booking->id)
             ->where('type', 'rental')
@@ -378,6 +396,8 @@ class InvoiceController extends Controller
      */
     public function getBookingInvoiceData(Booking $booking)
     {
+        $this->authorize('create', Invoice::class);
+
         $booking->load(['trailer', 'customer']);
 
         $items = [];

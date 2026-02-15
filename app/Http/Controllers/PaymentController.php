@@ -17,6 +17,7 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('payments.view');
         $query = Payment::with(['booking.trailer', 'booking.customer', 'invoice.customer']);
 
         // Filter by booking
@@ -47,6 +48,7 @@ class PaymentController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('payments.create');
         $bookingId = $request->get('booking_id');
         $invoiceId = $request->get('invoice_id');
 
@@ -61,6 +63,7 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('payments.create');
         $validated = $request->validate([
             'booking_id' => 'required_without:invoice_id|exists:bookings,id',
             'invoice_id' => 'nullable|exists:invoices,id',
@@ -116,6 +119,7 @@ class PaymentController extends Controller
      */
     public function show(Payment $payment)
     {
+        $this->authorize('payments.view');
         $payment->load(['booking.trailer', 'booking.customer', 'invoice', 'recordedBy']);
 
         return view('payments.show', compact('payment'));
@@ -126,6 +130,7 @@ class PaymentController extends Controller
      */
     public function edit(Payment $payment)
     {
+        $this->authorize('payments.edit');
         return view('payments.edit', compact('payment'));
     }
 
@@ -134,6 +139,7 @@ class PaymentController extends Controller
      */
     public function update(Request $request, Payment $payment)
     {
+        $this->authorize('payments.edit');
         $validated = $request->validate([
             'method' => 'required|in:eft,cash,card,other',
             'amount' => 'required|numeric|min:0.01',
@@ -173,6 +179,7 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
+        $this->authorize('payments.edit');
         DB::transaction(function () use ($payment) {
             $amount = $payment->amount;
 
@@ -202,6 +209,7 @@ class PaymentController extends Controller
      */
     public function download(Payment $payment)
     {
+        $this->authorize('payments.view');
         $payment->load(['booking.trailer', 'booking.customer', 'invoice.customer']);
 
         $companyName = \App\Models\Setting::get('company_name', 'IronAxel Rentals');
@@ -222,6 +230,7 @@ class PaymentController extends Controller
      */
     public function sendWhatsApp(Payment $payment, WhatsAppService $whatsAppService)
     {
+        $this->authorize('payments.view');
         $payment->load(['booking.customer', 'invoice.customer']);
         $customer = $payment->booking?->customer ?? $payment->invoice?->customer;
         

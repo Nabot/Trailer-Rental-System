@@ -5,7 +5,7 @@
                 Invoice: {{ $invoice->invoice_number }}
             </h2>
             <div class="flex gap-2">
-                @can('invoices.update')
+                @can('invoices.edit')
                 @if($invoice->status === 'pending')
                 <a href="{{ route('invoices.edit', $invoice) }}" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md">
                     Edit Invoice

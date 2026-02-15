@@ -16,6 +16,7 @@ class InspectionController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('inspections.view');
         $query = Inspection::with(['booking.trailer', 'booking.customer', 'inspectedBy']);
 
         if ($request->has('booking_id')) {
@@ -36,6 +37,7 @@ class InspectionController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('inspections.create');
         $bookingId = $request->get('booking_id');
         $type = $request->get('type', 'pickup');
 
@@ -83,6 +85,7 @@ class InspectionController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('inspections.create');
         $validated = $request->validate([
             'booking_id' => 'required|exists:bookings,id',
             'type' => 'required|in:pickup,return',
@@ -174,6 +177,7 @@ class InspectionController extends Controller
      */
     public function show(Inspection $inspection)
     {
+        $this->authorize('inspections.view');
         $inspection->load([
             'booking.trailer',
             'booking.customer',
@@ -190,6 +194,7 @@ class InspectionController extends Controller
      */
     public function edit(Inspection $inspection)
     {
+        $this->authorize('inspections.edit');
         $inspection->load(['booking.trailer', 'booking.customer', 'photos', 'damageItems.photos']);
 
         return view('inspections.edit', compact('inspection'));
@@ -200,6 +205,7 @@ class InspectionController extends Controller
      */
     public function update(Request $request, Inspection $inspection)
     {
+        $this->authorize('inspections.edit');
         $validated = $request->validate([
             'checklist' => 'required|array',
             'notes' => 'nullable|string|max:1000',
@@ -232,6 +238,7 @@ class InspectionController extends Controller
      */
     public function destroy(Inspection $inspection)
     {
+        $this->authorize('inspections.edit');
         // Delete photos
         foreach ($inspection->photos as $photo) {
             Storage::disk($photo->disk)->delete($photo->path);
