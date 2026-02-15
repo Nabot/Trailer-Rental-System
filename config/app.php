@@ -56,6 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Public Path Is App Root (cPanel / shared hosting workaround)
+    |--------------------------------------------------------------------------
+    |
+    | When the document root cannot be set to the "public" folder, set this to
+    | true and place the "build" folder in the app root so Vite assets work.
+    |
+    */
+
+    'public_path_is_app_root' => filter_var(env('PUBLIC_PATH_IS_APP_ROOT', false), FILTER_VALIDATE_BOOLEAN),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
