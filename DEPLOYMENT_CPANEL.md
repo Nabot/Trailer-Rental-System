@@ -208,6 +208,41 @@ If you use `app/Console/Kernel.php` or Laravel’s scheduler, add one cron job i
 
 ---
 
+## When you cannot change the document root
+
+Some hosts do not allow changing the domain’s document root (e.g. it stays `public_html`). You can still run Laravel by using the **same directory** as both app root and document root and protecting sensitive paths.
+
+**Setup:** Your Laravel app is already in `public_html` (you see `app/`, `vendor/`, `public/`, etc. in the “Index of /” listing).
+
+**Steps:**
+
+1. **Use the workaround files from the repo**  
+   In the project there is a folder `deploy/cpanel-fix-docroot/` with:
+   - `index.php` – front controller that uses the current directory as app root
+   - `.htaccess` – URL rewriting + blocks access to `.env`, `app/`, `config/`, etc.
+
+2. **On the server (SSH or cPanel File Manager)**  
+   - Copy `deploy/cpanel-fix-docroot/index.php` to `public_html/index.php` (overwrite existing if present).
+   - Copy `deploy/cpanel-fix-docroot/.htaccess` to `public_html/.htaccess` (overwrite).
+   - If `public_html` already has an `index.php` or `.htaccess` from elsewhere, back them up first.
+
+3. **Copy public assets** (so CSS/JS and storage link work)  
+   - Copy everything inside `public_html/public/` (e.g. `build/`, favicon, etc.) into `public_html/` so that `public_html/build/` and similar exist.  
+   - Or from SSH: `cp -r public_html/public/* public_html/` (then you can keep using `public_html/public/` for assets if you prefer; the new `index.php` lives in `public_html` and does not use the `public/` subfolder for bootstrapping).
+
+4. **Storage link**  
+   Run from Laravel root (`public_html`):  
+   `php artisan storage:link`  
+   so that `public_html/storage` points to `storage/app/public` for uploads.
+
+5. **Test**  
+   Visit `https://ironaxlena.com`. You should see the Laravel app (login/redirect), not the directory listing.  
+   If you get 500, check `storage/logs/laravel.log` and that `storage` and `bootstrap/cache` are writable.
+
+**Security:** The `.htaccess` in `deploy/cpanel-fix-docroot/` denies web access to `.env`, `app/`, `config/`, `database/`, `vendor/`, and other sensitive paths. Keep that file in place.
+
+---
+
 ## Quick reference: document root
 
 | Your setup              | Document root should be   |
