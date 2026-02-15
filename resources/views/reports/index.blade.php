@@ -53,6 +53,21 @@
                     </div>
                 </a>
 
+                <!-- Lead Report -->
+                <a href="{{ route('reports.leads') }}" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-amber-100 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold">Lead Report</h3>
+                            <p class="text-sm text-gray-600">Leads and inquiries by period</p>
+                        </div>
+                    </div>
+                </a>
+
                 <!-- Balances Report -->
                 <a href="{{ route('reports.balances') }}" class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
                     <div class="flex items-center">

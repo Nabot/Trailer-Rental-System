@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\Trailer;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Inquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -160,6 +161,71 @@ class ReportController extends Controller
         $totalBookings = $customerData->sum('total_bookings');
 
         return view('reports.customers', compact('customerData', 'sortBy', 'totalCustomers', 'totalRevenue', 'totalOutstanding', 'totalBookings'));
+    }
+
+    /**
+     * Lead (inquiry) report.
+     */
+    public function leads(Request $request)
+    {
+        $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
+        $statusFilter = $request->get('status', '');
+        $sourceFilter = $request->get('source', '');
+
+        $query = Inquiry::with(['customer', 'assignedTo', 'createdBy'])
+            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+
+        if ($statusFilter !== '') {
+            $query->where('status', $statusFilter);
+        }
+        if ($sourceFilter !== '') {
+            $query->where('source', $sourceFilter);
+        }
+
+        $leads = $query->orderByDesc('created_at')->get();
+
+        // Summary: counts by status (for the date range)
+        $byStatus = Inquiry::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->selectRaw('status, count(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        $bySource = Inquiry::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->selectRaw('source, count(*) as count')
+            ->groupBy('source')
+            ->pluck('count', 'source');
+
+        $totalLeads = Inquiry::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])->count();
+        $convertedCount = $byStatus->get('converted', 0);
+        $conversionRate = $totalLeads > 0 ? round(($convertedCount / $totalLeads) * 100, 1) : 0;
+
+        $statuses = ['new', 'contacted', 'quoted', 'follow_up', 'converted', 'lost', 'on_hold'];
+        $sources = Inquiry::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->distinct()
+            ->pluck('source')
+            ->filter()
+            ->sort()
+            ->values()
+            ->all();
+        if (empty($sources)) {
+            $sources = ['website', 'phone', 'referral', 'walk_in', 'social_media', 'google_ads', 'other'];
+        }
+
+        return view('reports.leads', compact(
+            'leads',
+            'startDate',
+            'endDate',
+            'statusFilter',
+            'sourceFilter',
+            'byStatus',
+            'bySource',
+            'totalLeads',
+            'convertedCount',
+            'conversionRate',
+            'statuses',
+            'sources'
+        ));
     }
 
     /**

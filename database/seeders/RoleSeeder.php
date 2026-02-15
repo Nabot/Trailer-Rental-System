@@ -45,6 +45,10 @@ class RoleSeeder extends Seeder
             'inquiries.create',
             'inquiries.edit',
             'inquiries.delete',
+            'quotes.view',
+            'quotes.create',
+            'quotes.edit',
+            'quotes.delete',
             'reports.view',
             'settings.manage',
         ];
@@ -57,34 +61,9 @@ class RoleSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $admin->givePermissionTo(Permission::all());
 
+        // Staff role has no permissions by default; access is controlled by Module Access on each user
         $staff = Role::firstOrCreate(['name' => 'staff']);
-        $staff->givePermissionTo([
-            'trailers.view',
-            'trailers.create',
-            'trailers.edit',
-            'customers.view',
-            'customers.create',
-            'customers.edit',
-            'bookings.view',
-            'bookings.create',
-            'bookings.edit',
-            'bookings.confirm',
-            'bookings.cancel',
-            'payments.view',
-            'payments.create',
-            'payments.edit',
-            'inspections.view',
-            'inspections.create',
-            'inspections.edit',
-            'invoices.view',
-            'invoices.create',
-            'invoices.edit',
-            'inquiries.view',
-            'inquiries.create',
-            'inquiries.edit',
-            'inquiries.delete',
-            'reports.view',
-        ]);
+        $staff->syncPermissions([]);
 
         $customer = Role::firstOrCreate(['name' => 'customer']);
         $customer->givePermissionTo([

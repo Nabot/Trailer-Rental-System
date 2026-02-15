@@ -85,6 +85,8 @@ class UserController extends Controller
             $this->assignModulePermissions($user, $request->modules);
         }
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         return redirect()->route('users.index')
             ->with('success', 'User created successfully.');
     }
@@ -151,6 +153,8 @@ class UserController extends Controller
         // Sync module permissions
         $this->syncModulePermissions($user, $request->modules ?? []);
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         return redirect()->route('users.index')
             ->with('success', 'User updated successfully.');
     }
@@ -204,6 +208,10 @@ class UserController extends Controller
                 'name' => 'Invoices',
                 'permissions' => ['invoices.view', 'invoices.create', 'invoices.edit'],
             ],
+            'quotes' => [
+                'name' => 'Quotes',
+                'permissions' => ['quotes.view', 'quotes.create', 'quotes.edit', 'quotes.delete'],
+            ],
             'payments' => [
                 'name' => 'Payments',
                 'permissions' => ['payments.view', 'payments.create', 'payments.edit'],
@@ -220,12 +228,12 @@ class UserController extends Controller
     }
 
     /**
-     * Get user's module permissions.
+     * Get user's module permissions (effective: role + direct).
      */
     private function getUserModulePermissions(User $user)
     {
         $modules = $this->getModules();
-        $userPermissions = $user->permissions->pluck('name')->toArray();
+        $userPermissions = $user->getAllPermissions()->pluck('name')->toArray();
         $userModulePermissions = [];
 
         foreach ($modules as $moduleKey => $module) {

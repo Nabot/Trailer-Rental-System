@@ -26,6 +26,8 @@ class QuoteController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Quote::class);
+
         try {
             $query = Quote::with(['inquiry', 'customer', 'trailer', 'createdBy']);
 
@@ -68,6 +70,8 @@ class QuoteController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('create', Quote::class);
+
         $inquiryId = $request->get('inquiry_id');
         $inquiry = $inquiryId ? Inquiry::with('customer')->findOrFail($inquiryId) : null;
         
@@ -83,6 +87,8 @@ class QuoteController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Quote::class);
+
         $validated = $request->validate([
             'inquiry_id' => 'nullable|exists:inquiries,id',
             'customer_id' => 'required_without:inquiry_id|exists:customers,id',
@@ -165,6 +171,8 @@ class QuoteController extends Controller
      */
     public function show(Quote $quote)
     {
+        $this->authorize('view', $quote);
+
         $quote->load(['inquiry', 'customer', 'trailer', 'items', 'createdBy', 'convertedToBooking']);
         
         return view('quotes.show', compact('quote'));
@@ -175,6 +183,8 @@ class QuoteController extends Controller
      */
     public function edit(Quote $quote)
     {
+        $this->authorize('update', $quote);
+
         if ($quote->status !== 'draft') {
             return redirect()->route('quotes.show', $quote)
                 ->with('error', 'Only draft quotes can be edited.');
@@ -193,6 +203,8 @@ class QuoteController extends Controller
      */
     public function update(Request $request, Quote $quote)
     {
+        $this->authorize('update', $quote);
+
         if ($quote->status !== 'draft') {
             return redirect()->route('quotes.show', $quote)
                 ->with('error', 'Only draft quotes can be edited.');
@@ -259,6 +271,8 @@ class QuoteController extends Controller
      */
     public function destroy(Quote $quote)
     {
+        $this->authorize('delete', $quote);
+
         if ($quote->status !== 'draft') {
             return redirect()->back()
                 ->with('error', 'Only draft quotes can be deleted.');
@@ -275,6 +289,8 @@ class QuoteController extends Controller
      */
     public function markAsSent(Quote $quote)
     {
+        $this->authorize('update', $quote);
+
         $quote->markAsSent();
 
         if ($quote->inquiry_id) {
@@ -300,6 +316,8 @@ class QuoteController extends Controller
      */
     public function convertToBooking(Request $request, Quote $quote)
     {
+        $this->authorize('update', $quote);
+
         if (!$quote->customer_id) {
             return redirect()->back()
                 ->with('error', 'Quote must have a customer to convert to booking.');
@@ -364,6 +382,8 @@ class QuoteController extends Controller
      */
     public function download(Quote $quote)
     {
+        $this->authorize('view', $quote);
+
         $quote->load(['customer', 'trailer', 'items']);
         $companyName = \App\Models\Setting::get('company_name', 'IronAxel Rentals');
         $companyAddress = \App\Models\Setting::get('company_address', '');

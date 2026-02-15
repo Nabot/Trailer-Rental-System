@@ -33,7 +33,7 @@ class SettingSeeder extends Seeder
             ],
             [
                 'key' => 'company_phone',
-                'value' => '+264 61 123 4567',
+                'value' => '0813544045',
                 'type' => 'string',
                 'description' => 'Company phone number',
             ],
@@ -135,5 +135,8 @@ class SettingSeeder extends Seeder
                 $setting
             );
         }
+
+        // Ensure company phone is set to current number (used on invoice & quote PDFs)
+        Setting::where('key', 'company_phone')->update(['value' => '0813544045']);
     }
 }
