@@ -89,7 +89,16 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a href="{{ route('inspections.show', $inspection) }}" class="text-blue-600 dark:text-blue-400 hover:underline">View</a>
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ route('inspections.show', $inspection) }}" class="text-blue-600 dark:text-blue-400 hover:underline">View</a>
+                                        @can('inspections.edit')
+                                        <form method="POST" action="{{ route('inspections.destroy', $inspection) }}" class="inline" onsubmit="return confirm('Delete this inspection?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                                        </form>
+                                        @endcan
+                                    </div>
                                 </td>
                             </tr>
                             @empty

@@ -273,11 +273,6 @@ class QuoteController extends Controller
     {
         $this->authorize('delete', $quote);
 
-        if ($quote->status !== 'draft') {
-            return redirect()->back()
-                ->with('error', 'Only draft quotes can be deleted.');
-        }
-
         $quote->delete();
 
         return redirect()->route('quotes.index')

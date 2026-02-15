@@ -95,13 +95,11 @@
                                     <div class="flex justify-end gap-2">
                                         <a href="{{ route('bookings.show', $booking) }}" class="text-blue-600 dark:text-blue-400 hover:underline">View</a>
                                         @can('delete', $booking)
-                                        @if(in_array($booking->status, ['draft', 'pending']))
                                         <form method="POST" action="{{ route('bookings.destroy', $booking) }}" class="inline" onsubmit="return confirm('Delete this booking?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
                                         </form>
-                                        @endif
                                         @endcan
                                     </div>
                                 </td>

@@ -211,11 +211,6 @@ class BookingController extends Controller
     public function destroy(Booking $booking)
     {
         $this->authorize('delete', $booking);
-        
-        if (!in_array($booking->status, ['draft', 'pending'])) {
-            return redirect()->back()
-                ->with('error', 'Only draft or pending bookings can be deleted.');
-        }
 
         $booking->delete();
 

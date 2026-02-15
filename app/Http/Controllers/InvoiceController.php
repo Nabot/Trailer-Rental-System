@@ -248,11 +248,6 @@ class InvoiceController extends Controller
     {
         $this->authorize('delete', $invoice);
 
-        if ($invoice->status !== 'pending') {
-            return redirect()->back()
-                ->with('error', 'Only pending invoices can be deleted.');
-        }
-
         $invoice->items()->delete();
         $invoice->delete();
 
