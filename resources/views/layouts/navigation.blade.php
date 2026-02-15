@@ -5,13 +5,14 @@
             <div class="flex items-center min-w-0">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded">
+                    <a href="{{ Auth::user()->hasRole('sales_rep') ? route('inquiries.index') : route('dashboard') }}" class="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded">
                         <x-application-logo class="block h-9 w-auto sm:h-10" />
                     </a>
                 </div>
 
                 <!-- Desktop: Grouped dropdown menu -->
                 <div class="hidden sm:flex items-center gap-0.5 sm:gap-1 ms-6 lg:ms-8">
+                    @unless(Auth::user()->hasRole('sales_rep'))
                     <!-- Dashboard -->
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -19,7 +20,9 @@
                         </svg>
                         <span>{{ __('Dashboard') }}</span>
                     </x-nav-link>
+                    @endunless
 
+                    @if(Auth::user()->can('trailers.view') || Auth::user()->can('bookings.view') || Auth::user()->can('inspections.view'))
                     <!-- Operations dropdown -->
                     @php $operationsActive = request()->routeIs('trailers.*', 'bookings.*', 'inspections.*'); @endphp
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
@@ -66,6 +69,7 @@
                             @endcan
                         </div>
                     </div>
+                    @endif
 
                     <!-- Sales dropdown -->
                     @php $salesActive = request()->routeIs('inquiries.*', 'quotes.*', 'customers.*'); @endphp
@@ -110,6 +114,7 @@
                         </div>
                     </div>
 
+                    @if(Auth::user()->can('invoices.view') || Auth::user()->can('payments.view'))
                     <!-- Finance dropdown -->
                     @php $financeActive = request()->routeIs('invoices.*', 'payments.*'); @endphp
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
@@ -146,6 +151,7 @@
                             @endcan
                         </div>
                     </div>
+                    @endif
 
                     <!-- Reports (single link) -->
                     @can('reports.view')
@@ -280,6 +286,7 @@
     <!-- Responsive Navigation Menu -->
     <div id="mobile-menu" :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50" role="dialog" aria-label="Mobile menu">
         <div class="pt-2 pb-3 space-y-0 max-h-[calc(100vh-4rem)] overflow-y-auto">
+            @unless(Auth::user()->hasRole('sales_rep'))
             <!-- Dashboard -->
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="flex items-center space-x-3 px-4 py-3 mx-2 rounded-lg">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,7 +294,9 @@
                 </svg>
                 <span>{{ __('Dashboard') }}</span>
             </x-responsive-nav-link>
+            @endunless
             
+            @if(Auth::user()->can('trailers.view') || Auth::user()->can('bookings.view') || Auth::user()->can('inspections.view'))
             <!-- Operations Section (collapsible) -->
             <div class="pt-2" x-data="{ sectionOpen: true }">
                 <button type="button" @click="sectionOpen = ! sectionOpen" class="flex items-center justify-between w-full px-4 py-3 mx-2 rounded-lg text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:bg-gray-200 dark:hover:bg-gray-700">
@@ -331,6 +340,7 @@
             @endcan
                 </div>
             </div>
+            @endif
             
             <!-- Sales Section (collapsible) -->
             <div class="pt-2" x-data="{ sectionOpen: true }">
@@ -370,6 +380,7 @@
                 </div>
             </div>
             
+            @if(Auth::user()->can('invoices.view') || Auth::user()->can('payments.view'))
             <!-- Finance Section (collapsible) -->
             <div class="pt-2" x-data="{ sectionOpen: true }">
                 <button type="button" @click="sectionOpen = ! sectionOpen" class="flex items-center justify-between w-full px-4 py-3 mx-2 rounded-lg text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:bg-gray-200 dark:hover:bg-gray-700">
@@ -398,6 +409,7 @@
             @endcan
                 </div>
             </div>
+            @endif
             
             <!-- Analytics / Reports -->
             @can('reports.view')

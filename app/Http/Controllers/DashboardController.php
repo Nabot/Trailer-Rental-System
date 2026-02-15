@@ -16,6 +16,10 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
+        if ($user->hasRole('sales_rep')) {
+            return redirect()->route('inquiries.index');
+        }
+
         if ($user->isCustomer()) {
             return $this->customerDashboard($user);
         }
