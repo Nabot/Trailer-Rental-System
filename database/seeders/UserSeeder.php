@@ -13,15 +13,25 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
+        // Create main admin user (Nabot)
         $admin = User::firstOrCreate(
+            ['email' => 'nabot123@gmail.com'],
+            [
+                'name' => 'Nabot',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $admin->assignRole('admin');
+
+        // Create fallback admin user
+        $adminFallback = User::firstOrCreate(
             ['email' => 'admin@trailerrental.com'],
             [
                 'name' => 'Admin User',
                 'password' => Hash::make('password'),
             ]
         );
-        $admin->assignRole('admin');
+        $adminFallback->assignRole('admin');
 
         // Create staff user
         $staff = User::firstOrCreate(
