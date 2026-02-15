@@ -91,7 +91,7 @@ class QuoteController extends Controller
 
         $validated = $request->validate([
             'inquiry_id' => 'nullable|exists:inquiries,id',
-            'customer_id' => 'required_without:inquiry_id|exists:customers,id',
+            'customer_id' => 'nullable|required_without:inquiry_id|exists:customers,id',
             'trailer_id' => 'required|exists:trailers,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',

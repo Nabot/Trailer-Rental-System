@@ -155,6 +155,14 @@
                             <textarea id="notes" name="notes" rows="4" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600">{{ old('notes', $inquiry->notes) }}</textarea>
                             <x-input-error :messages="$errors->get('notes')" class="mt-2" />
                         </div>
+
+                        <!-- Lost reason (optional; useful when status = Lost) -->
+                        <div class="md:col-span-2">
+                            <x-input-label for="lost_reason" :value="__('Reason lost (optional)')" />
+                            <textarea id="lost_reason" name="lost_reason" rows="2" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600" placeholder="e.g., Budget, went with competitor, no response">{{ old('lost_reason', $inquiry->lost_reason) }}</textarea>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Use when status is Lost</p>
+                            <x-input-error :messages="$errors->get('lost_reason')" class="mt-2" />
+                        </div>
                     </div>
 
                     <div class="flex items-center justify-end mt-6">

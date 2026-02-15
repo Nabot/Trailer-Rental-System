@@ -61,6 +61,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Inquiries (Leads)
     Route::resource('inquiries', InquiryController::class);
     Route::post('/inquiries/{inquiry}/add-activity', [InquiryController::class, 'addActivity'])->name('inquiries.add-activity');
+    Route::patch('/inquiries/{inquiry}/status', [InquiryController::class, 'updateStatus'])->name('inquiries.update-status');
+    Route::post('/inquiries/{inquiry}/activities/{activity}/complete', [InquiryController::class, 'completeActivity'])->name('inquiries.activities.complete');
     Route::post('/inquiries/{inquiry}/convert-to-customer', [InquiryController::class, 'convertToCustomer'])->name('inquiries.convert-to-customer');
 
     // Quotes

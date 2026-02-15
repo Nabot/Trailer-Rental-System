@@ -27,7 +27,7 @@
             
             <!-- Filters -->
             <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg mb-6 p-4">
-                <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <form method="GET" class="grid grid-cols-1 md:grid-cols-6 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600">
@@ -65,6 +65,16 @@
                             @endforeach
                         </select>
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Assigned to</label>
+                        <select name="assigned_to" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600">
+                            <option value="">All</option>
+                            <option value="my" {{ request('assigned_to') === 'my' ? 'selected' : '' }}>My leads</option>
+                            @foreach($users as $u)
+                            <option value="{{ $u->id }}" {{ request('assigned_to') == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="flex items-end gap-2">
                         <button type="submit" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md h-fit">Filter</button>
                         <a href="{{ route('inquiries.index') }}" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-md h-fit">Clear</a>
@@ -84,6 +94,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Source</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Priority</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Assigned to</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
                                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
                             </tr>
@@ -114,7 +125,15 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <x-status-badge :status="$inquiry->status" type="inquiry" />
+                                    <form method="POST" action="{{ route('inquiries.update-status', $inquiry) }}" class="inline" id="status-form-{{ $inquiry->id }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <select name="status" class="text-xs rounded border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 focus:border-orange-500 dark:focus:border-orange-600" onchange="this.form.submit()">
+                                            @foreach($statuses as $s)
+                                            <option value="{{ $s }}" {{ $inquiry->status === $s ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $s)) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </form>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="text-xs px-2 py-1 rounded-full 
@@ -125,18 +144,19 @@
                                         {{ ucfirst($inquiry->priority) }}
                                     </span>
                                 </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                    {{ $inquiry->assignedTo ? $inquiry->assignedTo->name : '—' }}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $inquiry->created_at->format('M d, Y') }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('inquiries.show', $inquiry) }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300">
-                                        View
-                                    </a>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                    <a href="{{ route('inquiries.show', $inquiry) }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300">View</a>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="8" class="px-6 py-12">
+                                <td colspan="9" class="px-6 py-12">
                                     <x-empty-state 
                                         title="No leads found"
                                         description="Get started by adding your first lead or inquiry."

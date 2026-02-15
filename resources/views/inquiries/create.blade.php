@@ -12,6 +12,18 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            @if(session('warning') && session('existing_inquiry_id'))
+            <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <p class="text-amber-800 dark:text-amber-200 font-medium">{{ session('warning') }}</p>
+                <p class="mt-2 text-sm text-amber-700 dark:text-amber-300">
+                    <a href="{{ route('inquiries.show', session('existing_inquiry_id')) }}" class="underline font-semibold">{{ session('existing_inquiry_number') }} - {{ session('existing_inquiry_name') }}</a>
+                </p>
+                <label class="mt-3 flex items-center gap-2 text-sm text-amber-800 dark:text-amber-200">
+                    <input type="checkbox" name="create_anyway" value="1" class="rounded border-amber-300 dark:border-amber-700">
+                    Create anyway (duplicate lead)
+                </label>
+            </div>
+            @endif
             <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('inquiries.store') }}">
                     @csrf

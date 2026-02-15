@@ -36,9 +36,13 @@ class InquiryController extends Controller
             $query->where('priority', $request->priority);
         }
 
-        // Filter by assigned to
+        // Filter by assigned to (including "My leads")
         if ($request->has('assigned_to') && $request->assigned_to !== '') {
-            $query->where('assigned_to', $request->assigned_to);
+            if ($request->assigned_to === 'my') {
+                $query->where('assigned_to', auth()->id());
+            } else {
+                $query->where('assigned_to', $request->assigned_to);
+            }
         }
 
         // Search
@@ -110,13 +114,35 @@ class InquiryController extends Controller
             'budget_range' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:2000',
             'assigned_to' => 'nullable|exists:users,id',
+            'create_anyway' => 'nullable|boolean',
         ]);
+
+        // Duplicate check: same email or phone on another lead (unless "create anyway" was checked)
+        if (!$request->boolean('create_anyway') && (!empty($validated['email']) || !empty($validated['phone']))) {
+            $existing = Inquiry::where(function ($q) use ($validated) {
+                if (!empty($validated['email'])) {
+                    $q->orWhere('email', $validated['email']);
+                }
+                if (!empty($validated['phone'])) {
+                    $q->orWhere('phone', $validated['phone']);
+                }
+            })->first();
+            if ($existing) {
+                return redirect()->route('inquiries.create')
+                    ->withInput()
+                    ->with('existing_inquiry_id', $existing->id)
+                    ->with('existing_inquiry_number', $existing->inquiry_number)
+                    ->with('existing_inquiry_name', $existing->name)
+                    ->with('warning', 'A lead with this email or phone already exists.');
+            }
+        }
 
         $inquiry = Inquiry::create([
             ...$validated,
             'status' => $validated['status'] ?? 'new',
             'priority' => $validated['priority'] ?? 'medium',
             'created_by' => auth()->id(),
+            'assigned_to' => !empty($validated['assigned_to']) ? $validated['assigned_to'] : auth()->id(),
         ]);
 
         // Create initial activity
@@ -182,6 +208,7 @@ class InquiryController extends Controller
             'rental_purpose' => 'nullable|string|max:1000',
             'budget_range' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:2000',
+            'lost_reason' => 'nullable|string|max:500',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
 
@@ -209,6 +236,21 @@ class InquiryController extends Controller
     }
 
     /**
+     * Quick-update status from list (and optional lost_reason when status = lost)
+     */
+    public function updateStatus(Request $request, Inquiry $inquiry)
+    {
+        $this->authorize('inquiries.edit');
+        $validated = $request->validate([
+            'status' => 'required|in:new,contacted,quoted,follow_up,converted,lost,on_hold',
+            'lost_reason' => 'nullable|string|max:500',
+        ]);
+        $inquiry->update($validated);
+        return redirect()->back()
+            ->with('success', 'Lead status updated.');
+    }
+
+    /**
      * Add activity to inquiry
      */
     public function addActivity(Request $request, Inquiry $inquiry)
@@ -230,6 +272,18 @@ class InquiryController extends Controller
 
         return redirect()->back()
             ->with('success', 'Activity added successfully.');
+    }
+
+    /**
+     * Mark an activity (e.g. follow-up) as complete
+     */
+    public function completeActivity(Inquiry $inquiry, int $activity)
+    {
+        $this->authorize('inquiries.edit');
+        $activityModel = InquiryActivity::where('inquiry_id', $inquiry->id)->findOrFail($activity);
+        $activityModel->markAsCompleted();
+        return redirect()->back()
+            ->with('success', 'Activity marked as complete.');
     }
 
     /**

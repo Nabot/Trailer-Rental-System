@@ -68,15 +68,39 @@
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</dt>
-                                <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $inquiry->phone ?? '-' }}</dd>
+                                <dd class="mt-1">
+                                    @if($inquiry->phone)
+                                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $inquiry->phone) }}" class="text-orange-600 dark:text-orange-400 hover:underline">{{ $inquiry->phone }}</a>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">(call)</span>
+                                    @else
+                                    <span class="text-gray-500 dark:text-gray-400">—</span>
+                                    @endif
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
-                                <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $inquiry->email ?? '-' }}</dd>
+                                <dd class="mt-1">
+                                    @if($inquiry->email)
+                                    <a href="mailto:{{ $inquiry->email }}" class="text-orange-600 dark:text-orange-400 hover:underline">{{ $inquiry->email }}</a>
+                                    @else
+                                    <span class="text-gray-500 dark:text-gray-400">—</span>
+                                    @endif
+                                </dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">WhatsApp</dt>
-                                <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $inquiry->whatsapp_number ?? '-' }}</dd>
+                                <dd class="mt-1">
+                                    @if($inquiry->whatsapp_number)
+                                    @php $waNumber = preg_replace('/[^0-9]/', '', $inquiry->whatsapp_number); @endphp
+                                    <a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" class="text-green-600 dark:text-green-400 hover:underline">{{ $inquiry->whatsapp_number }}</a>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">(chat)</span>
+                                    @elseif($inquiry->phone)
+                                    @php $waNumber = preg_replace('/[^0-9]/', '', $inquiry->phone); @endphp
+                                    <a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" class="text-green-600 dark:text-green-400 hover:underline">Use phone for WhatsApp</a>
+                                    @else
+                                    <span class="text-gray-500 dark:text-gray-400">—</span>
+                                    @endif
+                                </dd>
                             </div>
                             @if($inquiry->preferred_start_date)
                             <div>
@@ -142,6 +166,12 @@
                             <dd class="mt-1 text-gray-900 dark:text-gray-100 whitespace-pre-wrap">{{ $inquiry->notes }}</dd>
                         </div>
                         @endif
+                        @if($inquiry->status === 'lost' && $inquiry->lost_reason)
+                        <div class="mt-4">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Reason lost</dt>
+                            <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $inquiry->lost_reason }}</dd>
+                        </div>
+                        @endif
                     </div>
 
                     <!-- Quotes -->
@@ -204,11 +234,23 @@
                                             {{ $activity->createdBy->name }} - {{ $activity->created_at->format('M d, Y H:i') }}
                                         </div>
                                     </div>
+                                    <div class="flex items-center gap-2 flex-wrap">
                                     @if($activity->scheduled_at && !$activity->isCompleted())
                                     <span class="text-xs px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded">
                                         Scheduled: {{ $activity->scheduled_at->format('M d, Y') }}
                                     </span>
                                     @endif
+                                    @if(!$activity->isCompleted())
+                                    <form method="POST" action="{{ route('inquiries.activities.complete', [$inquiry, $activity]) }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded hover:bg-green-200 dark:hover:bg-green-800">
+                                            Mark complete
+                                        </button>
+                                    </form>
+                                    @else
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Done</span>
+                                    @endif
+                                    </div>
                                 </div>
                             </div>
                             @empty

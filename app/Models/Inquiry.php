@@ -28,6 +28,7 @@ class Inquiry extends Model
         'rental_purpose',
         'budget_range',
         'notes',
+        'lost_reason',
         'assigned_to',
         'created_by',
         'converted_at',
