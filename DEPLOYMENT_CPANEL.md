@@ -214,6 +214,8 @@ Some hosts do not allow changing the domain’s document root (e.g. it stays `pu
 
 **Setup:** Your Laravel app is already in `public_html` (you see `app/`, `vendor/`, `public/`, etc. in the “Index of /” listing).
 
+**Required when using this workaround:** In `.env` add `PUBLIC_PATH_IS_APP_ROOT=true` so Laravel looks for the Vite manifest and assets in the document root (e.g. `public_html/build/`) instead of `public/build/`. After deploying, run `php artisan config:clear`.
+
 **Steps:**
 
 1. **Use the workaround files from the repo**  
@@ -256,7 +258,12 @@ Never point the document root at the folder that contains `.env` and `app/`. Alw
 
 ## Troubleshooting
 
-- **500 error / blank page:** Check `storage/logs/laravel.log`. Ensure `storage` and `bootstrap/cache` are writable and `APP_KEY` is set.
+- **500 error / blank page:** Check `storage/logs/laravel.log` on the server (last lines show the real error). Ensure `storage` and `bootstrap/cache` are writable and `APP_KEY` is set.
+- **500 after using the “cannot change document root” workaround:**
+  1. **Restore the workaround files** – If you ran `cp -r public/* .` after copying the workaround files, it overwrote `index.php` and `.htaccess` with the ones from `public/`, which use `../` and break. Re-copy: `cp deploy/cpanel-fix-docroot/index.php index.php` and `cp deploy/cpanel-fix-docroot/.htaccess .htaccess` from the app root.
+  2. **Check the log:** `tail -50 storage/logs/laravel.log` to see the exact exception.
+  3. **Temporarily enable debug:** In `.env` set `APP_DEBUG=true`, reload the page to see the error on screen, then set it back to `false`.
+  4. **Permissions:** `chmod -R 775 storage bootstrap/cache`.
 - **404 on every route:** Document root must be the `public` folder. Ensure `public/.htaccess` exists and that Apache `mod_rewrite` is enabled (cPanel usually has it on).
 - **DB connection error:** Double-check `.env` DB_* values. On cPanel, the database name is often prefixed (e.g. `cpaneluser_dbname`). Use `127.0.0.1` for `DB_HOST` unless your host says otherwise.
 - **Storage link (404 on /storage/...):** Run `php artisan storage:link` from the Laravel root. If your host disallows symlinks, you may need to use a different approach (e.g. copy public storage into `public/storage` or use a different disk).
