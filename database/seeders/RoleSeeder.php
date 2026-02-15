@@ -65,6 +65,23 @@ class RoleSeeder extends Seeder
         $staff = Role::firstOrCreate(['name' => 'staff']);
         $staff->syncPermissions([]);
 
+        // Sales rep: only Sales modules (Leads, Quotes, Customers)
+        $salesRep = Role::firstOrCreate(['name' => 'sales_rep']);
+        $salesRep->syncPermissions([
+            'inquiries.view',
+            'inquiries.create',
+            'inquiries.edit',
+            'inquiries.delete',
+            'quotes.view',
+            'quotes.create',
+            'quotes.edit',
+            'quotes.delete',
+            'customers.view',
+            'customers.create',
+            'customers.edit',
+            'customers.delete',
+        ]);
+
         $customer = Role::firstOrCreate(['name' => 'customer']);
         $customer->givePermissionTo([
             'bookings.view',

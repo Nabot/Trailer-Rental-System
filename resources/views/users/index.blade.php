@@ -22,7 +22,7 @@
                         <option value="">All Roles</option>
                         @foreach($roles as $role)
                             <option value="{{ $role->name }}" {{ request('role') === $role->name ? 'selected' : '' }}>
-                                {{ ucfirst($role->name) }}
+                                {{ ucwords(str_replace('_', ' ', $role->name)) }}
                             </option>
                         @endforeach
                     </select>
@@ -58,9 +58,10 @@
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                             @if($role->name === 'admin') bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200
                                             @elseif($role->name === 'staff') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                            @elseif($role->name === 'sales_rep') bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200
                                             @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
                                             @endif">
-                                            {{ ucfirst($role->name) }}
+                                            {{ ucwords(str_replace('_', ' ', $role->name)) }}
                                         </span>
                                     @endforeach
                                 </td>

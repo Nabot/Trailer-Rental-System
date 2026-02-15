@@ -51,7 +51,7 @@
                                         <option value="">Select a role</option>
                                         @foreach($roles as $role)
                                             <option value="{{ $role->name }}" {{ old('role') === $role->name ? 'selected' : '' }}>
-                                                {{ ucfirst($role->name) }}
+                                                {{ ucwords(str_replace('_', ' ', $role->name)) }}
                                             </option>
                                         @endforeach
                                     </select>

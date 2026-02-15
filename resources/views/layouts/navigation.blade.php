@@ -186,6 +186,8 @@
                                             Admin
                                         @elseif(Auth::user()->isStaff())
                                             Staff
+                                        @elseif(Auth::user()->hasRole('sales_rep'))
+                                            Sales Rep
                                         @else
                                             Customer
                                         @endif
@@ -217,12 +219,15 @@
                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
                                     @if(Auth::user()->isAdmin()) bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200
                                     @elseif(Auth::user()->isStaff()) bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                    @elseif(Auth::user()->hasRole('sales_rep')) bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200
                                     @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
                                     @endif">
                                     @if(Auth::user()->isAdmin())
                                         Administrator
                                     @elseif(Auth::user()->isStaff())
                                         Staff Member
+                                    @elseif(Auth::user()->hasRole('sales_rep'))
+                                        Sales Rep
                                     @else
                                         Customer
                                     @endif
@@ -429,12 +434,15 @@
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
                                 @if(Auth::user()->isAdmin()) bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200
                                 @elseif(Auth::user()->isStaff()) bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                @elseif(Auth::user()->hasRole('sales_rep')) bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200
                                 @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
                                 @endif">
                                 @if(Auth::user()->isAdmin())
                                     Administrator
                                 @elseif(Auth::user()->isStaff())
                                     Staff Member
+                                @elseif(Auth::user()->hasRole('sales_rep'))
+                                    Sales Rep
                                 @else
                                     Customer
                                 @endif
