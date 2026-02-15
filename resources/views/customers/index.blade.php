@@ -48,7 +48,16 @@
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $customer->phone ?? '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $customer->id_number ?? '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a href="{{ route('customers.show', $customer) }}" class="text-blue-600 dark:text-blue-400 hover:underline">View</a>
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ route('customers.show', $customer) }}" class="text-blue-600 dark:text-blue-400 hover:underline">View</a>
+                                        @can('customers.delete')
+                                        <form method="POST" action="{{ route('customers.destroy', $customer) }}" class="inline" onsubmit="return confirm('Delete this customer?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                                        </form>
+                                        @endcan
+                                    </div>
                                 </td>
                             </tr>
                             @empty

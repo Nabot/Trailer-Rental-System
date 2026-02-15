@@ -110,6 +110,13 @@
                                         <a href="{{ route('quotes.edit', $quote) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
                                             Edit
                                         </a>
+                                        @can('quotes.delete')
+                                        <form method="POST" action="{{ route('quotes.destroy', $quote) }}" class="inline" onsubmit="return confirm('Delete this quote?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                                        </form>
+                                        @endcan
                                         @endif
                                     </div>
                                 </td>

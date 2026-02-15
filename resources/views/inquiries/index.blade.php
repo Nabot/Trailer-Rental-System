@@ -152,6 +152,15 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <a href="{{ route('inquiries.show', $inquiry) }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300">View</a>
+                                    @can('inquiries.delete')
+                                    @if($inquiry->status !== 'converted')
+                                    <form method="POST" action="{{ route('inquiries.destroy', $inquiry) }}" class="inline" onsubmit="return confirm('Delete this lead?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                                    </form>
+                                    @endif
+                                    @endcan
                                 </td>
                             </tr>
                             @empty

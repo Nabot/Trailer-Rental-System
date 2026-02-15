@@ -99,6 +99,15 @@
                                         @endif
                                         @endcan
                                         <a href="{{ route('invoices.download', $invoice) }}" class="text-green-600 dark:text-green-400 hover:underline">PDF</a>
+                                        @can('invoices.delete')
+                                        @if($invoice->status === 'pending')
+                                        <form method="POST" action="{{ route('invoices.destroy', $invoice) }}" class="inline" onsubmit="return confirm('Delete this invoice?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                                        </form>
+                                        @endif
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

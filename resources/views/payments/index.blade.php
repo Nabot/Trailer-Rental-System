@@ -43,11 +43,12 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Method</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Reference</th>
                                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Amount</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                             @forelse($payments as $payment)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer" onclick="window.location='{{ route('payments.show', $payment) }}'">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $payment->payment_date->format('M d, Y') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($payment->booking)
@@ -67,10 +68,22 @@
                                 <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($payment->method) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $payment->reference_number ?? '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right font-semibold">N${{ number_format($payment->amount, 2) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ route('payments.show', $payment) }}" class="text-orange-600 dark:text-orange-400 hover:underline">View</a>
+                                        @can('payments.edit')
+                                        <form method="POST" action="{{ route('payments.destroy', $payment) }}" class="inline" onsubmit="return confirm('Delete this payment?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Delete</button>
+                                        </form>
+                                        @endcan
+                                    </div>
+                                </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-12">
+                                <td colspan="7" class="px-6 py-12">
                                     <x-empty-state 
                                         title="No payments found"
                                         description="Payments will appear here once they are recorded."
