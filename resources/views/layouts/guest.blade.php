@@ -27,9 +27,9 @@
             <div class="mb-8 text-center">
                 <a href="/" class="inline-block">
                     @if(file_exists(public_path('images/ironaxle-logo.png')))
-                        <img src="{{ asset('images/ironaxle-logo.png') }}" alt="IronAxle Rentals" class="h-24 w-auto mx-auto mb-2" />
+                        <img src="{{ asset('images/ironaxle-logo.png') }}" alt="IronAxle Rentals" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
                     @elseif(file_exists(public_path('images/ironaxle-logo.svg')))
-                        <img src="{{ asset('images/ironaxle-logo.svg') }}" alt="IronAxle Rentals" class="h-24 w-auto mx-auto mb-2" />
+                        <img src="{{ asset('images/ironaxle-logo.svg') }}" alt="IronAxle Rentals" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
                     @else
                         <div class="flex flex-col items-center space-y-2 mb-4">
                             <div class="text-4xl font-bold">
@@ -43,7 +43,7 @@
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ config('app.name', 'IronAxle Rentals') }}</h1>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-8 bg-white dark:bg-gray-800 shadow-xl overflow-hidden sm:rounded-lg border border-gray-200 dark:border-gray-700">
+            <div class="w-full sm:max-w-md mt-6 px-6 py-8 bg-white dark:bg-gray-800 shadow-2xl sm:rounded-lg border border-gray-200 dark:border-gray-700 ring-1 ring-gray-200/50 dark:ring-gray-700/50">
                 {{ $slot }}
             </div>
         </div>
