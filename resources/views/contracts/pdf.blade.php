@@ -86,7 +86,7 @@
     <div class="section">
     <div class="section-title">3. PAYMENT TERMS</div>
     <p>The Lessee agrees to pay the full rental amount before collection of the trailer.</p>
-    <p>The deposit will be refunded within <strong>48 hours</strong> after inspection, provided the trailer is returned:</p>
+    <p>The deposit will be refunded <strong>immediately after return of the trailer</strong>, provided the trailer is returned:</p>
     <ul class="terms-list">
         <li>Clean</li>
         <li>Undamaged</li>

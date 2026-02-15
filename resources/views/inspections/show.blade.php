@@ -121,7 +121,7 @@
                                 @if($damage->photos->count() > 0)
                                 <div class="grid grid-cols-4 gap-2 mt-2">
                                     @foreach($damage->photos as $photo)
-                                    <img src="{{ Storage::url($photo->path) }}" alt="Damage photo" class="w-full h-20 object-cover rounded">
+                                    <img src="{{ Storage::disk($photo->disk ?? 'public')->url($photo->path) }}" alt="Damage photo" class="w-full h-20 object-cover rounded">
                                     @endforeach
                                 </div>
                                 @endif
@@ -137,7 +137,7 @@
                         <h3 class="text-lg font-semibold mb-4">Inspection Photos</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             @foreach($inspection->photos as $photo)
-                            <img src="{{ Storage::url($photo->path) }}" alt="Inspection photo" class="w-full h-32 object-cover rounded cursor-pointer" onclick="window.open(this.src)">
+                            <img src="{{ Storage::disk($photo->disk ?? 'public')->url($photo->path) }}" alt="Inspection photo" class="w-full h-32 object-cover rounded cursor-pointer" onclick="window.open(this.src)">
                             @endforeach
                         </div>
                     </div>

@@ -72,6 +72,15 @@ class PaymentController extends Controller
         ]);
 
         $payment = DB::transaction(function () use ($validated) {
+            // If booking_id but no invoice_id, link to booking's rental invoice so invoice reflects payment
+            if (!empty($validated['booking_id']) && empty($validated['invoice_id'])) {
+                $booking = Booking::with('invoices')->findOrFail($validated['booking_id']);
+                $rentalInvoice = $booking->invoices->where('type', 'rental')->first();
+                if ($rentalInvoice) {
+                    $validated['invoice_id'] = $rentalInvoice->id;
+                }
+            }
+
             $payment = Payment::create([
                 ...$validated,
                 'recorded_by' => auth()->id(),

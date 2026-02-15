@@ -299,9 +299,10 @@ class InvoiceController extends Controller
         }
 
         return DB::transaction(function () use ($booking) {
-            $subtotal = $booking->total_amount;
+            $deposit = (float) ($booking->required_deposit ?? 0);
+            $subtotal = $booking->total_amount + $deposit;
             $taxRate = \App\Models\Setting::get('tax_rate', 0);
-            $tax = $subtotal * ($taxRate / 100);
+            $tax = ($booking->total_amount) * ($taxRate / 100);
             $totalAmount = $subtotal + $tax;
 
             $invoice = Invoice::create([
@@ -327,31 +328,43 @@ class InvoiceController extends Controller
                 'total' => $booking->rental_cost,
             ]);
 
-            // Add fees if any
+            // Delivery fee – own line, amount clearly stated
             if ($booking->delivery_fee > 0) {
                 $invoice->items()->create([
-                    'description' => 'Delivery Fee',
+                    'description' => 'Delivery fee',
                     'quantity' => 1,
                     'unit_price' => $booking->delivery_fee,
                     'total' => $booking->delivery_fee,
                 ]);
             }
 
+            // Straps fee – own line, amount clearly stated
             if ($booking->straps_fee > 0) {
                 $invoice->items()->create([
-                    'description' => 'Straps Fee',
+                    'description' => 'Straps fee',
                     'quantity' => 1,
                     'unit_price' => $booking->straps_fee,
                     'total' => $booking->straps_fee,
                 ]);
             }
 
+            // Damage waiver fee – own line, amount clearly stated
             if ($booking->damage_waiver_fee > 0) {
                 $invoice->items()->create([
-                    'description' => 'Damage Waiver Fee',
+                    'description' => 'Damage waiver fee',
                     'quantity' => 1,
                     'unit_price' => $booking->damage_waiver_fee,
                     'total' => $booking->damage_waiver_fee,
+                ]);
+            }
+
+            // Deposit (refundable) – own line, amount clearly stated
+            if ($deposit > 0) {
+                $invoice->items()->create([
+                    'description' => 'Deposit (refundable)',
+                    'quantity' => 1,
+                    'unit_price' => $deposit,
+                    'total' => $deposit,
                 ]);
             }
 
@@ -379,7 +392,7 @@ class InvoiceController extends Controller
         // Delivery fee
         if ($booking->delivery_fee > 0) {
             $items[] = [
-                'description' => 'Delivery Fee',
+                'description' => 'Delivery fee',
                 'quantity' => 1,
                 'unit_price' => (float) $booking->delivery_fee,
             ];
@@ -388,7 +401,7 @@ class InvoiceController extends Controller
         // Straps fee
         if ($booking->straps_fee > 0) {
             $items[] = [
-                'description' => 'Straps Fee',
+                'description' => 'Straps fee',
                 'quantity' => 1,
                 'unit_price' => (float) $booking->straps_fee,
             ];
@@ -397,9 +410,19 @@ class InvoiceController extends Controller
         // Damage waiver fee
         if ($booking->damage_waiver_fee > 0) {
             $items[] = [
-                'description' => 'Damage Waiver',
+                'description' => 'Damage waiver fee',
                 'quantity' => 1,
                 'unit_price' => (float) $booking->damage_waiver_fee,
+            ];
+        }
+
+        // Deposit (refundable)
+        $deposit = (float) ($booking->required_deposit ?? 0);
+        if ($deposit > 0) {
+            $items[] = [
+                'description' => 'Deposit (refundable)',
+                'quantity' => 1,
+                'unit_price' => $deposit,
             ];
         }
 

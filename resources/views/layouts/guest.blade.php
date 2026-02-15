@@ -1,3 +1,6 @@
+@php
+    $appDisplayName = config('app.name') === 'Laravel' ? 'IronAxle Rentals' : config('app.name', 'IronAxle Rentals');
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -5,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'IronAxle Rentals') }}</title>
+        <title>{{ $appDisplayName }}</title>
         
         <!-- Favicon -->
         @if(file_exists(public_path('images/ironaxle-logo.png')))
@@ -40,7 +43,7 @@
                         </div>
                     @endif
                 </a>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ config('app.name', 'IronAxle Rentals') }}</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ $appDisplayName }}</h1>
             </div>
 
             <div class="w-full sm:max-w-md mt-6 px-6 py-8 bg-white dark:bg-gray-800 shadow-2xl sm:rounded-lg border border-gray-200 dark:border-gray-700 ring-1 ring-gray-200/50 dark:ring-gray-700/50">
