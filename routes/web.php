@@ -13,6 +13,7 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -88,6 +89,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Users (Admin only)
     Route::resource('users', UserController::class);
+
+    // Company information (Admin only)
+    Route::get('/settings/company', [SettingController::class, 'company'])->name('settings.company');
+    Route::put('/settings/company', [SettingController::class, 'updateCompany'])->name('settings.company.update');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

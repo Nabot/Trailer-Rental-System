@@ -163,6 +163,15 @@
                     </x-nav-link>
                     @endcan
 
+                    <!-- Company (Admin only) -->
+                    @can('viewAny', App\Models\User::class)
+                    <x-nav-link :href="route('settings.company')" :active="request()->routeIs('settings.company*')" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                        <span>{{ __('Company') }}</span>
+                    </x-nav-link>
+                    @endcan
                     <!-- Users (Admin only) -->
                     @can('viewAny', App\Models\User::class)
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors">
@@ -421,6 +430,15 @@
             </x-responsive-nav-link>
             @endcan
 
+            <!-- Company (Admin only) -->
+            @can('viewAny', App\Models\User::class)
+            <x-responsive-nav-link :href="route('settings.company')" :active="request()->routeIs('settings.company*')" class="flex items-center space-x-3 px-4 py-3 mx-2 rounded-lg mt-2">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                <span>{{ __('Company') }}</span>
+            </x-responsive-nav-link>
+            @endcan
             <!-- Users (Admin only) -->
             @can('viewAny', App\Models\User::class)
             <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" class="flex items-center space-x-3 px-4 py-3 mx-2 rounded-lg mt-2">

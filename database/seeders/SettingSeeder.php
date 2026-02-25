@@ -44,6 +44,18 @@ class SettingSeeder extends Seeder
                 'description' => 'Company email address',
             ],
             [
+                'key' => 'company_website',
+                'value' => '',
+                'type' => 'string',
+                'description' => 'Company website URL',
+            ],
+            [
+                'key' => 'company_logo',
+                'value' => 'images/ironaxle-logo.png',
+                'type' => 'string',
+                'description' => 'Path to company logo (e.g. images/logo.png)',
+            ],
+            [
                 'key' => 'tax_rate',
                 'value' => '0',
                 'type' => 'integer',

@@ -5,13 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'IronAxle Rentals') }}</title>
+        @php
+            $appName = \App\Models\Setting::get('company_name', config('app.name', 'IronAxle Rentals'));
+            $logoPath = \App\Models\Setting::get('company_logo', '');
+            $faviconPath = $logoPath && file_exists(public_path($logoPath)) ? $logoPath : (file_exists(public_path('images/ironaxle-logo.png')) ? 'images/ironaxle-logo.png' : (file_exists(public_path('images/ironaxle-logo.svg')) ? 'images/ironaxle-logo.svg' : null));
+        @endphp
+        <title>{{ $appName }}</title>
         
         <!-- Favicon -->
-        @if(file_exists(public_path('images/ironaxle-logo.png')))
-        <link rel="icon" type="image/png" href="{{ asset('images/ironaxle-logo.png') }}">
-        @elseif(file_exists(public_path('images/ironaxle-logo.svg')))
-        <link rel="icon" type="image/svg+xml" href="{{ asset('images/ironaxle-logo.svg') }}">
+        @if($faviconPath)
+        <link rel="icon" type="{{ str_ends_with($faviconPath, '.svg') ? 'image/svg+xml' : 'image/png' }}" href="{{ asset($faviconPath) }}">
         @endif
 
         <!-- Fonts -->

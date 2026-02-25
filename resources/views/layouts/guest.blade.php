@@ -1,5 +1,7 @@
 @php
-    $appDisplayName = config('app.name') === 'Laravel' ? 'IronAxle Rentals' : config('app.name', 'IronAxle Rentals');
+    $appDisplayName = \App\Models\Setting::get('company_name', config('app.name', 'IronAxle Rentals'));
+    $logoPath = \App\Models\Setting::get('company_logo', '');
+    $faviconPath = $logoPath && file_exists(public_path($logoPath)) ? $logoPath : (file_exists(public_path('images/ironaxle-logo.png')) ? 'images/ironaxle-logo.png' : (file_exists(public_path('images/ironaxle-logo.svg')) ? 'images/ironaxle-logo.svg' : null));
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -11,10 +13,8 @@
         <title>{{ $appDisplayName }}</title>
         
         <!-- Favicon -->
-        @if(file_exists(public_path('images/ironaxle-logo.png')))
-        <link rel="icon" type="image/png" href="{{ asset('images/ironaxle-logo.png') }}">
-        @elseif(file_exists(public_path('images/ironaxle-logo.svg')))
-        <link rel="icon" type="image/svg+xml" href="{{ asset('images/ironaxle-logo.svg') }}">
+        @if($faviconPath)
+        <link rel="icon" type="{{ str_ends_with($faviconPath, '.svg') ? 'image/svg+xml' : 'image/png' }}" href="{{ asset($faviconPath) }}">
         @endif
 
         <!-- Fonts -->
@@ -29,10 +29,12 @@
             <!-- Logo Section -->
             <div class="mb-8 text-center">
                 <a href="/" class="inline-block">
-                    @if(file_exists(public_path('images/ironaxle-logo.png')))
-                        <img src="{{ asset('images/ironaxle-logo.png') }}" alt="IronAxle Rentals" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
+                    @if($logoPath && file_exists(public_path($logoPath)))
+                        <img src="{{ asset($logoPath) }}" alt="{{ $appDisplayName }}" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
+                    @elseif(file_exists(public_path('images/ironaxle-logo.png')))
+                        <img src="{{ asset('images/ironaxle-logo.png') }}" alt="{{ $appDisplayName }}" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
                     @elseif(file_exists(public_path('images/ironaxle-logo.svg')))
-                        <img src="{{ asset('images/ironaxle-logo.svg') }}" alt="IronAxle Rentals" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
+                        <img src="{{ asset('images/ironaxle-logo.svg') }}" alt="{{ $appDisplayName }}" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
                     @else
                         <div class="flex flex-col items-center space-y-2 mb-4">
                             <div class="text-4xl font-bold">
