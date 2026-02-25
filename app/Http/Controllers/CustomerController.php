@@ -64,6 +64,9 @@ class CustomerController extends Controller
             'phone' => 'nullable|string|max:255',
             'id_number' => 'nullable|string|max:255|unique:customers,id_number',
             'driver_licence' => 'nullable|string|max:255',
+            'car_registration' => 'nullable|string|max:50',
+            'vehicle_make' => 'nullable|string|max:100',
+            'vehicle_model' => 'nullable|string|max:100',
             'address' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
@@ -108,6 +111,9 @@ class CustomerController extends Controller
             'phone' => 'nullable|string|max:255',
             'id_number' => 'nullable|string|max:255|unique:customers,id_number,' . $customer->id,
             'driver_licence' => 'nullable|string|max:255',
+            'car_registration' => 'nullable|string|max:50',
+            'vehicle_make' => 'nullable|string|max:100',
+            'vehicle_model' => 'nullable|string|max:100',
             'address' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);

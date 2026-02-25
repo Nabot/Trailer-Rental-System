@@ -18,6 +18,9 @@ class Customer extends Model
         'phone',
         'id_number',
         'driver_licence',
+        'car_registration',
+        'vehicle_make',
+        'vehicle_model',
         'address',
         'notes',
     ];

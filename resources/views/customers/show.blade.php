@@ -53,6 +53,18 @@
                                 <dd class="mt-1 text-gray-900 dark:text-gray-100">{{ $customer->driver_licence }}</dd>
                             </div>
                             @endif
+                            @if($customer->car_registration || $customer->vehicle_make || $customer->vehicle_model)
+                            <div class="col-span-2 mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                <dt class="text-sm font-medium text-gray-500 mb-1">Vehicle / Car</dt>
+                                <dd class="mt-1 text-gray-900 dark:text-gray-100">
+                                    @if($customer->car_registration)<span class="font-medium">{{ $customer->car_registration }}</span>@endif
+                                    @if($customer->vehicle_make || $customer->vehicle_model)
+                                        @if($customer->car_registration) — @endif
+                                        {{ trim(($customer->vehicle_make ?? '') . ' ' . ($customer->vehicle_model ?? '')) }}
+                                    @endif
+                                </dd>
+                            </div>
+                            @endif
                             @if($customer->address)
                             <div class="col-span-2">
                                 <dt class="text-sm font-medium text-gray-500">Address</dt>

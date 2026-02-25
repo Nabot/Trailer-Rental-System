@@ -49,6 +49,25 @@
                         </div>
 
                         <div class="md:col-span-2">
+                            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle / Car Registration</h4>
+                        </div>
+                        <div>
+                            <x-input-label for="car_registration" :value="__('Car Registration No')" />
+                            <x-text-input id="car_registration" name="car_registration" type="text" class="mt-1 block w-full" :value="old('car_registration', $customer->car_registration)" placeholder="e.g. N 12345" />
+                            <x-input-error :messages="$errors->get('car_registration')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="vehicle_make" :value="__('Vehicle Make')" />
+                            <x-text-input id="vehicle_make" name="vehicle_make" type="text" class="mt-1 block w-full" :value="old('vehicle_make', $customer->vehicle_make)" placeholder="e.g. Toyota, Ford" />
+                            <x-input-error :messages="$errors->get('vehicle_make')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="vehicle_model" :value="__('Vehicle Model')" />
+                            <x-text-input id="vehicle_model" name="vehicle_model" type="text" class="mt-1 block w-full" :value="old('vehicle_model', $customer->vehicle_model)" placeholder="e.g. Hilux, Ranger" />
+                            <x-input-error :messages="$errors->get('vehicle_model')" class="mt-2" />
+                        </div>
+
+                        <div class="md:col-span-2">
                             <x-input-label for="address" :value="__('Address')" />
                             <textarea id="address" name="address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600">{{ old('address', $customer->address) }}</textarea>
                             <x-input-error :messages="$errors->get('address')" class="mt-2" />
