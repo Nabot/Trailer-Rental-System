@@ -158,7 +158,7 @@ class BookingController extends Controller
         $validated = $request->validate([
             'trailer_id' => 'required|exists:trailers,id',
             'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'pickup_time' => 'nullable|date_format:H:i',
             'whatsapp_number' => 'nullable|string|max:20',
             'delivery_fee' => 'nullable|numeric|min:0',

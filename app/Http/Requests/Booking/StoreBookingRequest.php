@@ -26,7 +26,7 @@ class StoreBookingRequest extends FormRequest
             'trailer_id' => ['required', 'exists:trailers,id'],
             'customer_id' => ['required', 'exists:customers,id'],
             'start_date' => ['required', 'date', 'after_or_equal:today'],
-            'end_date' => ['required', 'date', 'after:start_date'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'pickup_time' => ['nullable', 'date_format:H:i'],
             'whatsapp_number' => ['nullable', 'string', 'max:20'],
             'delivery_fee' => ['nullable', 'numeric', 'min:0'],
@@ -46,7 +46,7 @@ class StoreBookingRequest extends FormRequest
             'customer_id.required' => 'Please select a customer.',
             'customer_id.exists' => 'Selected customer does not exist.',
             'start_date.after_or_equal' => 'Start date must be today or in the future.',
-            'end_date.after' => 'End date must be after start date.',
+            'end_date.after_or_equal' => 'End date must be on or after start date.',
         ];
     }
 }
