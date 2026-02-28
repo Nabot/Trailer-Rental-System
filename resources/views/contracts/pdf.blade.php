@@ -30,7 +30,8 @@
         .divider { border-top: 1px solid #999; margin: 16px 0; }
         .and-sep { text-align: center; margin: 14px 0; font-weight: bold; font-size: 12px; letter-spacing: 1px; }
         .footer-text { font-size: 9px; color: #666; margin-top: 20px; padding-top: 8px; }
-        #page-footer { position: fixed; bottom: 0; left: 20mm; right: 20mm; font-size: 8px; color: #888; text-align: center; padding-top: 4px; border-top: 1px solid #ddd; }
+        #page-footer { position: fixed; bottom: 0; left: 20mm; right: 20mm; font-size: 8px; color: #888; padding-top: 4px; border-top: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+        .footer-initials { font-size: 9px; color: #333; }
     </style>
 </head>
 <body>
@@ -60,6 +61,7 @@
         <div class="field-line"><span class="field-label">Phone:</span> <span class="field-value">{{ $contract->customer->phone ?: '______________________________' }}</span></div>
         <div class="field-line"><span class="field-label">Email:</span> <span class="field-value">{{ $contract->customer->email ?: '______________________________' }}</span></div>
         <div class="field-line"><span class="field-label">Driver's Licence No:</span> <span class="field-value">{{ $contract->customer->driver_licence ?: '______________________________' }}</span></div>
+        <p class="field-line" style="margin-top: 6px;"><strong>Driver qualification:</strong> The driver must be at least 23 years old and hold a valid Namibian Code B or higher licence for the duration of the rental.</p>
     </div>
 
     <div class="divider"></div>
@@ -81,12 +83,13 @@
     <div class="field-line">Daily Rental Fee: N$ <span class="field-value">{{ number_format($booking->rate_per_day, 2) }}</span> per day</div>
     <div class="field-line">Deposit (Refundable): N$ <span class="field-value">{{ number_format($booking->required_deposit ?? 0, 2) }}</span></div>
     <div class="field-line">Late Return Fee: <span class="field-value">{{ $lateReturnFee ?: 'N$ __________ per hour / day' }}</span></div>
+    <p style="margin-top: 8px;">Any extension of the rental must be requested before the expiry of the current period and is subject to availability and payment of the applicable daily rate.</p>
     </div>
 
     <div class="section">
     <div class="section-title">3. PAYMENT TERMS</div>
     <p>The Lessee agrees to pay the full rental amount before collection of the trailer.</p>
-    <p>The deposit will be refunded <strong>immediately after return of the trailer</strong>, provided the trailer is returned:</p>
+    <p>The deposit will be refunded <strong>within 24–72 hours after inspection</strong> following return of the trailer, provided the trailer is returned:</p>
     <ul class="terms-list">
         <li>Clean</li>
         <li>Undamaged</li>
@@ -108,7 +111,12 @@
     </div>
 
     <div class="section">
-    <div class="section-title">5. RESPONSIBILITY &amp; LIABILITY</div>
+    <div class="section-title">5. INDEMNITY</div>
+    <p>The Lessee indemnifies and holds harmless {{ $companyName }} against any claims, damages, third-party injuries, or losses arising from the use of the trailer during the rental period. This includes but is not limited to injury claims, cargo damage claims, and any other liability arising from the Lessee's use or possession of the trailer.</p>
+    </div>
+
+    <div class="section">
+    <div class="section-title">6. RESPONSIBILITY &amp; LIABILITY</div>
     <p>The Lessee is fully responsible for the trailer during the rental period.</p>
     <p>The Lessee will be liable for:</p>
     <ul class="terms-list">
@@ -125,25 +133,30 @@
     </div>
 
     <div class="section">
-    <div class="section-title">6. BREAKDOWN &amp; REPAIRS</div>
+    <div class="section-title">7. BREAKDOWN &amp; REPAIRS</div>
     <p>The Lessee must immediately inform the Lessor in case of breakdown.</p>
     <p>No repairs may be done without approval.</p>
     <p>Unauthorised repairs will not be reimbursed.</p>
     </div>
 
     <div class="section">
-    <div class="section-title">7. TRAFFIC FINES</div>
+    <div class="section-title">8. TRAFFIC FINES</div>
     <p>All traffic fines, toll fees, permits, or penalties during the rental period are the responsibility of the Lessee.</p>
     </div>
 
     <div class="section">
-    <div class="section-title">8. CLEANING</div>
+    <div class="section-title">9. CLEANING</div>
     <p>Trailer must be returned clean.</p>
-    <p>Cleaning fee: <span class="field-value">{{ $cleaningFee ? 'N$ ' . $cleaningFee : 'N$ ________' }}</span> (if excessively dirty)</p>
+    <p>Cleaning fee: <span class="field-value">{{ $cleaningFee ? 'N$ ' . $cleaningFee : 'N$ 40' }}</span> (if excessively dirty)</p>
     </div>
 
     <div class="section">
-    <div class="section-title">9. TERMINATION</div>
+    <div class="section-title">10. CANCELLATION &amp; NO-SHOW</div>
+    <p>Cancellation must be communicated to the Lessor as soon as possible. Same-day cancellations may incur a cancellation penalty. No-show (failure to collect the trailer on the agreed date without prior notice) may result in a no-show fee and/or forfeiture of deposit or prepaid amounts as per the Lessor's policy.</p>
+    </div>
+
+    <div class="section">
+    <div class="section-title">11. TERMINATION</div>
     <p>The Lessor reserves the right to repossess the trailer if:</p>
     <ul class="terms-list">
         <li>The agreement is violated</li>
@@ -154,7 +167,7 @@
     </div>
 
     <div class="section">
-    <div class="section-title">10. INSPECTION CHECKLIST</div>
+    <div class="section-title">12. INSPECTION CHECKLIST</div>
     <table>
         <thead>
             <tr>
@@ -194,8 +207,14 @@
     </div>
 
     <div class="section">
-    <div class="section-title">11. AGREEMENT</div>
+    <div class="section-title">13. GOVERNING LAW &amp; JURISDICTION</div>
+    <p>This Agreement shall be governed by the laws of the Republic of Namibia. Any disputes arising from or in connection with this Agreement shall be subject to the exclusive jurisdiction of the Namibian courts.</p>
+    </div>
+
+    <div class="section">
+    <div class="section-title">14. AGREEMENT</div>
     <p>I confirm that I inspected the trailer and accept its condition.</p>
+    <p><strong>Corporate / Business Lessee:</strong> Where the Lessee is a company, the signatory binds himself/herself as surety and co-principal debtor.</p>
     <div class="signature-block">
         <div class="signature-line"><span class="sig-label">Lessor Signature:</span><span class="sig-space"></span><span class="sig-date">Date: _______________</span></div>
         <div class="signature-line"><span class="sig-label">Lessee Signature:</span><span class="sig-space"></span><span class="sig-date">Date: _______________</span></div>
@@ -203,7 +222,7 @@
     </div>
 
     <div class="section">
-    <div class="section-title">12. ATTACHMENTS</div>
+    <div class="section-title">15. ATTACHMENTS</div>
     <p><span class="checkbox">☐</span> Copy of Driver's Licence</p>
     <p><span class="checkbox">☐</span> Copy of ID</p>
     <p><span class="checkbox">☐</span> Vehicle Registration Disc Photo</p>
@@ -213,7 +232,7 @@
     <div class="divider"></div>
     <p class="footer-text">Contract No: {{ $contract->contract_number }} | Booking: {{ $booking->booking_number }} | {{ $companyName }} | Generated {{ now()->format('d M Y H:i') }}</p>
 
-    <div id="page-footer">{{ $companyName }} — Contract {{ $contract->contract_number }} — Confidential</div>
+    <div id="page-footer"><span class="footer-initials">Lessee Initials: _____________</span><span>{{ $companyName }} — Contract {{ $contract->contract_number }} — Confidential</span><span class="footer-initials">Lessee Initials: _____________</span></div>
 
 </body>
 </html>

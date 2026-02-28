@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'IronAxle Rentals'),
+    'name' => env('APP_NAME', 'IronAxle Trailers'),
 
     /*
     |--------------------------------------------------------------------------

@@ -1,8 +1,8 @@
-# IronAxle Rentals Branding Setup
+# IronAxle Trailers Branding Setup
 
 ## Logo Installation
 
-To complete the branding setup, please place your IronAxle Rentals logo file in one of the following locations:
+To complete the branding setup, please place your IronAxle Trailers logo file in one of the following locations:
 
 1. **Preferred:** `public/images/ironaxle-logo.png` (PNG format with transparency)
 2. **Alternative:** `public/images/ironaxle-logo.svg` (SVG format)
@@ -19,11 +19,11 @@ To complete the branding setup, please place your IronAxle Rentals logo file in 
 
 ### Current Status
 
-The application is fully configured to use the IronAxle Rentals logo. Until the logo file is uploaded, a text-based fallback will be displayed showing "IRONAXLE RENTALS" with orange accent colors matching the brand.
+The application is fully configured to use the IronAxle Trailers logo. Until the logo file is uploaded, a text-based fallback will be displayed showing "IRONAXLE RENTALS" with orange accent colors matching the brand.
 
 ## Brand Colors
 
-The application uses the following color scheme based on the IronAxle Rentals logo:
+The application uses the following color scheme based on the IronAxle Trailers logo:
 
 - **Primary Accent:** Orange (#EA580C / orange-600)
 - **Primary Hover:** Dark Orange (#C2410C / orange-700)
@@ -111,6 +111,6 @@ To adjust orange shades, update Tailwind classes throughout:
 
 The application now consistently uses:
 - ✅ Orange as the primary accent color
-- ✅ IronAxle Rentals branding throughout
+- ✅ IronAxle Trailers branding throughout
 - ✅ Professional, industrial aesthetic
 - ✅ Consistent logo placement and sizing

@@ -380,7 +380,7 @@ class QuoteController extends Controller
         $this->authorize('view', $quote);
 
         $quote->load(['customer', 'trailer', 'items']);
-        $companyName = \App\Models\Setting::get('company_name', 'IronAxel Rentals');
+        $companyName = \App\Models\Setting::get('company_name', 'IronAxle Trailers');
         $companyAddress = \App\Models\Setting::get('company_address', '');
         $companyPhone = \App\Models\Setting::get('company_phone', '');
         $companyEmail = \App\Models\Setting::get('company_email', '');

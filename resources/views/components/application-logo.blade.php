@@ -1,6 +1,6 @@
 @php
     $logoPath = \App\Models\Setting::get('company_logo', '');
-    $companyName = \App\Models\Setting::get('company_name', config('app.name', 'IronAxle Rentals'));
+    $companyName = \App\Models\Setting::get('company_name', config('app.name', 'IronAxle Trailers'));
 @endphp
 @if($logoPath && file_exists(public_path($logoPath)))
     <img src="{{ asset($logoPath) }}" alt="{{ $companyName }}" {{ $attributes->merge(['class' => 'h-9 w-auto']) }} />

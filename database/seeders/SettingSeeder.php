@@ -21,7 +21,7 @@ class SettingSeeder extends Seeder
             ],
             [
                 'key' => 'company_name',
-                'value' => 'IronAxel Rentals',
+                'value' => 'IronAxle Trailers',
                 'type' => 'string',
                 'description' => 'Company name for invoices and contracts',
             ],
@@ -39,7 +39,7 @@ class SettingSeeder extends Seeder
             ],
             [
                 'key' => 'company_email',
-                'value' => 'bookings@ironaxelrentals.com',
+                'value' => 'bookings@ironaxletrailers.com',
                 'type' => 'string',
                 'description' => 'Company email address',
             ],
@@ -75,7 +75,7 @@ class SettingSeeder extends Seeder
             ],
             [
                 'key' => 'bank_account_name',
-                'value' => 'IronAxel Rentals',
+                'value' => 'IronAxle Trailers',
                 'type' => 'string',
                 'description' => 'Bank account name for invoices',
             ],
@@ -105,7 +105,7 @@ class SettingSeeder extends Seeder
             ],
             [
                 'key' => 'contract_terms',
-                'value' => "1. RENTAL PERIOD: The Lessee agrees to return the trailer on or before the end date. Late returns may incur additional charges.\n2. CONDITION: The trailer shall be returned in the same condition as at pickup, subject to fair wear and tear. The Lessee is responsible for any damage or loss.\n3. DEPOSIT: A deposit may be required and will be refunded after inspection upon return, subject to deductions for damage or late fees.\n4. USE: The trailer shall be used only for lawful purposes. The Lessee shall not sublet or assign this agreement.\n5. INSURANCE: The Lessee is responsible for any loss or damage to the trailer during the rental period unless otherwise agreed in writing.\n6. INDEMNITY: The Lessee agrees to indemnify IronAxel Rentals against any claims arising from use of the trailer.\n7. CANCELLATION: Cancellation terms as per booking policy. Deposits may be non-refundable if cancelled within a specified period.\n8. GOVERNING LAW: This agreement is governed by the laws of Namibia.",
+                'value' => "1. RENTAL PERIOD: The Lessee agrees to return the trailer on or before the end date. Late returns may incur additional charges. Any extension must be requested before expiry and is subject to availability and payment.\n2. CONDITION: The trailer shall be returned in the same condition as at pickup, subject to fair wear and tear. The Lessee is responsible for any damage or loss.\n3. DEPOSIT: A deposit may be required and will be refunded within 24–72 hours after inspection upon return, subject to deductions for damage or late fees.\n4. USE: The trailer shall be used only for lawful purposes. The Lessee shall not sublet or assign this agreement.\n5. INSURANCE: The Lessee is responsible for any loss or damage to the trailer during the rental period unless otherwise agreed in writing.\n6. INDEMNITY: The Lessee indemnifies and holds harmless the Lessor against any claims, damages, third-party injuries, or losses arising from the use of the trailer during the rental period.\n7. CANCELLATION: Same-day cancellations may incur a cancellation penalty. No-show may result in a no-show fee and/or forfeiture of deposit or prepaid amounts.\n8. GOVERNING LAW: This Agreement shall be governed by the laws of the Republic of Namibia. Any disputes shall be subject to the exclusive jurisdiction of the Namibian courts.",
                 'type' => 'text',
                 'description' => 'Default terms and conditions for rental contracts',
             ],
@@ -117,15 +117,15 @@ class SettingSeeder extends Seeder
             ],
             [
                 'key' => 'late_return_fee',
-                'value' => '',
+                'value' => 'N$ 42 per hour',
                 'type' => 'string',
                 'description' => 'Late return fee (e.g. N$50 per hour/day) for contracts',
             ],
             [
                 'key' => 'cleaning_fee',
-                'value' => '',
+                'value' => '40',
                 'type' => 'string',
-                'description' => 'Cleaning fee if trailer returned dirty (e.g. N$200)',
+                'description' => 'Cleaning fee if trailer returned dirty (e.g. N$40)',
             ],
             [
                 'key' => 'trailer_replacement_value',

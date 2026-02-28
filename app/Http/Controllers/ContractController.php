@@ -41,13 +41,13 @@ class ContractController extends Controller
         $contract->load(['booking.trailer', 'customer']);
         $booking = $contract->booking;
 
-        $companyName = \App\Models\Setting::get('company_name', 'IronAxel Rentals');
+        $companyName = \App\Models\Setting::get('company_name', 'IronAxle Trailers');
         $companyAddress = \App\Models\Setting::get('company_address', 'Kransneus, Namibia');
         $companyPhone = \App\Models\Setting::get('company_phone', '');
-        $companyEmail = \App\Models\Setting::get('company_email', 'bookings@ironaxelrentals.com');
+        $companyEmail = \App\Models\Setting::get('company_email', 'bookings@ironaxletrailers.com');
         $companyRegistrationNo = \App\Models\Setting::get('company_registration_no', '');
-        $lateReturnFee = \App\Models\Setting::get('late_return_fee', '');
-        $cleaningFee = \App\Models\Setting::get('cleaning_fee', '');
+        $lateReturnFee = \App\Models\Setting::get('late_return_fee', 'N$ 42 per hour');
+        $cleaningFee = \App\Models\Setting::get('cleaning_fee', '40');
         $trailerReplacementValue = \App\Models\Setting::get('trailer_replacement_value', '');
         $maxLoadCapacity = \App\Models\Setting::get('max_load_capacity', '');
 
@@ -91,13 +91,13 @@ class ContractController extends Controller
 
     private function defaultTerms(): string
     {
-        return "1. RENTAL PERIOD: The Lessee agrees to return the trailer on or before the end date. Late returns may incur additional charges.
+        return "1. RENTAL PERIOD: The Lessee agrees to return the trailer on or before the end date. Late returns may incur additional charges. Any extension must be requested before expiry and is subject to availability and payment.
 2. CONDITION: The trailer shall be returned in the same condition as at pickup, subject to fair wear and tear. The Lessee is responsible for any damage or loss.
-3. DEPOSIT: A deposit may be required and will be refunded after inspection upon return, subject to deductions for damage or late fees.
+3. DEPOSIT: A deposit may be required and will be refunded within 24–72 hours after inspection upon return, subject to deductions for damage or late fees.
 4. USE: The trailer shall be used only for lawful purposes. The Lessee shall not sublet or assign this agreement.
 5. INSURANCE: The Lessee is responsible for any loss or damage to the trailer during the rental period unless otherwise agreed in writing.
-6. INDEMNITY: The Lessee agrees to indemnify IronAxel Rentals against any claims arising from use of the trailer.
-7. CANCELLATION: Cancellation terms as per booking policy. Deposits may be non-refundable if cancelled within a specified period.
-8. GOVERNING LAW: This agreement is governed by the laws of Namibia.";
+6. INDEMNITY: The Lessee indemnifies and holds harmless the Lessor against any claims, damages, third-party injuries, or losses arising from the use of the trailer during the rental period.
+7. CANCELLATION: Same-day cancellations may incur a cancellation penalty. No-show may result in a no-show fee and/or forfeiture of deposit or prepaid amounts.
+8. GOVERNING LAW: This Agreement shall be governed by the laws of the Republic of Namibia. Any disputes shall be subject to the exclusive jurisdiction of the Namibian courts.";
     }
 }

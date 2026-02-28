@@ -212,7 +212,7 @@ class PaymentController extends Controller
         $this->authorize('payments.view');
         $payment->load(['booking.trailer', 'booking.customer', 'invoice.customer']);
 
-        $companyName = \App\Models\Setting::get('company_name', 'IronAxel Rentals');
+        $companyName = \App\Models\Setting::get('company_name', 'IronAxle Trailers');
         $companyAddress = \App\Models\Setting::get('company_address', '');
         $companyPhone = \App\Models\Setting::get('company_phone', '');
         $companyEmail = \App\Models\Setting::get('company_email', '');

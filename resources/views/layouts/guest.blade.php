@@ -1,5 +1,5 @@
 @php
-    $appDisplayName = \App\Models\Setting::get('company_name', config('app.name', 'IronAxle Rentals'));
+    $appDisplayName = \App\Models\Setting::get('company_name', config('app.name', 'IronAxle Trailers'));
     $logoPath = \App\Models\Setting::get('company_logo', '');
     $faviconPath = $logoPath && file_exists(public_path($logoPath)) ? $logoPath : (file_exists(public_path('images/ironaxle-logo.png')) ? 'images/ironaxle-logo.png' : (file_exists(public_path('images/ironaxle-logo.svg')) ? 'images/ironaxle-logo.svg' : null));
 @endphp

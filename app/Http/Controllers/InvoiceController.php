@@ -268,11 +268,11 @@ class InvoiceController extends Controller
             'items'
         ]);
 
-        $companyName = \App\Models\Setting::get('company_name', 'IronAxel Rentals');
+        $companyName = \App\Models\Setting::get('company_name', 'IronAxle Trailers');
         $companyAddress = \App\Models\Setting::get('company_address', 'Kransneus, Namibia');
         $companyPhone = \App\Models\Setting::get('company_phone', '');
         $companyEmail = \App\Models\Setting::get('company_email', 'bookings@ironaxelrentals.com');
-        $bankAccountName = \App\Models\Setting::get('bank_account_name', 'IronAxel Rentals');
+        $bankAccountName = \App\Models\Setting::get('bank_account_name', 'IronAxle Trailers');
         $bankName = \App\Models\Setting::get('bank_name', 'First National Bank Namibia');
         $bankAccountNumber = \App\Models\Setting::get('bank_account_number', '62114687059');
         $bankBranchName = \App\Models\Setting::get('bank_branch_name', 'Private Clients');

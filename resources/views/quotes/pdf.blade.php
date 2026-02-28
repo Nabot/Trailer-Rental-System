@@ -205,7 +205,7 @@
         @if($quote->expires_at)
         <p>This quote is valid until {{ $quote->expires_at->format('F d, Y') }}.</p>
         @endif
-        <p>Thank you for considering IronAxle Rentals!</p>
+        <p>Thank you for considering {{ $companyName }}!</p>
         <p>Generated on {{ now()->format('F d, Y \a\t h:i A') }}</p>
     </div>
 </body>
