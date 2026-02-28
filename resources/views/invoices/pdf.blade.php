@@ -125,6 +125,12 @@
                 <td colspan="3" class="text-right"><strong>Balance:</strong></td>
                 <td class="text-right"><strong>N${{ number_format($invoice->balance, 2) }}</strong></td>
             </tr>
+            @if($invoice->booking && ($depositAmount = $invoice->booking->required_deposit) && (float) $depositAmount > 0)
+            <tr style="border-top: 1px solid #ddd;">
+                <td colspan="3" class="text-right">Deposit (refundable):</td>
+                <td class="text-right">N${{ number_format((float) $depositAmount, 2) }}</td>
+            </tr>
+            @endif
         </tfoot>
     </table>
 
