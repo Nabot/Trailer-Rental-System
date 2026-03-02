@@ -14,10 +14,16 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublicBookingController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('dashboard');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::prefix('book')->name('book.')->group(function () {
+    Route::get('/', [PublicBookingController::class, 'form'])->name('form');
+    Route::post('/', [PublicBookingController::class, 'store'])->name('store');
+    Route::get('/confirmation/{booking}', [PublicBookingController::class, 'confirmation'])->name('confirmation');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -26,6 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Trailers
     Route::resource('trailers', TrailerController::class);
+    Route::post('/trailers/{trailer}/photos', [TrailerController::class, 'uploadPhoto'])->name('trailers.upload-photo');
+    Route::post('/trailers/{trailer}/photos/{photo}/primary', [TrailerController::class, 'setPrimaryPhoto'])->name('trailers.set-primary-photo');
+    Route::delete('/trailers/{trailer}/photos/{photo}', [TrailerController::class, 'destroyPhoto'])->name('trailers.destroy-photo');
 
     // Customers
     Route::resource('customers', CustomerController::class);

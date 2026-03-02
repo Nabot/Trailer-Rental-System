@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trailer;
+use App\Models\TrailerPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -160,5 +161,71 @@ class TrailerController extends Controller
 
         return redirect()->route('trailers.index')
             ->with('success', 'Trailer deleted successfully.');
+    }
+
+    /**
+     * Upload a photo for the trailer (used on public view).
+     */
+    public function uploadPhoto(Request $request, Trailer $trailer)
+    {
+        $this->authorize('update', $trailer);
+
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+        ]);
+
+        $path = $request->file('photo')->store('trailer-photos/' . $trailer->id, 'public');
+
+        $isFirst = $trailer->photos()->count() === 0;
+        $trailer->photos()->create([
+            'path' => $path,
+            'disk' => 'public',
+            'order' => $trailer->photos()->max('order') + 1,
+            'is_primary' => $isFirst,
+        ]);
+
+        return redirect()->route('trailers.show', $trailer)
+            ->with('success', 'Photo added. It will appear on the public trailer listing.');
+    }
+
+    /**
+     * Set a trailer photo as the primary (displayed on public view).
+     */
+    public function setPrimaryPhoto(Trailer $trailer, TrailerPhoto $photo)
+    {
+        $this->authorize('update', $trailer);
+
+        if ($photo->trailer_id !== $trailer->id) {
+            abort(404);
+        }
+
+        $trailer->photos()->update(['is_primary' => false]);
+        $photo->update(['is_primary' => true]);
+
+        return redirect()->route('trailers.show', $trailer)
+            ->with('success', 'Primary photo updated. This image will be shown on the public page.');
+    }
+
+    /**
+     * Delete a trailer photo.
+     */
+    public function destroyPhoto(Trailer $trailer, TrailerPhoto $photo)
+    {
+        $this->authorize('update', $trailer);
+
+        if ($photo->trailer_id !== $trailer->id) {
+            abort(404);
+        }
+
+        Storage::disk($photo->disk ?? 'public')->delete($photo->path);
+        $photo->delete();
+
+        $wasPrimary = $photo->is_primary;
+        if ($wasPrimary && $trailer->photos()->count() > 0) {
+            $trailer->photos()->first()->update(['is_primary' => true]);
+        }
+
+        return redirect()->route('trailers.show', $trailer)
+            ->with('success', 'Photo removed.');
     }
 }

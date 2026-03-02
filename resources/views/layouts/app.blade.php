@@ -8,7 +8,14 @@
         @php
             $appName = \App\Models\Setting::get('company_name', config('app.name', 'IronAxle Trailers'));
             $logoPath = \App\Models\Setting::get('company_logo', '');
-            $faviconPath = $logoPath && file_exists(public_path($logoPath)) ? $logoPath : (file_exists(public_path('images/ironaxle-logo.png')) ? 'images/ironaxle-logo.png' : (file_exists(public_path('images/ironaxle-logo.svg')) ? 'images/ironaxle-logo.svg' : null));
+            $faviconPath = null;
+            if ($logoPath && file_exists(public_path($logoPath))) {
+                $faviconPath = $logoPath;
+            } elseif (file_exists(public_path('images/ironaxle-logo.png'))) {
+                $faviconPath = 'images/ironaxle-logo.png';
+            } elseif (file_exists(public_path('images/ironaxle-logo.svg'))) {
+                $faviconPath = 'images/ironaxle-logo.svg';
+            }
         @endphp
         <title>{{ $appName }}</title>
         

@@ -86,6 +86,53 @@
                         @endif
                     </div>
 
+                    <!-- Photos (for public view) -->
+                    <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">Photos (shown on public trailer listing)</h3>
+                        @can('update', $trailer)
+                        <form action="{{ route('trailers.upload-photo', $trailer) }}" method="POST" enctype="multipart/form-data" class="mb-6">
+                            @csrf
+                            <div class="flex flex-wrap items-end gap-4">
+                                <div class="min-w-0">
+                                    <label for="photo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Add photo</label>
+                                    <input type="file" name="photo" id="photo" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" required class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-700 dark:file:bg-orange-900/30 dark:file:text-orange-400 hover:file:bg-orange-100 dark:hover:file:bg-orange-900/50">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">JPEG, PNG, GIF or WebP. Max 5 MB.</p>
+                                </div>
+                                <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium">Upload</button>
+                            </div>
+                        </form>
+                        @endcan
+                        @if($trailer->photos->count() > 0)
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            @foreach($trailer->photos as $p)
+                            <div class="relative group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
+                                <img src="{{ Storage::disk($p->disk ?? 'public')->url($p->path) }}" alt="Trailer photo" class="w-full aspect-square object-cover">
+                                @if($p->is_primary)
+                                    <span class="absolute top-2 left-2 px-2 py-0.5 bg-green-600 text-white text-xs font-medium rounded">Primary</span>
+                                @endif
+                                @can('update', $trailer)
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                                    @if(!$p->is_primary)
+                                    <form action="{{ route('trailers.set-primary-photo', [$trailer, $p]) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="bg-white text-gray-800 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-100">Set primary</button>
+                                    </form>
+                                    @endif
+                                    <form action="{{ route('trailers.destroy-photo', [$trailer, $p]) }}" method="POST" class="inline" onsubmit="return confirm('Remove this photo?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-red-700">Remove</button>
+                                    </form>
+                                </div>
+                                @endcan
+                            </div>
+                            @endforeach
+                        </div>
+                        @else
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">No photos yet. Add a photo to display it on the public trailer listing.</p>
+                        @endif
+                    </div>
+
                     <!-- Recent Bookings -->
                     @if($trailer->bookings->count() > 0)
                     <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
