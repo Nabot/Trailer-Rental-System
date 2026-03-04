@@ -24,14 +24,20 @@ class ActivityLog extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function log(string $action, ?string $subjectType = null, ?int $subjectId = null, array $properties = []): self
+    public static function log(string $action, ?string $subjectType = null, ?int $subjectId = null, array $properties = []): ?self
     {
-        return static::create([
-            'user_id' => auth()->id(),
-            'action' => $action,
-            'subject_type' => $subjectType,
-            'subject_id' => $subjectId,
-            'properties' => $properties,
-        ]);
+        try {
+            return static::create([
+                'user_id' => auth()->id(),
+                'action' => $action,
+                'subject_type' => $subjectType,
+                'subject_id' => $subjectId,
+                'properties' => $properties,
+            ]);
+        } catch (\Throwable $e) {
+            // Table may not exist yet if migrations not run on this environment
+            report($e);
+            return null;
+        }
     }
 }

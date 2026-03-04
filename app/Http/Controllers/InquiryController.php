@@ -270,24 +270,18 @@ class InquiryController extends Controller
     }
 
     /**
-     * Convert inquiry to customer
+     * Convert inquiry to customer (always create new customer from lead's name and details).
      */
     public function convertToCustomer(Inquiry $inquiry)
     {
         $this->authorize('inquiries.edit');
-        // Check if customer already exists
-        $customer = Customer::where('email', $inquiry->email)
-            ->orWhere('phone', $inquiry->phone)
-            ->first();
 
-        if (!$customer) {
-            $customer = Customer::create([
-                'name' => $inquiry->name,
-                'email' => $inquiry->email,
-                'phone' => $inquiry->phone,
-                'notes' => "Converted from inquiry {$inquiry->inquiry_number}",
-            ]);
-        }
+        $customer = Customer::create([
+            'name' => $inquiry->name,
+            'email' => $inquiry->email,
+            'phone' => $inquiry->phone,
+            'notes' => "Converted from inquiry {$inquiry->inquiry_number}",
+        ]);
 
         $inquiry->update(['customer_id' => $customer->id]);
 
