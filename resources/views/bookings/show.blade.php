@@ -179,9 +179,17 @@
                                             View Details
                                         </a>
                                         @else
-                                        <span class="px-3 py-1 rounded-md text-sm bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
-                                            Not Started
-                                        </span>
+                                        @can('inspections.create')
+                                        @if(in_array($booking->status, ['confirmed', 'active']))
+                                        <a href="{{ route('inspections.create', ['booking_id' => $booking->id, 'type' => 'pickup']) }}" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-md text-sm">
+                                            Complete Pickup Inspection
+                                        </a>
+                                        @else
+                                        <span class="px-3 py-1 rounded-md text-sm bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">Not Started</span>
+                                        @endif
+                                        @else
+                                        <span class="px-3 py-1 rounded-md text-sm bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">Not Started</span>
+                                        @endcan
                                         @endif
                                     </div>
                                 </div>
@@ -241,9 +249,17 @@
                                             View Details
                                         </a>
                                         @else
-                                        <span class="px-3 py-1 rounded-md text-sm bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
-                                            Not Started
-                                        </span>
+                                        @can('inspections.create')
+                                        @if(in_array($booking->status, ['active', 'returned']))
+                                        <a href="{{ route('inspections.create', ['booking_id' => $booking->id, 'type' => 'return']) }}" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 rounded-md text-sm">
+                                            Complete Return Inspection
+                                        </a>
+                                        @else
+                                        <span class="px-3 py-1 rounded-md text-sm bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">Not Started</span>
+                                        @endif
+                                        @else
+                                        <span class="px-3 py-1 rounded-md text-sm bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">Not Started</span>
+                                        @endcan
                                         @endif
                                     </div>
                                 </div>

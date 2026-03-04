@@ -90,7 +90,7 @@
                     <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <h3 class="text-lg font-semibold mb-4">Photos (shown on public trailer listing)</h3>
                         @can('update', $trailer)
-                        <form action="{{ route('trailers.upload-photo', $trailer) }}" method="POST" enctype="multipart/form-data" class="mb-6">
+                        <form action="{{ url("/trailers/{$trailer->id}/photos") }}" method="POST" enctype="multipart/form-data" class="mb-6">
                             @csrf
                             <div class="flex flex-wrap items-end gap-4">
                                 <div class="min-w-0">
@@ -113,12 +113,12 @@
                                 @can('update', $trailer)
                                 <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
                                     @if(!$p->is_primary)
-                                    <form action="{{ route('trailers.set-primary-photo', [$trailer, $p]) }}" method="POST" class="inline">
+                                    <form action="{{ url("/trailers/{$trailer->id}/photos/{$p->id}/primary") }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit" class="bg-white text-gray-800 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-100">Set primary</button>
                                     </form>
                                     @endif
-                                    <form action="{{ route('trailers.destroy-photo', [$trailer, $p]) }}" method="POST" class="inline" onsubmit="return confirm('Remove this photo?');">
+                                    <form action="{{ url("/trailers/{$trailer->id}/photos/{$p->id}") }}" method="POST" class="inline" onsubmit="return confirm('Remove this photo?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="bg-red-600 text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-red-700">Remove</button>
