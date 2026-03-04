@@ -72,6 +72,23 @@
                             </div>
                         </div>
 
+                        @if($invoice->booking)
+                        <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <h4 class="font-semibold mb-2">Rental Details</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700 dark:text-gray-300">
+                                <p><strong>Booking #:</strong> <a href="{{ route('bookings.show', $invoice->booking) }}" class="text-orange-600 dark:text-orange-400 hover:underline">{{ $invoice->booking->booking_number }}</a></p>
+                                <p><strong>Trailer:</strong> {{ $invoice->booking->trailer->name ?? '—' }}</p>
+                                @if($invoice->booking->trailer->registration_number ?? null)
+                                <p><strong>Registration:</strong> {{ $invoice->booking->trailer->registration_number }}</p>
+                                @endif
+                                <p><strong>Rental period:</strong> {{ $invoice->booking->start_date->format('M d, Y') }} – {{ $invoice->booking->end_date->format('M d, Y') }} ({{ $invoice->booking->total_days }} {{ $invoice->booking->total_days == 1 ? 'day' : 'days' }})</p>
+                                @if($invoice->booking->rate_per_day)
+                                <p><strong>Rate:</strong> N${{ number_format((float) $invoice->booking->rate_per_day, 2) }}/day</p>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
+
                         <!-- Invoice Items -->
                         <table class="w-full mb-6">
                             <thead>

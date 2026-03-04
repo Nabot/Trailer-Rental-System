@@ -83,6 +83,21 @@
         @endif
     </div>
 
+    @if($invoice->booking)
+    <div style="margin-bottom: 20px; padding: 12px; background-color: #f9f9f9; border: 1px solid #ddd;">
+        <h3 style="margin: 0 0 8px 0; font-size: 14px;">Rental Details</h3>
+        <p style="margin: 4px 0;"><strong>Booking #:</strong> {{ $invoice->booking->booking_number }}</p>
+        <p style="margin: 4px 0;"><strong>Trailer:</strong> {{ $invoice->booking->trailer->name ?? '—' }}</p>
+        @if($invoice->booking->trailer->registration_number ?? null)
+        <p style="margin: 4px 0;"><strong>Registration:</strong> {{ $invoice->booking->trailer->registration_number }}</p>
+        @endif
+        <p style="margin: 4px 0;"><strong>Rental period:</strong> {{ $invoice->booking->start_date->format('M d, Y') }} – {{ $invoice->booking->end_date->format('M d, Y') }} ({{ $invoice->booking->total_days }} {{ $invoice->booking->total_days == 1 ? 'day' : 'days' }})</p>
+        @if($invoice->booking->rate_per_day)
+        <p style="margin: 4px 0;"><strong>Rate:</strong> N${{ number_format((float) $invoice->booking->rate_per_day, 2) }}/day</p>
+        @endif
+    </div>
+    @endif
+
     <table>
         <thead>
             <tr>
@@ -168,7 +183,7 @@
 
     <div class="footer">
         <p>Thank you for your business!</p>
-        <p>Please make payment by the due date to avoid late fees.</p>
+        <p>Payments are done 48 hours before collection or delivery of the trailer.</p>
     </div>
 </body>
 </html>
