@@ -83,8 +83,10 @@ class Quote extends Model
     public static function generateQuoteNumber(): string
     {
         $year = now()->year;
-        $lastQuote = static::whereYear('created_at', $year)
+        $lastQuote = static::withTrashed()
+            ->whereYear('created_at', $year)
             ->orderBy('id', 'desc')
+            ->lockForUpdate()
             ->first();
 
         $number = $lastQuote ? (int) Str::afterLast($lastQuote->quote_number, '-') + 1 : 1;
