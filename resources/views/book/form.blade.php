@@ -3,10 +3,17 @@
 @section('title', 'Book ' . $trailer->name . ' – ' . $companyName)
 
 @section('content')
+    <nav class="mb-6 text-sm" aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-1 text-gray-500 dark:text-gray-400">
+            <li><a href="{{ route('home') }}" class="hover:text-orange-600 dark:hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded">Home</a></li>
+            <li aria-hidden="true">/</li>
+            <li class="text-gray-900 dark:text-gray-100 font-medium">Book {{ $trailer->name }}</li>
+        </ol>
+    </nav>
     <div class="mb-8">
-        <a href="{{ route('home') }}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">&larr; Back to trailers</a>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">Book online</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Book online</h1>
         <p class="mt-2 text-gray-600 dark:text-gray-400">Complete your details to request this trailer for the selected dates.</p>
+        <p class="mt-3 py-3 px-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-sm font-medium text-gray-800 dark:text-gray-200">You're booking <strong>{{ $trailer->name }}</strong> for {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} – {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -28,32 +35,32 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                         <div class="sm:col-span-2">
                             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full name <span class="text-red-500">*</span></label>
-                            <input type="text" id="name" name="name" value="{{ old('name') }}" required class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <input type="text" id="name" name="name" value="{{ old('name') }}" required class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" autocomplete="name">
                             @error('name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email <span class="text-red-500">*</span></label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}" required class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" required class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" autocomplete="email">
                             @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone <span class="text-red-500">*</span></label>
-                            <input type="text" id="phone" name="phone" value="{{ old('phone') }}" required class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" placeholder="e.g. +264 81 234 5678" autocomplete="tel">
                             @error('phone')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div class="sm:col-span-2">
-                            <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
-                            <input type="text" id="address" name="address" value="{{ old('address') }}" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <input type="text" id="address" name="address" value="{{ old('address') }}" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" placeholder="e.g. Windhoek, Namibia">
                             @error('address')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="id_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ID / Passport number</label>
-                            <input type="text" id="id_number" name="id_number" value="{{ old('id_number') }}" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <label for="id_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ID / Passport number <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <input type="text" id="id_number" name="id_number" value="{{ old('id_number') }}" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0">
                             @error('id_number')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="driver_licence" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Driver licence number</label>
-                            <input type="text" id="driver_licence" name="driver_licence" value="{{ old('driver_licence') }}" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <label for="driver_licence" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Driver licence number <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <input type="text" id="driver_licence" name="driver_licence" value="{{ old('driver_licence') }}" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0">
                             @error('driver_licence')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                     </div>
@@ -61,23 +68,23 @@
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Rental details</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                         <div>
-                            <label for="pickup_time" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Preferred pickup time</label>
-                            <input type="time" id="pickup_time" name="pickup_time" value="{{ old('pickup_time') }}" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <label for="pickup_time" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Preferred pickup time <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <input type="time" id="pickup_time" name="pickup_time" value="{{ old('pickup_time') }}" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0">
                             @error('pickup_time')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="whatsapp_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">WhatsApp number</label>
-                            <input type="text" id="whatsapp_number" name="whatsapp_number" value="{{ old('whatsapp_number', old('phone')) }}" placeholder="e.g. +264811234567" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <label for="whatsapp_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">WhatsApp number <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <input type="text" id="whatsapp_number" name="whatsapp_number" value="{{ old('whatsapp_number', old('phone')) }}" placeholder="e.g. +264 81 123 4567" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0">
                             @error('whatsapp_number')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div class="sm:col-span-2">
-                            <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
-                            <textarea id="notes" name="notes" rows="2" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">{{ old('notes') }}</textarea>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <textarea id="notes" name="notes" rows="2" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" placeholder="Special requests, delivery address, etc.">{{ old('notes') }}</textarea>
                             @error('notes')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-8 rounded-lg">
+                    <button type="submit" class="w-full sm:w-auto min-h-[44px] bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
                         Submit booking request
                     </button>
                 </form>

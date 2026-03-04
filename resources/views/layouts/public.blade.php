@@ -16,6 +16,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="@yield('meta_description', 'Rent trailers in Namibia. Check availability and book online. Reliable trailer hire with clear pricing.')">
     <title>@yield('title', $appName)</title>
     @if($faviconPath)
     <link rel="icon" type="{{ str_ends_with($faviconPath, '.svg') ? 'image/svg+xml' : 'image/png' }}" href="{{ asset($faviconPath) }}">
@@ -29,7 +30,7 @@
     <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <a href="{{ route('home') }}" class="flex items-center gap-3">
+                <a href="{{ route('home') }}" class="flex items-center gap-3 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
                     @if($logoPath && file_exists(public_path($logoPath)))
                         <img src="{{ asset($logoPath) }}" alt="{{ $appName }}" class="h-10 w-auto" />
                     @else
@@ -38,7 +39,7 @@
                 </a>
                 @auth
                 <nav class="flex items-center gap-4">
-                    <a href="{{ route('dashboard') }}" class="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Dashboard</a>
                 </nav>
                 @endauth
             </div>
@@ -49,11 +50,6 @@
         @yield('content')
     </main>
 
-    <footer class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            &copy; {{ date('Y') }} {{ $appName }}. All rights reserved.
-        </div>
-    </footer>
     @stack('scripts')
 </body>
 </html>

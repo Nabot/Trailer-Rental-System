@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Consistent focus for keyboard users (public & app) */
+a:focus-visible,
+button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px theme('colors.orange.500');
+}
+.dark a:focus-visible,
+.dark button:focus-visible {
+    box-shadow: 0 0 0 2px theme('colors.gray.800'), 0 0 0 4px theme('colors.orange.500');
+}
+
 [x-cloak] {
     display: none !important;
 }

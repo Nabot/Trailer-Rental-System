@@ -56,7 +56,8 @@ class Inquiry extends Model
     public static function generateInquiryNumber(): string
     {
         $year = now()->year;
-        $lastInquiry = static::whereYear('created_at', $year)
+        $lastInquiry = static::withTrashed()
+            ->whereYear('created_at', $year)
             ->orderBy('id', 'desc')
             ->first();
 

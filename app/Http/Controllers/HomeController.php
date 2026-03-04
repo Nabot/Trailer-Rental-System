@@ -35,7 +35,9 @@ class HomeController extends Controller
         }
 
         $companyName = \App\Models\Setting::get('company_name', config('app.name', 'IronAxle Trailers'));
+        $companyPhone = \App\Models\Setting::get('company_phone', '');
+        $companyEmail = \App\Models\Setting::get('company_email', '');
 
-        return view('home', compact('trailers', 'startDate', 'endDate', 'companyName'));
+        return view('home', compact('trailers', 'startDate', 'endDate', 'companyName', 'companyPhone', 'companyEmail'));
     }
 }

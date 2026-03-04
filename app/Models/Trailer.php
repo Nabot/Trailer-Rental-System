@@ -53,10 +53,14 @@ class Trailer extends Model
         return $this->hasOne(TrailerPhoto::class)->where('is_primary', true);
     }
 
+    /**
+     * Check if the trailer is available for the given date range.
+     * Only confirmed and active bookings block availability; pending/draft do not.
+     */
     public function isAvailableForDates($startDate, $endDate, $excludeBookingId = null): bool
     {
         $query = $this->bookings()
-            ->where('status', '!=', 'cancelled')
+            ->whereIn('status', ['confirmed', 'active'])
             ->where(function ($q) use ($startDate, $endDate) {
                 $q->whereBetween('start_date', [$startDate, $endDate])
                     ->orWhereBetween('end_date', [$startDate, $endDate])

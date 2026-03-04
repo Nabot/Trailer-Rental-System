@@ -2,16 +2,46 @@
 
 @section('title', $companyName . ' – Trailer Rentals')
 
+@section('meta_description', 'Rent trailers in Namibia. Check availability and book online. Reliable trailer hire with clear pricing.')
+
 @section('content')
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Trailer Rentals</h1>
-        <p class="mt-2 text-gray-600 dark:text-gray-400">View our trailers and check availability for your dates.</p>
+    <!-- Hero -->
+    <div class="mb-10 text-center">
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100">Trailer Rentals</h1>
+        <p class="mt-3 text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Trailer hire in Namibia – check availability and book online in a few clicks.</p>
+    </div>
+
+    <!-- How it works -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+        <div class="text-center p-4">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold text-lg">1</div>
+            <h3 class="mt-3 font-semibold text-gray-900 dark:text-gray-100">Pick your dates</h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Choose start and end date for your rental.</p>
+        </div>
+        <div class="text-center p-4">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold text-lg">2</div>
+            <h3 class="mt-3 font-semibold text-gray-900 dark:text-gray-100">Choose a trailer</h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">See which trailers are available and compare rates.</p>
+        </div>
+        <div class="text-center p-4">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold text-lg">3</div>
+            <h3 class="mt-3 font-semibold text-gray-900 dark:text-gray-100">Book online</h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Submit your details and we’ll confirm your booking.</p>
+        </div>
+    </div>
+
+    <!-- Why us -->
+    <div class="flex flex-wrap justify-center gap-6 mb-10 text-sm text-gray-600 dark:text-gray-400">
+        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Easy online booking</span>
+        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Clear pricing</span>
+        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Well-maintained trailers</span>
     </div>
 
     <!-- Check availability -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Check availability</h2>
-        <form method="GET" action="{{ route('home') }}" class="flex flex-wrap gap-4 items-end">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">Check availability</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Select your rental period to see which trailers are available and book.</p>
+        <form method="GET" action="{{ route('home') }}" id="availability-form" class="flex flex-wrap gap-4 items-end" aria-label="Check trailer availability by date">
             <div>
                 <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start date</label>
                 <input type="date" name="start_date" id="start_date" value="{{ old('start_date', $startDate) }}"
@@ -24,15 +54,35 @@
                     min="{{ date('Y-m-d') }}"
                     class="rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500">
             </div>
-            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm">Check availability</button>
+            <button type="submit" id="check-availability-btn" class="min-h-[44px] bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 rounded-lg font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">Check availability</button>
             @if($startDate || $endDate)
-                <a href="{{ route('home') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium">Clear</a>
+                <a href="{{ route('home') }}" class="min-h-[44px] inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded px-3">Clear dates</a>
             @endif
         </form>
     </div>
 
+    @if($startDate && $endDate)
+    <!-- Sticky date summary -->
+    @php
+        $availableCount = $trailers->filter(fn($t) => isset($t->available_for_dates) && $t->available_for_dates)->count();
+    @endphp
+    <div class="mb-6 py-3 px-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg flex flex-wrap items-center justify-between gap-2" role="status" aria-live="polite" id="date-summary">
+        <span class="font-medium text-gray-900 dark:text-gray-100">Rental: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} – {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</span>
+        @if($trailers->isNotEmpty())
+            <span class="text-sm text-gray-600 dark:text-gray-400">{{ $availableCount }} {{ $availableCount === 1 ? 'trailer' : 'trailers' }} available</span>
+        @endif
+    </div>
+    @endif
+
     <!-- Trailers grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+        @if($startDate && $endDate)
+            Available trailers
+        @else
+            Our trailers
+        @endif
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="trailers-grid">
         @forelse($trailers as $trailer)
             <article class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
                 @php
@@ -40,7 +90,7 @@
                 @endphp
                 @if($primaryPhoto && $primaryPhoto->path)
                     <div class="aspect-video bg-gray-200 dark:bg-gray-700">
-                        <img src="{{ asset('storage/' . $primaryPhoto->path) }}" alt="{{ $trailer->name }}" class="w-full h-full object-cover">
+                        <img src="{{ asset('storage/' . $primaryPhoto->path) }}" alt="{{ $trailer->name }}" class="w-full h-full object-cover" loading="lazy">
                     </div>
                 @else
                     <div class="aspect-video bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
@@ -75,7 +125,7 @@
                             @endif
                         </div>
                         @if(isset($trailer->available_for_dates) && $trailer->available_for_dates && $startDate && $endDate)
-                            <a href="{{ route('book.form', ['trailer_id' => $trailer->id, 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block w-full text-center bg-orange-600 hover:bg-orange-700 text-white font-medium py-2.5 px-4 rounded-lg">
+                            <a href="{{ route('book.form', ['trailer_id' => $trailer->id, 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="min-h-[44px] flex items-center justify-center bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
                                 Book now
                             </a>
                         @endif
@@ -83,8 +133,18 @@
                 </div>
             </article>
         @empty
-            <div class="col-span-full text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-                <p class="text-gray-600 dark:text-gray-400">No trailers available at the moment. Check back later.</p>
+            <div class="col-span-full text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-6">
+                <p class="text-gray-600 dark:text-gray-400">No trailers available at the moment. Check back later or get in touch to arrange a rental.</p>
+                @if($companyPhone || $companyEmail)
+                    <div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
+                        @if($companyPhone)
+                            <a href="tel:{{ preg_replace('/\s+/', '', $companyPhone) }}" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 font-medium hover:underline">{{ $companyPhone }}</a>
+                        @endif
+                        @if($companyEmail)
+                            <a href="mailto:{{ $companyEmail }}" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 font-medium hover:underline">{{ $companyEmail }}</a>
+                        @endif
+                    </div>
+                @endif
             </div>
         @endforelse
     </div>
@@ -96,6 +156,13 @@
     document.getElementById('start_date')?.addEventListener('change', function() {
         var end = document.getElementById('end_date');
         if (end && this.value) end.min = this.value;
+    });
+    document.getElementById('availability-form')?.addEventListener('submit', function() {
+        var btn = document.getElementById('check-availability-btn');
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = 'Checking availability…';
+        }
     });
 </script>
 @endpush
