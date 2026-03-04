@@ -39,8 +39,8 @@
                             @error('name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email <span class="text-red-500">*</span></label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}" required class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" autocomplete="email">
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" autocomplete="email">
                             @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>

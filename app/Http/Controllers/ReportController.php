@@ -255,6 +255,49 @@ class ReportController extends Controller
     }
 
     /**
+     * Commission report: leads assigned to you and 10% of booking value when lead converts.
+     * Available to sales reps and anyone with reports access (e.g. admin).
+     */
+    public function commission(Request $request)
+    {
+        $user = $request->user();
+        if (!$user->hasRole('sales_rep') && !$user->can('reports.view')) {
+            abort(403, 'You do not have access to this report.');
+        }
+
+        $commissionRate = 0.10; // 10%
+        $startDate = $request->get('start_date', now()->startOfYear()->format('Y-m-d'));
+        $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
+
+        $myLeads = Inquiry::where('assigned_to', $user->id)
+            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->with(['convertedToBooking.trailer', 'customer'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        $convertedLeads = $myLeads->filter(function ($inquiry) {
+            return $inquiry->converted_to_booking_id !== null
+                && $inquiry->convertedToBooking
+                && $inquiry->convertedToBooking->status !== 'cancelled';
+        });
+        $totalBookingValue = $convertedLeads->sum(fn ($inquiry) => (float) $inquiry->convertedToBooking->total_amount);
+        $totalCommission = round($totalBookingValue * $commissionRate, 2);
+
+        return view('reports.commission', [
+            'user' => $user,
+            'leads' => $myLeads,
+            'convertedLeads' => $convertedLeads,
+            'totalLeads' => $myLeads->count(),
+            'convertedCount' => $convertedLeads->count(),
+            'totalBookingValue' => $totalBookingValue,
+            'commissionRate' => $commissionRate,
+            'totalCommission' => $totalCommission,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
+    }
+
+    /**
      * Export revenue report as PDF.
      */
     public function exportRevenue(Request $request)

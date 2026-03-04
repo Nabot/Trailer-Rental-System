@@ -84,6 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Reports
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/commission', [ReportController::class, 'commission'])->name('commission');
         Route::get('/revenue', [ReportController::class, 'revenue'])->name('revenue');
         Route::get('/utilization', [ReportController::class, 'utilization'])->name('utilization');
         Route::get('/customers', [ReportController::class, 'customers'])->name('customers');

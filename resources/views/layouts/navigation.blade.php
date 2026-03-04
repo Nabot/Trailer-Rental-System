@@ -72,7 +72,7 @@
                     @endif
 
                     <!-- Sales dropdown -->
-                    @php $salesActive = request()->routeIs('inquiries.*', 'quotes.*', 'customers.*'); @endphp
+                    @php $salesActive = request()->routeIs('inquiries.*', 'quotes.*', 'customers.*', 'reports.commission'); @endphp
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                         <button type="button" @click="open = ! open"
                             class="inline-flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors border-b-2 {{ $salesActive ? 'border-orange-400 dark:border-orange-600 text-gray-900 dark:text-gray-100' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50' }}">
@@ -111,6 +111,12 @@
                                 {{ __('Customers') }}
                             </a>
                             @endcan
+                            @if(Auth::user()->hasRole('sales_rep'))
+                            <a href="{{ route('reports.commission') }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                {{ __('My commission') }}
+                            </a>
+                            @endif
                         </div>
                     </div>
 
@@ -386,6 +392,14 @@
                 <span>{{ __('Customers') }}</span>
             </x-responsive-nav-link>
             @endcan
+            @if(Auth::user()->hasRole('sales_rep'))
+            <x-responsive-nav-link :href="route('reports.commission')" :active="request()->routeIs('reports.commission')" class="flex items-center space-x-3 px-4 pl-6 py-2.5 mx-2 rounded-lg">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>{{ __('My commission') }}</span>
+            </x-responsive-nav-link>
+            @endif
                 </div>
             </div>
             

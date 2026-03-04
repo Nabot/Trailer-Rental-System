@@ -92,7 +92,7 @@
                         </div>
 
                         <div>
-                            <x-input-label for="email" :value="__('Email')" />
+                            <x-input-label for="email" :value="__('Email (Optional)')" />
                             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $inquiry->email)" />
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>

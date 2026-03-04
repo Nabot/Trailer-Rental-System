@@ -58,7 +58,7 @@ class PublicBookingController extends Controller
             'start_date' => ['required', 'date', 'after_or_equal:today'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email'],
+            'email' => ['nullable', 'email'],
             'phone' => ['required', 'string', 'max:50'],
             'address' => ['nullable', 'string', 'max:500'],
             'id_number' => ['nullable', 'string', 'max:50'],
@@ -85,12 +85,18 @@ class PublicBookingController extends Controller
             ])->withInput()->with('error', 'This trailer is no longer available for the selected dates.');
         }
 
-        $customer = Customer::where('email', $validated['email'])->first();
+        $customer = null;
+        if (!empty($validated['email'])) {
+            $customer = Customer::where('email', $validated['email'])->first();
+        }
+        if (!$customer && !empty($validated['phone'])) {
+            $customer = Customer::where('phone', $validated['phone'])->first();
+        }
 
         if (!$customer) {
             $customer = Customer::create([
                 'name' => $validated['name'],
-                'email' => $validated['email'],
+                'email' => $validated['email'] ?? null,
                 'phone' => $validated['phone'],
                 'address' => $validated['address'] ?? null,
                 'id_number' => $validated['id_number'] ?? null,
@@ -99,6 +105,7 @@ class PublicBookingController extends Controller
         } else {
             $customer->update([
                 'name' => $validated['name'],
+                'email' => $validated['email'] ?? $customer->email,
                 'phone' => $validated['phone'],
                 'address' => $validated['address'] ?? $customer->address,
                 'id_number' => $validated['id_number'] ?? $customer->id_number,
