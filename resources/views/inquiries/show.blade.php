@@ -300,9 +300,11 @@
                                 </button>
                             </form>
                             @endif
+                            @can('quotes.create')
                             <a href="{{ route('quotes.create', ['inquiry_id' => $inquiry->id]) }}" class="block w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-center text-sm">
                                 Create Quote
                             </a>
+                            @endcan
                             @if($inquiry->convertedToBooking)
                             <div class="p-3 bg-green-50 dark:bg-green-900 rounded">
                                 <div class="text-sm font-semibold text-green-800 dark:text-green-200">Converted</div>
