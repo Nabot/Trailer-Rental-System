@@ -498,7 +498,9 @@ class BookingController extends Controller
      */
     public function calendar(Request $request)
     {
-        $this->authorize('viewAny', Booking::class);
+        if (! $request->user()->can('viewAny', Booking::class) && ! $request->user()->hasRole('sales_rep')) {
+            abort(403);
+        }
 
         $trailerId = $request->get('trailer_id');
         
