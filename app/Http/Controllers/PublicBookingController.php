@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Trailer;
 use App\Models\Customer;
 use App\Services\BookingService;
+use App\Http\Requests\StorePublicBookingRequest;
 use Illuminate\Http\Request;
 
 class PublicBookingController extends Controller
@@ -51,25 +52,9 @@ class PublicBookingController extends Controller
     /**
      * Store a booking from the public form (find or create customer).
      */
-    public function store(Request $request)
+    public function store(StorePublicBookingRequest $request)
     {
-        $validated = $request->validate([
-            'trailer_id' => ['required', 'exists:trailers,id'],
-            'start_date' => ['required', 'date', 'after_or_equal:today'],
-            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email'],
-            'phone' => ['required', 'string', 'max:50'],
-            'address' => ['nullable', 'string', 'max:500'],
-            'id_number' => ['nullable', 'string', 'max:50'],
-            'driver_licence' => ['nullable', 'string', 'max:50'],
-            'pickup_time' => ['nullable', 'date_format:H:i'],
-            'whatsapp_number' => ['nullable', 'string', 'max:20'],
-            'delivery_fee' => ['nullable', 'numeric', 'min:0'],
-            'straps_fee' => ['nullable', 'numeric', 'min:0'],
-            'damage_waiver_fee' => ['nullable', 'numeric', 'min:0'],
-            'notes' => ['nullable', 'string', 'max:1000'],
-        ]);
+        $validated = $request->validated();
 
         $trailer = Trailer::findOrFail($validated['trailer_id']);
 

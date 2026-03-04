@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::prefix('book')->name('book.')->group(function () {
+Route::prefix('book')->name('book.')->middleware('throttle:30,1')->group(function () {
     Route::get('/', [PublicBookingController::class, 'form'])->name('form');
     Route::post('/', [PublicBookingController::class, 'store'])->name('store');
     Route::get('/confirmation/{booking}', [PublicBookingController::class, 'confirmation'])->name('confirmation');
@@ -85,6 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
         Route::get('/commission', [ReportController::class, 'commission'])->name('commission');
+        Route::post('/commission-payout', [ReportController::class, 'storeCommissionPayout'])->name('commission-payout.store');
         Route::get('/revenue', [ReportController::class, 'revenue'])->name('revenue');
         Route::get('/utilization', [ReportController::class, 'utilization'])->name('utilization');
         Route::get('/customers', [ReportController::class, 'customers'])->name('customers');

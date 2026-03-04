@@ -50,6 +50,7 @@
         @yield('content')
     </main>
 
+    <x-toast-container />
     @stack('scripts')
 </body>
 </html>

@@ -27,11 +27,11 @@
                     </div>
                     <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <h3 class="text-sm font-medium text-gray-600 mb-2">Outstanding Balance</h3>
-                        <p class="text-3xl font-bold text-red-600">N${{ number_format($customer->invoices->sum('balance'), 2) }}</p>
+                        <p class="text-3xl font-bold text-red-600">{{ format_money((float) $customer->invoices->sum('balance')) }}</p>
                     </div>
                     <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <h3 class="text-sm font-medium text-gray-600 mb-2">Total Spent</h3>
-                        <p class="text-3xl font-bold text-green-600">N${{ number_format($customer->totalSpent(), 2) }}</p>
+                        <p class="text-3xl font-bold text-green-600">{{ format_money((float) $customer->totalSpent()) }}</p>
                     </div>
                 </div>
 
@@ -84,7 +84,7 @@
                                             {{ ucfirst($booking->status) }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-2 text-right">N${{ number_format($booking->total_amount, 2) }}</td>
+                                    <td class="px-4 py-2 text-right">{{ format_money((float) $booking->total_amount) }}</td>
                                     <td class="px-4 py-2 text-right">
                                         <a href="{{ route('bookings.show', $booking) }}" class="text-blue-600 hover:underline">View</a>
                                     </td>
@@ -126,9 +126,9 @@
                                         </a>
                                     </td>
                                     <td class="px-4 py-2">{{ $invoice->invoice_date->format('M d, Y') }}</td>
-                                    <td class="px-4 py-2 text-right">N${{ number_format($invoice->total_amount, 2) }}</td>
+                                    <td class="px-4 py-2 text-right">{{ format_money((float) $invoice->total_amount) }}</td>
                                     <td class="px-4 py-2 text-right {{ $invoice->balance > 0 ? 'text-red-600 font-semibold' : 'text-green-600' }}">
-                                        N${{ number_format($invoice->balance, 2) }}
+                                        {{ format_money((float) $invoice->balance) }}
                                     </td>
                                     <td class="px-4 py-2">
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full

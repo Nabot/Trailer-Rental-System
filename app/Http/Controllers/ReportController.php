@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\CommissionPayout;
 use App\Models\Payment;
 use App\Models\Trailer;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Inquiry;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -255,21 +257,34 @@ class ReportController extends Controller
     }
 
     /**
-     * Commission report: leads assigned to you and 10% of booking value when lead converts.
-     * Available to sales reps and anyone with reports access (e.g. admin).
+     * Commission report: leads assigned to rep and % of booking value when lead converts.
+     * Sales reps see only their data; admin can select another rep and record payouts.
      */
     public function commission(Request $request)
     {
-        $user = $request->user();
-        if (!$user->hasRole('sales_rep') && !$user->can('reports.view')) {
+        $currentUser = $request->user();
+        if (!$currentUser->hasRole('sales_rep') && !$currentUser->can('reports.view')) {
             abort(403, 'You do not have access to this report.');
         }
 
-        $commissionRate = 0.10; // 10%
+        $commissionRate = config('app.commission_rate', 0.10);
         $startDate = $request->get('start_date', now()->startOfYear()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
 
-        $myLeads = Inquiry::where('assigned_to', $user->id)
+        $salesReps = User::role('sales_rep')->orderBy('name')->get();
+        $canViewOtherRep = $currentUser->can('reports.view') && $salesReps->isNotEmpty();
+        if ($currentUser->hasRole('sales_rep') && !$currentUser->can('reports.view')) {
+            $targetUser = $currentUser;
+        } elseif ($canViewOtherRep && $request->filled('user_id')) {
+            $targetUser = $salesReps->firstWhere('id', (int) $request->user_id) ?? $salesReps->first() ?? $currentUser;
+        } elseif ($canViewOtherRep && $salesReps->isNotEmpty()) {
+            $targetUser = $salesReps->first();
+        } else {
+            $targetUser = $currentUser;
+        }
+        $targetUserId = $targetUser->id;
+
+        $myLeads = Inquiry::where('assigned_to', $targetUserId)
             ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
             ->with(['convertedToBooking.trailer', 'customer'])
             ->orderByDesc('created_at')
@@ -283,8 +298,20 @@ class ReportController extends Controller
         $totalBookingValue = $convertedLeads->sum(fn ($inquiry) => (float) $inquiry->convertedToBooking->total_amount);
         $totalCommission = round($totalBookingValue * $commissionRate, 2);
 
+        $totalPaid = (float) CommissionPayout::where('user_id', $targetUserId)
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('period_start', [$startDate, $endDate])
+                    ->orWhereBetween('period_end', [$startDate, $endDate])
+                    ->orWhere(function ($q2) use ($startDate, $endDate) {
+                        $q2->where('period_start', '<=', $startDate)->where('period_end', '>=', $endDate);
+                    });
+            })
+            ->sum('amount');
+        $outstanding = round(max(0, $totalCommission - $totalPaid), 2);
+
         return view('reports.commission', [
-            'user' => $user,
+            'user' => $targetUser,
+            'currentUser' => $currentUser,
             'leads' => $myLeads,
             'convertedLeads' => $convertedLeads,
             'totalLeads' => $myLeads->count(),
@@ -292,9 +319,44 @@ class ReportController extends Controller
             'totalBookingValue' => $totalBookingValue,
             'commissionRate' => $commissionRate,
             'totalCommission' => $totalCommission,
+            'totalPaid' => $totalPaid,
+            'outstanding' => $outstanding,
             'startDate' => $startDate,
             'endDate' => $endDate,
+            'salesReps' => $salesReps,
+            'canViewOtherRep' => $canViewOtherRep,
+            'canRecordPayout' => $currentUser->can('reports.view') && $targetUserId !== null,
         ]);
+    }
+
+    /**
+     * Record a commission payout (admin only).
+     */
+    public function storeCommissionPayout(Request $request)
+    {
+        $this->authorize('reports.view');
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'amount' => 'required|numeric|min:0.01',
+            'paid_at' => 'required|date',
+            'period_start' => 'required|date',
+            'period_end' => 'required|date|after_or_equal:period_start',
+            'notes' => 'nullable|string|max:500',
+        ]);
+        CommissionPayout::create([
+            'user_id' => $validated['user_id'],
+            'amount' => $validated['amount'],
+            'paid_at' => $validated['paid_at'],
+            'period_start' => $validated['period_start'],
+            'period_end' => $validated['period_end'],
+            'notes' => $validated['notes'] ?? null,
+            'recorded_by' => $request->user()->id,
+        ]);
+        return redirect()->route('reports.commission', [
+            'user_id' => $validated['user_id'],
+            'start_date' => $validated['period_start'],
+            'end_date' => $validated['period_end'],
+        ])->with('success', 'Commission payout recorded.');
     }
 
     /**

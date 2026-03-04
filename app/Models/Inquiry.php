@@ -59,6 +59,7 @@ class Inquiry extends Model
         $lastInquiry = static::withTrashed()
             ->whereYear('created_at', $year)
             ->orderBy('id', 'desc')
+            ->lockForUpdate()
             ->first();
 
         $number = $lastInquiry ? (int) Str::afterLast($lastInquiry->inquiry_number, '-') + 1 : 1;

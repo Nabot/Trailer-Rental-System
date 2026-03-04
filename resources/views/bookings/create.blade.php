@@ -113,11 +113,6 @@
                         </div>
                     </div>
 
-                    @if(session('error'))
-                    <div class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                        {{ session('error') }}
-                    </div>
-                    @endif
 
                     <div class="flex items-center justify-end mt-6">
                         <x-primary-button>

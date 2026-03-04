@@ -73,19 +73,20 @@ function toastContainer() {
     return {
         toasts: [],
         init() {
-            // Listen for Laravel session flash messages
-            @if(session('success'))
-                this.show('{{ session('success') }}', 'success');
-            @endif
-            @if(session('error'))
-                this.show('{{ session('error') }}', 'error');
-            @endif
-            @if(session('warning'))
-                this.show('{{ session('warning') }}', 'warning');
-            @endif
-            @if(session('info'))
-                this.show('{{ session('info') }}', 'info');
-            @endif
+            // Laravel session flash messages (escaped via JSON to prevent XSS)
+            @php
+                $flashMessages = [
+                    'success' => session('success'),
+                    'error' => session('error'),
+                    'warning' => session('warning'),
+                    'info' => session('info'),
+                ];
+            @endphp
+            const flashes = @json($flashMessages);
+            if (flashes.success) this.show(flashes.success, 'success');
+            if (flashes.error) this.show(flashes.error, 'error');
+            if (flashes.warning) this.show(flashes.warning, 'warning');
+            if (flashes.info) this.show(flashes.info, 'info');
 
             // Make show method globally available
             window.showToast = (message, type = 'info', duration = 5000) => {

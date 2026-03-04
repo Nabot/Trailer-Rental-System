@@ -227,6 +227,13 @@ class BookingController extends Controller
 
         try {
             $this->bookingService->confirmBooking($booking);
+            activity_log('booking.confirmed', Booking::class, $booking->id, ['booking_number' => $booking->booking_number]);
+
+            $booking->load(['customer', 'trailer']);
+            if ($booking->customer && $booking->customer->email) {
+                \Illuminate\Support\Facades\Mail::to($booking->customer->email)
+                    ->send(new \App\Mail\BookingConfirmationMail($booking->fresh()));
+            }
 
             // If inspection data is provided, create pickup inspection
             if ($request->has('inspection_data') && !empty($request->input('inspection_data'))) {

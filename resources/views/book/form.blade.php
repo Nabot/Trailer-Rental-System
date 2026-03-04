@@ -19,11 +19,6 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                @if(session('error'))
-                    <div class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-400 text-red-700 dark:text-red-300 rounded-lg">
-                        {{ session('error') }}
-                    </div>
-                @endif
 
                 <form method="POST" action="{{ route('book.store') }}">
                     @csrf

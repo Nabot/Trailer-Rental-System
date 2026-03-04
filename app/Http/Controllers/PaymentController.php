@@ -88,6 +88,7 @@ class PaymentController extends Controller
                 ...$validated,
                 'recorded_by' => auth()->id(),
             ]);
+            activity_log('payment.recorded', Payment::class, $payment->id, ['amount' => $payment->amount, 'booking_id' => $payment->booking_id]);
 
             // Update booking paid amount
             if ($payment->booking_id) {
