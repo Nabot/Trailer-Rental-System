@@ -227,7 +227,7 @@ class BookingController extends Controller
 
         try {
             $this->bookingService->confirmBooking($booking);
-            activity_log('booking.confirmed', Booking::class, $booking->id, ['booking_number' => $booking->booking_number]);
+            \App\Models\ActivityLog::log('booking.confirmed', Booking::class, $booking->id, ['booking_number' => $booking->booking_number]);
 
             $booking->load(['customer', 'trailer']);
             if ($booking->customer && $booking->customer->email) {

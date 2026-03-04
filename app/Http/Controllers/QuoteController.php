@@ -340,7 +340,7 @@ class QuoteController extends Controller
                 ];
 
                 $booking = $this->bookingService->createBooking($bookingData, auth()->id());
-                activity_log('quote.converted_to_booking', Quote::class, $quote->id, ['booking_id' => $booking->id, 'booking_number' => $booking->booking_number]);
+                \App\Models\ActivityLog::log('quote.converted_to_booking', Quote::class, $quote->id, ['booking_id' => $booking->id, 'booking_number' => $booking->booking_number]);
 
                 // Update quote
                 $quote->status = 'converted';
@@ -352,7 +352,7 @@ class QuoteController extends Controller
                     $inquiry = Inquiry::find($quote->inquiry_id);
                     if ($inquiry) {
                         $inquiry->convertToBooking($booking);
-                        activity_log('inquiry.converted_to_booking', Inquiry::class, $inquiry->id, ['booking_id' => $booking->id, 'booking_number' => $booking->booking_number]);
+                        \App\Models\ActivityLog::log('inquiry.converted_to_booking', Inquiry::class, $inquiry->id, ['booking_id' => $booking->id, 'booking_number' => $booking->booking_number]);
                         InquiryActivity::create([
                             'inquiry_id' => $inquiry->id,
                             'type' => 'note',
