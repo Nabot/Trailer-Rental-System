@@ -380,11 +380,101 @@ class BookingController extends Controller
             }
         }
 
+        $returnedAt = $request->filled('returned_at')
+            ? \Carbon\Carbon::parse($request->returned_at)->endOfDay()
+            : now();
+
         $booking->transitionTo('returned');
-        $booking->update(['returned_at' => now()]);
+        $booking->update(['returned_at' => $returnedAt]);
+
+        $lateFeeAdded = false;
+        if ($returnedAt->gt($booking->end_date)) {
+            $lateDays = (int) $booking->end_date->diffInDays($returnedAt);
+            if ($lateDays > 0) {
+                $feePerDay = (float) \App\Models\Setting::get('late_return_fee_per_day', 0);
+                if ($feePerDay <= 0 && $booking->rate_per_day) {
+                    $feePerDay = (float) $booking->rate_per_day;
+                }
+                if ($feePerDay > 0) {
+                    $rentalInvoice = $booking->invoices()->where('type', 'rental')->first();
+                    if ($rentalInvoice) {
+                        $rentalInvoice->items()->create([
+                            'description' => "Late return ({$lateDays} day(s) after end date)",
+                            'quantity' => $lateDays,
+                            'unit_price' => $feePerDay,
+                            'total' => $lateDays * $feePerDay,
+                        ]);
+                        $rentalInvoice->recalculateFromItems();
+                        $lateFeeAdded = true;
+                    }
+                }
+            }
+        }
+
+        $message = 'Trailer returned successfully.';
+        if ($lateFeeAdded) {
+            $message .= ' Late return fee has been added to the rental invoice.';
+        }
 
         return redirect()->route('bookings.show', $booking)
-            ->with('success', 'Trailer returned successfully.');
+            ->with('success', $message);
+    }
+
+    /**
+     * Extend booking to a new end date.
+     */
+    public function extend(Request $request, Booking $booking)
+    {
+        $this->authorize('update', $booking);
+
+        if (!in_array($booking->status, ['confirmed', 'active'])) {
+            return redirect()->back()
+                ->with('error', 'Only confirmed or active bookings can be extended.');
+        }
+
+        $validated = $request->validate([
+            'new_end_date' => 'required|date|after:' . $booking->end_date->format('Y-m-d'),
+        ]);
+
+        $newEndDate = \Carbon\Carbon::parse($validated['new_end_date']);
+        $trailer = $booking->trailer;
+
+        if (!$trailer->isAvailableForDates($booking->end_date->copy()->addDay()->format('Y-m-d'), $newEndDate->format('Y-m-d'), $booking->id)) {
+            return redirect()->back()
+                ->with('error', 'Trailer is not available for the selected extension period.');
+        }
+
+        $oldEndDate = $booking->end_date->copy();
+        $extraDays = (int) $oldEndDate->diffInDays($newEndDate);
+        $newTotalDays = $booking->total_days + $extraDays;
+        $extensionCost = $extraDays * (float) $booking->rate_per_day;
+        $newRentalCost = (float) $booking->rental_cost + $extensionCost;
+        $newSubtotal = $booking->delivery_fee + $booking->straps_fee + $booking->damage_waiver_fee + $newRentalCost;
+        $newTotalAmount = $newSubtotal;
+        $newBalance = $newTotalAmount - (float) $booking->paid_amount;
+
+        $booking->update([
+            'end_date' => $newEndDate,
+            'total_days' => $newTotalDays,
+            'rental_cost' => $newRentalCost,
+            'subtotal' => $newSubtotal,
+            'total_amount' => $newTotalAmount,
+            'balance' => $newBalance,
+        ]);
+
+        $rentalInvoice = $booking->invoices()->where('type', 'rental')->first();
+        if ($rentalInvoice && $extensionCost > 0) {
+            $rentalInvoice->items()->create([
+                'description' => "Extension ({$extraDays} extra day(s)) @ N$" . number_format($booking->rate_per_day, 2) . "/day",
+                'quantity' => $extraDays,
+                'unit_price' => $booking->rate_per_day,
+                'total' => $extensionCost,
+            ]);
+            $rentalInvoice->recalculateFromItems();
+        }
+
+        return redirect()->route('bookings.show', $booking)
+            ->with('success', "Booking extended to {$newEndDate->format('M d, Y')}. {$extraDays} extra day(s) added. Rental invoice updated.");
     }
 
     /**

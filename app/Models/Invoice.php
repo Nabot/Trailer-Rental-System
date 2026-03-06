@@ -81,13 +81,25 @@ class Invoice extends Model
     public function updateBalance(): void
     {
         $this->balance = $this->total_amount - $this->paid_amount;
-        
+
         if ($this->balance <= 0 && $this->status !== 'paid') {
             $this->status = 'paid';
         } elseif ($this->balance > 0 && $this->due_date && $this->due_date->isPast() && $this->status !== 'overdue') {
             $this->status = 'overdue';
         }
-        
+
         $this->save();
+    }
+
+    /**
+     * Recalculate subtotal and total_amount from line items, then update balance.
+     */
+    public function recalculateFromItems(): void
+    {
+        $this->subtotal = (float) $this->items()->sum('total');
+        $taxRate = \App\Models\Setting::get('tax_rate', 0);
+        $this->tax = round($this->subtotal * ($taxRate / 100), 2);
+        $this->total_amount = $this->subtotal + $this->tax;
+        $this->updateBalance();
     }
 }

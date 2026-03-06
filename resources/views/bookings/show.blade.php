@@ -430,8 +430,12 @@
                                     Return Trailer & Complete Return Inspection
                                 </button>
                                 @else
-                                <form method="POST" action="{{ route('bookings.return', $booking) }}" class="inline">
+                                <form method="POST" action="{{ route('bookings.return', $booking) }}" class="space-y-2">
                                     @csrf
+                                    <div>
+                                        <label for="returned_at_sidebar" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Returned on</label>
+                                        <input type="date" id="returned_at_sidebar" name="returned_at" value="{{ now()->format('Y-m-d') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm">
+                                    </div>
                                     <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md">
                                         Return Trailer
                                     </button>
@@ -444,6 +448,21 @@
                                     View Return Inspection
                                 </a>
                                 @endif
+                                @endcan
+                            @endif
+
+                            @if(in_array($booking->status, ['confirmed', 'active']))
+                                @can('bookings.update')
+                                <form method="POST" action="{{ route('bookings.extend', $booking) }}" class="space-y-2 mt-2">
+                                    @csrf
+                                    <div>
+                                        <label for="new_end_date" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Extend rental to</label>
+                                        <input type="date" id="new_end_date" name="new_end_date" min="{{ $booking->end_date->copy()->addDay()->format('Y-m-d') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm">
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm">
+                                        Extend Rental
+                                    </button>
+                                </form>
                                 @endcan
                             @endif
 
@@ -574,7 +593,10 @@
 
                 <form method="POST" action="{{ route('bookings.return', $booking) }}" enctype="multipart/form-data" id="returnInspectionForm">
                     @csrf
-                    
+                    <div class="mb-4">
+                        <label for="returned_at_modal" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Returned on</label>
+                        <input type="date" id="returned_at_modal" name="returned_at" value="{{ now()->format('Y-m-d') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                    </div>
                     @include('inspections.partials.inspection-form', ['type' => 'return'])
 
                     <div class="flex justify-end gap-3 mt-6">

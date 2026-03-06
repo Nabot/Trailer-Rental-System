@@ -97,6 +97,16 @@
                         </div>
                     </div>
 
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-8 mb-4">{{ __('Rental settings') }}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+                        <div>
+                            <x-input-label for="late_return_fee_per_day" :value="__('Late return fee per day (N$)')" />
+                            <x-text-input id="late_return_fee_per_day" name="late_return_fee_per_day" type="number" step="0.01" min="0" class="mt-1 block w-full" :value="old('late_return_fee_per_day', $settings['late_return_fee_per_day'] ?? '')" placeholder="e.g. 200" />
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Charged per day when trailer is returned after the booked end date. Leave empty to use booking rate per day.</p>
+                            <x-input-error :messages="$errors->get('late_return_fee_per_day')" class="mt-2" />
+                        </div>
+                    </div>
+
                     <div class="flex items-center justify-end mt-6">
                         <x-primary-button>
                             {{ __('Save Company Information') }}

@@ -47,6 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::post('/bookings/{booking}/start-rental', [BookingController::class, 'startRental'])->name('bookings.start-rental');
     Route::post('/bookings/{booking}/return', [BookingController::class, 'returnTrailer'])->name('bookings.return');
+    Route::post('/bookings/{booking}/extend', [BookingController::class, 'extend'])->name('bookings.extend');
 
     // Payments
     Route::resource('payments', PaymentController::class);

@@ -27,14 +27,34 @@
                 </form>
             </div>
 
+            <!-- Utilization summary -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Trailers</h3>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $totalTrailers ?? 0 }}</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Avg utilization</h3>
+                    <p class="text-2xl font-bold {{ ($avgUtilization ?? 0) > 70 ? 'text-green-600' : (($avgUtilization ?? 0) > 40 ? 'text-yellow-600' : 'text-red-600') }}">{{ number_format($avgUtilization ?? 0, 1) }}%</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total rented days</h3>
+                    <p class="text-2xl font-bold text-blue-600">{{ $totalRentedDays ?? 0 }} days</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Revenue (period)</h3>
+                    <p class="text-2xl font-bold text-green-600">N${{ number_format($totalRevenue ?? 0, 2) }}</p>
+                </div>
+            </div>
+
             <!-- Utilization Table -->
             <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-lg font-semibold mb-4">Trailer Utilization ({{ $startDate }} to {{ $endDate }})</h3>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead>
                             <tr>
-                                <th class="px-4 py-2 text-left">Trailer</th>
+                                <th class="px-4 py-2 text-left text-gray-600 dark:text-gray-400">Trailer</th>
                                 <th class="px-4 py-2 text-right">Rented Days</th>
                                 <th class="px-4 py-2 text-right">Total Days</th>
                                 <th class="px-4 py-2 text-right">Utilization Rate</th>
@@ -45,7 +65,7 @@
                         <tbody>
                             @foreach($utilizationData as $data)
                             <tr>
-                                <td class="px-4 py-2 font-semibold">{{ $data['trailer']->name }}</td>
+                                <td class="px-4 py-2 font-semibold text-gray-900 dark:text-gray-100">{{ $data['trailer']->name }}</td>
                                 <td class="px-4 py-2 text-right">{{ $data['rented_days'] }} days</td>
                                 <td class="px-4 py-2 text-right">{{ $data['total_days'] }} days</td>
                                 <td class="px-4 py-2 text-right">

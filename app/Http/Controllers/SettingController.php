@@ -28,6 +28,7 @@ class SettingController extends Controller
             'bank_account_number' => Setting::get('bank_account_number', ''),
             'bank_branch_name' => Setting::get('bank_branch_name', ''),
             'bank_branch_code' => Setting::get('bank_branch_code', ''),
+            'late_return_fee_per_day' => Setting::get('late_return_fee_per_day', ''),
         ];
 
         return view('settings.company', compact('settings'));
@@ -53,6 +54,7 @@ class SettingController extends Controller
             'bank_account_number' => 'nullable|string|max:50',
             'bank_branch_name' => 'nullable|string|max:255',
             'bank_branch_code' => 'nullable|string|max:20',
+            'late_return_fee_per_day' => 'nullable|numeric|min:0',
         ]);
 
         Setting::set('company_name', $validated['company_name']);
@@ -66,6 +68,7 @@ class SettingController extends Controller
         Setting::set('bank_account_number', $validated['bank_account_number'] ?? '');
         Setting::set('bank_branch_name', $validated['bank_branch_name'] ?? '');
         Setting::set('bank_branch_code', $validated['bank_branch_code'] ?? '');
+        Setting::set('late_return_fee_per_day', $validated['late_return_fee_per_day'] ?? '');
 
         if ($request->hasFile('company_logo')) {
             $file = $request->file('company_logo');

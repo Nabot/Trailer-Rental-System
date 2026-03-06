@@ -114,7 +114,12 @@ class ReportController extends Controller
             ];
         })->sortByDesc('utilization_rate');
 
-        return view('reports.utilization', compact('utilizationData', 'startDate', 'endDate', 'totalDays'));
+        $totalTrailers = $utilizationData->count();
+        $avgUtilization = $totalTrailers > 0 ? $utilizationData->avg('utilization_rate') : 0;
+        $totalRentedDays = $utilizationData->sum('rented_days');
+        $totalRevenue = $utilizationData->sum('revenue');
+
+        return view('reports.utilization', compact('utilizationData', 'startDate', 'endDate', 'totalDays', 'totalTrailers', 'avgUtilization', 'totalRentedDays', 'totalRevenue'));
     }
 
     /**
@@ -253,7 +258,18 @@ class ReportController extends Controller
         $totalOutstanding = $invoices->sum('balance');
         $overdueAmount = $invoices->where('due_date', '<', now())->sum('balance');
 
-        return view('reports.balances', compact('invoices', 'totalOutstanding', 'overdueAmount'));
+        // Group by customer for summary
+        $byCustomer = $invoices->groupBy('customer_id')->map(function ($custInvoices) {
+            $customer = $custInvoices->first()->customer;
+            return [
+                'customer' => $customer,
+                'balance' => $custInvoices->sum('balance'),
+                'invoice_count' => $custInvoices->count(),
+                'oldest_due' => $custInvoices->min('due_date'),
+            ];
+        })->sortByDesc('balance')->values();
+
+        return view('reports.balances', compact('invoices', 'totalOutstanding', 'overdueAmount', 'byCustomer'));
     }
 
     /**
