@@ -269,6 +269,7 @@ class InvoiceController extends Controller
         ]);
 
         $companyName = str_replace('IronAxel', 'IronAxle', \App\Models\Setting::get('company_name', 'IronAxle Trailers'));
+        $companyRegistrationNo = \App\Models\Setting::get('company_registration_no', '');
         $companyAddress = \App\Models\Setting::get('company_address', 'Kransneus, Namibia');
         $companyPhone = \App\Models\Setting::get('company_phone', '');
         $companyEmail = \App\Models\Setting::get('company_email', 'bookings@ironaxletrailers.com');
@@ -281,6 +282,7 @@ class InvoiceController extends Controller
         $pdf = Pdf::loadView('invoices.pdf', compact(
             'invoice', 
             'companyName', 
+            'companyRegistrationNo',
             'companyAddress', 
             'companyPhone', 
             'companyEmail',

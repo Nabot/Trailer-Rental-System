@@ -53,6 +53,9 @@
         <div style="display: flex; justify-content: space-between;">
             <div class="company-info">
                 <h1 style="margin: 0; font-size: 24px;">{{ $companyName }}</h1>
+                @if(!empty($companyRegistrationNo))
+                <p style="margin: 5px 0;">Reg. No: {{ $companyRegistrationNo }}</p>
+                @endif
                 @if($companyAddress)
                 <p style="margin: 5px 0;">{{ $companyAddress }}</p>
                 @endif
