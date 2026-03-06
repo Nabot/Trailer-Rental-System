@@ -23,6 +23,11 @@ class SettingController extends Controller
             'company_phone' => Setting::get('company_phone', ''),
             'company_website' => Setting::get('company_website', ''),
             'company_email' => Setting::get('company_email', ''),
+            'bank_account_name' => Setting::get('bank_account_name', ''),
+            'bank_name' => Setting::get('bank_name', ''),
+            'bank_account_number' => Setting::get('bank_account_number', ''),
+            'bank_branch_name' => Setting::get('bank_branch_name', ''),
+            'bank_branch_code' => Setting::get('bank_branch_code', ''),
         ];
 
         return view('settings.company', compact('settings'));
@@ -43,6 +48,11 @@ class SettingController extends Controller
             'company_phone' => 'nullable|string|max:50',
             'company_website' => 'nullable|url|max:255',
             'company_email' => 'nullable|email|max:255',
+            'bank_account_name' => 'nullable|string|max:255',
+            'bank_name' => 'nullable|string|max:255',
+            'bank_account_number' => 'nullable|string|max:50',
+            'bank_branch_name' => 'nullable|string|max:255',
+            'bank_branch_code' => 'nullable|string|max:20',
         ]);
 
         Setting::set('company_name', $validated['company_name']);
@@ -51,6 +61,11 @@ class SettingController extends Controller
         Setting::set('company_phone', $validated['company_phone'] ?? '');
         Setting::set('company_website', $validated['company_website'] ?? '');
         Setting::set('company_email', $validated['company_email'] ?? '');
+        Setting::set('bank_account_name', $validated['bank_account_name'] ?? '');
+        Setting::set('bank_name', $validated['bank_name'] ?? '');
+        Setting::set('bank_account_number', $validated['bank_account_number'] ?? '');
+        Setting::set('bank_branch_name', $validated['bank_branch_name'] ?? '');
+        Setting::set('bank_branch_code', $validated['bank_branch_code'] ?? '');
 
         if ($request->hasFile('company_logo')) {
             $file = $request->file('company_logo');

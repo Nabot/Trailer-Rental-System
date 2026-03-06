@@ -68,6 +68,35 @@
                         </div>
                     </div>
 
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-8 mb-4">{{ __('Banking Details (shown on invoices)') }}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+                        <div class="md:col-span-2">
+                            <x-input-label for="bank_account_name" :value="__('Account Name')" />
+                            <x-text-input id="bank_account_name" name="bank_account_name" type="text" class="mt-1 block w-full" :value="old('bank_account_name', $settings['bank_account_name'])" />
+                            <x-input-error :messages="$errors->get('bank_account_name')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="bank_name" :value="__('Bank Name')" />
+                            <x-text-input id="bank_name" name="bank_name" type="text" class="mt-1 block w-full" :value="old('bank_name', $settings['bank_name'])" />
+                            <x-input-error :messages="$errors->get('bank_name')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="bank_account_number" :value="__('Account Number')" />
+                            <x-text-input id="bank_account_number" name="bank_account_number" type="text" class="mt-1 block w-full" :value="old('bank_account_number', $settings['bank_account_number'])" />
+                            <x-input-error :messages="$errors->get('bank_account_number')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="bank_branch_name" :value="__('Branch Name')" />
+                            <x-text-input id="bank_branch_name" name="bank_branch_name" type="text" class="mt-1 block w-full" :value="old('bank_branch_name', $settings['bank_branch_name'])" />
+                            <x-input-error :messages="$errors->get('bank_branch_name')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="bank_branch_code" :value="__('Branch Code')" />
+                            <x-text-input id="bank_branch_code" name="bank_branch_code" type="text" class="mt-1 block w-full" :value="old('bank_branch_code', $settings['bank_branch_code'])" />
+                            <x-input-error :messages="$errors->get('bank_branch_code')" class="mt-2" />
+                        </div>
+                    </div>
+
                     <div class="flex items-center justify-end mt-6">
                         <x-primary-button>
                             {{ __('Save Company Information') }}
