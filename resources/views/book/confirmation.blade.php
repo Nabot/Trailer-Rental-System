@@ -11,19 +11,19 @@
         </ol>
     </nav>
 
-    <div class="max-w-2xl mx-auto text-center">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+    <div class="max-w-2xl mx-auto text-center min-w-0">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
             </div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Booking request received</h1>
-            <p class="mt-2 text-gray-600 dark:text-gray-400">Thank you. We have received your booking request and will be in touch shortly.</p>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Booking request received</h1>
+            <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">Thank you. We have received your booking request and will be in touch shortly.</p>
 
-            <div class="mt-8 p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-left">
+            <div class="mt-6 sm:mt-8 p-4 sm:p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-left">
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Save your booking reference</p>
-                <p class="text-2xl font-bold text-orange-600 dark:text-orange-400 mt-1" id="booking-reference">{{ $booking->booking_number }}</p>
+                <p class="text-lg sm:text-2xl font-bold text-orange-600 dark:text-orange-400 mt-1 break-all" id="booking-reference">{{ $booking->booking_number }}</p>
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Quote this number when you call or in email.</p>
                 <dl class="mt-6 space-y-2 text-sm">
                     <div class="flex justify-between">
@@ -41,7 +41,7 @@
                 </dl>
             </div>
 
-            <div class="mt-8 p-6 bg-orange-50 dark:bg-orange-900/20 rounded-lg text-left">
+            <div class="mt-6 sm:mt-8 p-4 sm:p-6 bg-orange-50 dark:bg-orange-900/20 rounded-lg text-left">
                 <h2 class="font-semibold text-gray-900 dark:text-gray-100">What happens next?</h2>
                 <ul class="mt-3 space-y-2 text-sm text-gray-700 dark:text-gray-300">
                     <li class="flex gap-2"><span class="text-orange-600 dark:text-orange-400 font-bold">1.</span> We’ll contact you at <strong>{{ $booking->customer->email }}</strong> or <strong>{{ $booking->customer->phone }}</strong> within 24 hours.</li>

@@ -3,22 +3,22 @@
 @section('title', 'Book ' . $trailer->name . ' – ' . $companyName)
 
 @section('content')
-    <nav class="mb-6 text-sm" aria-label="Breadcrumb">
+    <nav class="mb-4 sm:mb-6 text-sm" aria-label="Breadcrumb">
         <ol class="flex flex-wrap items-center gap-1 text-gray-500 dark:text-gray-400">
-            <li><a href="{{ route('home') }}" class="hover:text-orange-600 dark:hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded">Home</a></li>
+            <li><a href="{{ route('home') }}" class="min-h-[44px] inline-flex items-center -my-2 py-2 hover:text-orange-600 dark:hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded">Home</a></li>
             <li aria-hidden="true">/</li>
-            <li class="text-gray-900 dark:text-gray-100 font-medium">Book {{ $trailer->name }}</li>
+            <li class="text-gray-900 dark:text-gray-100 font-medium truncate max-w-[180px] sm:max-w-none">Book {{ $trailer->name }}</li>
         </ol>
     </nav>
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Book online</h1>
-        <p class="mt-2 text-gray-600 dark:text-gray-400">Complete your details to request this trailer for the selected dates.</p>
+    <div class="mb-6 sm:mb-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Book online</h1>
+        <p class="mt-2 text-gray-600 dark:text-gray-400 text-sm sm:text-base">Complete your details to request this trailer for the selected dates.</p>
         <p class="mt-3 py-3 px-4 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-sm font-medium text-gray-800 dark:text-gray-200">You're booking <strong>{{ $trailer->name }}</strong> for {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} – {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div class="lg:col-span-2 min-w-0">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
 
                 <form method="POST" action="{{ route('book.store') }}">
                     @csrf
@@ -86,8 +86,8 @@
             </div>
         </div>
 
-        <div>
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sticky top-4">
+        <div class="min-w-0">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:sticky lg:top-4">
                 <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Booking summary</h3>
                 @php
                     $primaryPhoto = $trailer->photos->firstWhere('is_primary', true) ?? $trailer->photos->first();
