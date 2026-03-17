@@ -29,6 +29,14 @@
             <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg mb-6 p-4">
                 <form method="GET" class="grid grid-cols-1 md:grid-cols-6 gap-4">
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+                        <select name="type" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600">
+                            <option value="">All</option>
+                            <option value="rental" {{ request('type') === 'rental' ? 'selected' : '' }}>Rental</option>
+                            <option value="sales" {{ request('type') === 'sales' ? 'selected' : '' }}>Sales</option>
+                        </select>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600">
                     </div>
@@ -89,6 +97,7 @@
                         <thead>
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Inquiry #</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Type</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Name</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Contact</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Source</th>
@@ -106,6 +115,11 @@
                                     <a href="{{ route('inquiries.show', $inquiry) }}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
                                         {{ $inquiry->inquiry_number }}
                                     </a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-xs px-2 py-1 rounded-full {{ ($inquiry->type ?? 'rental') === 'sales' ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200' }}">
+                                        {{ ($inquiry->type ?? 'rental') === 'sales' ? 'Sales' : 'Rental' }}
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="font-medium text-gray-900 dark:text-gray-100">{{ $inquiry->name }}</div>
@@ -165,7 +179,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="9" class="px-6 py-12">
+                                <td colspan="10" class="px-6 py-12">
                                     <x-empty-state 
                                         title="No leads found"
                                         description="Get started by adding your first lead or inquiry."

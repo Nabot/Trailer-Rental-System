@@ -35,6 +35,7 @@ class RoleSeeder extends Seeder
             'payments.view',
             'payments.create',
             'payments.edit',
+            'payments.delete',
             'inspections.view',
             'inspections.create',
             'inspections.edit',

@@ -29,6 +29,16 @@
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Type -->
+                        <div>
+                            <x-input-label for="type" :value="__('Inquiry type')" />
+                            <select id="type" name="type" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600" required>
+                                <option value="rental" {{ old('type', 'rental') === 'rental' ? 'selected' : '' }}>Rental inquiry</option>
+                                <option value="sales" {{ old('type') === 'sales' ? 'selected' : '' }}>Sales inquiry (trailer purchase)</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('type')" class="mt-2" />
+                        </div>
+
                         <!-- Source & Status -->
                         <div>
                             <x-input-label for="source" :value="__('Source')" />
@@ -106,22 +116,22 @@
                             <x-input-error :messages="$errors->get('whatsapp_number')" class="mt-2" />
                         </div>
 
-                        <!-- Rental Dates -->
+                        <!-- Rental Dates (optional for sales) -->
                         <div>
-                            <x-input-label for="preferred_start_date" :value="__('Preferred Start Date')" />
+                            <x-input-label for="preferred_start_date" :value="__('Preferred Start Date (rental)')" />
                             <x-text-input id="preferred_start_date" name="preferred_start_date" type="date" class="mt-1 block w-full" :value="old('preferred_start_date')" />
                             <x-input-error :messages="$errors->get('preferred_start_date')" class="mt-2" />
                         </div>
 
                         <div>
-                            <x-input-label for="preferred_end_date" :value="__('Preferred End Date')" />
+                            <x-input-label for="preferred_end_date" :value="__('Preferred End Date (rental)')" />
                             <x-text-input id="preferred_end_date" name="preferred_end_date" type="date" class="mt-1 block w-full" :value="old('preferred_end_date')" />
                             <x-input-error :messages="$errors->get('preferred_end_date')" class="mt-2" />
                         </div>
 
-                        <!-- Trailer Interests -->
+                        <!-- Trailer Interests (rental or sales) -->
                         <div class="md:col-span-2">
-                            <x-input-label for="trailer_interests" :value="__('Interested Trailers (Optional)')" />
+                            <x-input-label for="trailer_interests" :value="__('Trailers of interest (Optional)')" />
                             <select id="trailer_interests" name="trailer_interests[]" multiple class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600">
                                 @foreach($trailers as $trailer)
                                 <option value="{{ $trailer->id }}" {{ in_array($trailer->id, old('trailer_interests', [])) ? 'selected' : '' }}>
@@ -129,20 +139,20 @@
                                 </option>
                                 @endforeach
                             </select>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Hold Ctrl/Cmd to select multiple</p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Rental: which trailers they want to rent. Sales: which models they're interested in buying. Hold Ctrl/Cmd to select multiple.</p>
                             <x-input-error :messages="$errors->get('trailer_interests')" class="mt-2" />
                         </div>
 
-                        <!-- Rental Purpose & Budget -->
+                        <!-- Purpose / Notes & Budget -->
                         <div class="md:col-span-2">
-                            <x-input-label for="rental_purpose" :value="__('Rental Purpose')" />
+                            <x-input-label for="rental_purpose" :value="__('Rental purpose / Interest (Optional)')" />
                             <textarea id="rental_purpose" name="rental_purpose" rows="3" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600">{{ old('rental_purpose') }}</textarea>
                             <x-input-error :messages="$errors->get('rental_purpose')" class="mt-2" />
                         </div>
 
                         <div>
-                            <x-input-label for="budget_range" :value="__('Budget Range (Optional)')" />
-                            <x-text-input id="budget_range" name="budget_range" type="text" class="mt-1 block w-full" placeholder="e.g., N$500-1000" :value="old('budget_range')" />
+                            <x-input-label for="budget_range" :value="__('Budget range (Optional)')" />
+                            <x-text-input id="budget_range" name="budget_range" type="text" class="mt-1 block w-full" placeholder="e.g. N$500-1000 rental, or N$50,000 purchase" :value="old('budget_range')" />
                             <x-input-error :messages="$errors->get('budget_range')" class="mt-2" />
                         </div>
 

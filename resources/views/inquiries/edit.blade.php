@@ -18,6 +18,16 @@
                     @method('PUT')
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Type -->
+                        <div>
+                            <x-input-label for="type" :value="__('Inquiry type')" />
+                            <select id="type" name="type" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600" required>
+                                <option value="rental" {{ old('type', $inquiry->type ?? 'rental') === 'rental' ? 'selected' : '' }}>Rental inquiry</option>
+                                <option value="sales" {{ old('type', $inquiry->type ?? 'rental') === 'sales' ? 'selected' : '' }}>Sales inquiry (trailer purchase)</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('type')" class="mt-2" />
+                        </div>
+
                         <!-- Source & Status -->
                         <div>
                             <x-input-label for="source" :value="__('Source')" />

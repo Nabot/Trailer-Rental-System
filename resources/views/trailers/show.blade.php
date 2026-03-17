@@ -106,7 +106,7 @@
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                             @foreach($trailer->photos as $p)
                             <div class="relative group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
-                                <img src="{{ Storage::disk($p->disk ?? 'public')->url($p->path) }}" alt="Trailer photo" class="w-full aspect-square object-cover">
+                                <img src="{{ asset('storage/' . $p->path) }}" alt="Trailer photo" class="w-full aspect-square object-cover">
                                 @if($p->is_primary)
                                     <span class="absolute top-2 left-2 px-2 py-0.5 bg-green-600 text-white text-xs font-medium rounded">Primary</span>
                                 @endif

@@ -37,6 +37,11 @@ class InquiryController extends Controller
             $query->where('priority', $request->priority);
         }
 
+        // Filter by type (rental / sales)
+        if ($request->has('type') && $request->type !== '') {
+            $query->where('type', $request->type);
+        }
+
         // Filter by assigned to (including "My leads")
         if ($request->has('assigned_to') && $request->assigned_to !== '') {
             if ($request->assigned_to === 'my') {
@@ -176,6 +181,7 @@ class InquiryController extends Controller
     {
         $this->authorize('inquiries.edit');
         $validated = $request->validate([
+            'type' => 'required|in:rental,sales',
             'source' => 'required|in:website,phone,referral,walk_in,social_media,google_ads,other',
             'status' => 'required|in:new,contacted,quoted,follow_up,converted,lost,on_hold',
             'priority' => 'required|in:high,medium,low',

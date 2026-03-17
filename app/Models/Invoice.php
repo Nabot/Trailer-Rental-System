@@ -17,6 +17,7 @@ class Invoice extends Model
         'invoice_date',
         'due_date',
         'subtotal',
+        'discount',
         'tax',
         'total_amount',
         'paid_amount',
@@ -29,6 +30,7 @@ class Invoice extends Model
         'invoice_date' => 'date',
         'due_date' => 'date',
         'subtotal' => 'decimal:2',
+        'discount' => 'decimal:2',
         'tax' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'paid_amount' => 'decimal:2',
@@ -97,9 +99,11 @@ class Invoice extends Model
     public function recalculateFromItems(): void
     {
         $this->subtotal = (float) $this->items()->sum('total');
+        $discount = (float) ($this->discount ?? 0);
+        $afterDiscount = max(0, $this->subtotal - $discount);
         $taxRate = \App\Models\Setting::get('tax_rate', 0);
-        $this->tax = round($this->subtotal * ($taxRate / 100), 2);
-        $this->total_amount = $this->subtotal + $this->tax;
+        $this->tax = round($afterDiscount * ($taxRate / 100), 2);
+        $this->total_amount = round($afterDiscount + $this->tax, 2);
         $this->updateBalance();
     }
 }

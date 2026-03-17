@@ -71,7 +71,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end gap-2">
                                         <a href="{{ route('payments.show', $payment) }}" class="text-orange-600 dark:text-orange-400 hover:underline">View</a>
-                                        @can('payments.edit')
+                                        @can('payments.delete')
                                         <form method="POST" action="{{ route('payments.destroy', $payment) }}" class="inline" onsubmit="return confirm('Delete this payment?');">
                                             @csrf
                                             @method('DELETE')

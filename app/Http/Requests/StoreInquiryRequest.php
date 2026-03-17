@@ -17,6 +17,7 @@ class StoreInquiryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'type' => 'required|in:rental,sales',
             'source' => 'required|in:website,phone,referral,walk_in,social_media,google_ads,other',
             'status' => 'nullable|in:new,contacted,quoted,follow_up,converted,lost,on_hold',
             'priority' => 'nullable|in:high,medium,low',

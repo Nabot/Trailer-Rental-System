@@ -76,11 +76,19 @@
                             @php
                                 $taxRate = old('tax_rate');
                                 if ($taxRate === null) {
-                                    $taxRate = $invoice->subtotal > 0 ? ($invoice->tax / $invoice->subtotal) * 100 : \App\Models\Setting::get('tax_rate', 0);
+                                    $subAfterDiscount = max(0, (float)$invoice->subtotal - (float)($invoice->discount ?? 0));
+                                    $taxRate = $subAfterDiscount > 0 ? ($invoice->tax / $subAfterDiscount) * 100 : \App\Models\Setting::get('tax_rate', 0);
                                 }
                             @endphp
                             <x-text-input id="tax_rate" name="tax_rate" type="number" step="0.01" min="0" max="100" class="mt-1 block w-full" :value="$taxRate" />
                             <x-input-error :messages="$errors->get('tax_rate')" class="mt-2" />
+                        </div>
+
+                        <!-- Discount -->
+                        <div>
+                            <x-input-label for="discount" :value="__('Discount (N$)')" />
+                            <x-text-input id="discount" name="discount" type="number" step="0.01" min="0" class="mt-1 block w-full" :value="old('discount', $invoice->discount ?? 0)" placeholder="0" />
+                            <x-input-error :messages="$errors->get('discount')" class="mt-2" />
                         </div>
                     </div>
 

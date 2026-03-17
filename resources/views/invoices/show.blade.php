@@ -114,6 +114,12 @@
                                     <td colspan="3" class="text-right py-2 font-semibold">Subtotal:</td>
                                     <td class="text-right py-2 font-semibold">N${{ number_format($invoice->subtotal, 2) }}</td>
                                 </tr>
+                                @if(($invoice->discount ?? 0) > 0)
+                                <tr>
+                                    <td colspan="3" class="text-right py-2">Discount:</td>
+                                    <td class="text-right py-2 text-green-600">-N${{ number_format($invoice->discount, 2) }}</td>
+                                </tr>
+                                @endif
                                 @if($invoice->tax > 0)
                                 <tr>
                                     <td colspan="3" class="text-right py-2">Tax:</td>

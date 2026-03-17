@@ -180,7 +180,7 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
-        $this->authorize('payments.edit');
+        $this->authorize('payments.delete');
         DB::transaction(function () use ($payment) {
             $amount = $payment->amount;
 

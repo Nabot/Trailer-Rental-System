@@ -197,6 +197,7 @@ class InvoiceController extends Controller
             'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.unit_price' => 'required|numeric|min:0',
             'tax_rate' => 'nullable|numeric|min:0|max:100',
+            'discount' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string|max:1000',
         ]);
 
@@ -210,14 +211,17 @@ class InvoiceController extends Controller
                 $subtotal += $item['quantity'] * $item['unit_price'];
             }
 
+            $discount = (float) ($validated['discount'] ?? 0);
+            $afterDiscount = max(0, $subtotal - $discount);
             $taxRate = $validated['tax_rate'] ?? \App\Models\Setting::get('tax_rate', 0);
-            $tax = $subtotal * ($taxRate / 100);
-            $totalAmount = $subtotal + $tax;
+            $tax = round($afterDiscount * ($taxRate / 100), 2);
+            $totalAmount = round($afterDiscount + $tax, 2);
 
             $invoice->update([
                 'invoice_date' => $validated['invoice_date'],
                 'due_date' => $validated['due_date'],
                 'subtotal' => $subtotal,
+                'discount' => $discount,
                 'tax' => $tax,
                 'total_amount' => $totalAmount,
                 'notes' => $validated['notes'] ?? null,

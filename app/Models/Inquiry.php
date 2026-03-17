@@ -14,6 +14,7 @@ class Inquiry extends Model
 
     protected $fillable = [
         'inquiry_number',
+        'type', // rental | sales
         'source',
         'status',
         'priority',
