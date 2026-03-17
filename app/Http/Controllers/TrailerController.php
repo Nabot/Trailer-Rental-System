@@ -164,7 +164,7 @@ class TrailerController extends Controller
     }
 
     /**
-     * Upload a photo or add by URL for the trailer (used on public view).
+     * Upload a photo or add by URL for the trailer (one photo per trailer; new replaces existing).
      */
     public function uploadPhoto(Request $request, Trailer $trailer)
     {
@@ -178,15 +178,21 @@ class TrailerController extends Controller
             'photo_url.required_without' => 'Either upload a file or enter an image URL.',
         ]);
 
-        $isFirst = $trailer->photos()->count() === 0;
+        // One photo per trailer: remove existing before adding the new one
+        foreach ($trailer->photos as $existing) {
+            if ($existing->path !== null && $existing->path !== '') {
+                Storage::disk($existing->disk ?? 'public')->delete($existing->path);
+            }
+            $existing->delete();
+        }
 
         if ($request->filled('photo_url')) {
             $trailer->photos()->create([
                 'path' => '',
                 'disk' => 'public',
                 'url' => $request->input('photo_url'),
-                'order' => $trailer->photos()->max('order') + 1,
-                'is_primary' => $isFirst,
+                'order' => 0,
+                'is_primary' => true,
             ]);
         } else {
             $path = $request->file('photo')->store('trailer-photos/' . $trailer->id, 'public');
@@ -194,13 +200,13 @@ class TrailerController extends Controller
                 'path' => $path,
                 'disk' => 'public',
                 'url' => null,
-                'order' => $trailer->photos()->max('order') + 1,
-                'is_primary' => $isFirst,
+                'order' => 0,
+                'is_primary' => true,
             ]);
         }
 
         return redirect()->route('trailers.show', $trailer)
-            ->with('success', 'Photo added. It will appear on the public trailer listing.');
+            ->with('success', 'Photo updated. It will appear on the public trailer listing.');
     }
 
     /**
