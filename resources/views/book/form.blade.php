@@ -49,13 +49,13 @@
                             @error('address')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="id_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ID / Passport number <span class="text-gray-400 font-normal">(optional)</span></label>
-                            <input type="text" id="id_number" name="id_number" value="{{ old('id_number') }}" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0">
+                            <label for="id_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ID / Passport number <span class="text-red-500">*</span></label>
+                            <input type="text" id="id_number" name="id_number" value="{{ old('id_number') }}" required class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" placeholder="e.g. ID or passport number">
                             @error('id_number')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="driver_licence" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Driver licence number <span class="text-gray-400 font-normal">(optional)</span></label>
-                            <input type="text" id="driver_licence" name="driver_licence" value="{{ old('driver_licence') }}" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0">
+                            <label for="driver_licence" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Driver licence number <span class="text-red-500">*</span></label>
+                            <input type="text" id="driver_licence" name="driver_licence" value="{{ old('driver_licence') }}" required class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" placeholder="e.g. licence number">
                             @error('driver_licence')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                     </div>
@@ -89,8 +89,19 @@
         <div>
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sticky top-4">
                 <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Booking summary</h3>
+                @php
+                    $primaryPhoto = $trailer->photos->firstWhere('is_primary', true) ?? $trailer->photos->first();
+                @endphp
+                @if($primaryPhoto && $primaryPhoto->path)
+                    <div class="aspect-video rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700 mb-4" style="aspect-ratio: 16/9;">
+                        <img src="{{ storage_asset($primaryPhoto->path) }}" alt="{{ $trailer->name }}" width="320" height="180" class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                @endif
                 <p class="text-gray-900 dark:text-gray-100 font-medium">{{ $trailer->name }}</p>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ $trailer->type }} @if($trailer->axle) • {{ $trailer->axle }} axle @endif</p>
+                <p class="mt-3 py-2 px-3 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-sm font-medium text-gray-800 dark:text-gray-200">
+                    {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} – {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}
+                </p>
                 <dl class="mt-4 space-y-2 text-sm">
                     <div class="flex justify-between">
                         <dt class="text-gray-600 dark:text-gray-400">Start date</dt>
