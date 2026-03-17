@@ -1,5 +1,26 @@
 <?php
 
+if (!function_exists('storage_asset')) {
+    /**
+     * URL for a file stored on the public disk (e.g. trailer photos).
+     * When document root is the app root (PUBLIC_PATH_IS_APP_ROOT) or STORAGE_URL_PREFIX
+     * is set, uses the path so the server can find files under storage/app/public.
+     */
+    function storage_asset(string $path): string
+    {
+        $prefix = config('app.storage_url_prefix', '');
+        if (config('app.public_path_is_app_root')) {
+            $base = 'storage/app/public';
+        } elseif ($prefix !== '') {
+            $base = rtrim($prefix, '/');
+        } else {
+            $base = 'storage';
+        }
+
+        return asset($base . '/' . ltrim($path, '/'));
+    }
+}
+
 if (!function_exists('currency_symbol')) {
     function currency_symbol(): string
     {

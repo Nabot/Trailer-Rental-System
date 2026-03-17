@@ -90,7 +90,7 @@
                 @endphp
                 @if($primaryPhoto && $primaryPhoto->path)
                     <div class="aspect-video bg-gray-200 dark:bg-gray-700">
-                        <img src="{{ asset('storage/' . $primaryPhoto->path) }}" alt="{{ $trailer->name }}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ storage_asset($primaryPhoto->path) }}" alt="{{ $trailer->name }}" class="w-full h-full object-cover" loading="lazy">
                     </div>
                 @else
                     <div class="aspect-video bg-gray-200 dark:bg-gray-700 flex items-center justify-center">

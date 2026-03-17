@@ -68,6 +68,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Storage URL prefix (when document root is app root)
+    |--------------------------------------------------------------------------
+    |
+    | When the document root is the project root (not the "public" folder),
+    | storage files are served from /storage/app/public/... Set to "storage/app/public"
+    | or leave empty to use "storage" (requires public/storage symlink). When
+    | PUBLIC_PATH_IS_APP_ROOT is true, storage URLs use storage/app/public automatically.
+    |
+    */
+    'storage_url_prefix' => env('STORAGE_URL_PREFIX', ''),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
