@@ -33,11 +33,11 @@
             <div class="flex justify-between items-center h-40">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
                     @if($logoPath && file_exists(public_path($logoPath)))
-                        <img src="{{ asset($logoPath) }}" alt="{{ $appName }}" class="h-40 w-auto" />
+                        <img src="{{ asset($logoPath) }}" alt="{{ $appName }}" class="h-32 w-auto" />
                     @elseif(file_exists(public_path('images/ironaxle-logo.png')))
-                        <img src="{{ asset('images/ironaxle-logo.png') }}" alt="{{ $appName }}" class="h-40 w-auto" />
+                        <img src="{{ asset('images/ironaxle-logo.png') }}" alt="{{ $appName }}" class="h-32 w-auto" />
                     @elseif(file_exists(public_path('images/ironaxle-logo.svg')))
-                        <img src="{{ asset('images/ironaxle-logo.svg') }}" alt="{{ $appName }}" class="h-40 w-auto" />
+                        <img src="{{ asset('images/ironaxle-logo.svg') }}" alt="{{ $appName }}" class="h-32 w-auto" />
                     @else
                         <span class="text-xl font-bold"><span class="text-gray-800 dark:text-gray-200">IRON</span><span class="text-orange-600 dark:text-orange-400">AXLE</span> <span class="text-gray-600 dark:text-gray-400 text-sm font-normal uppercase tracking-wider">Trailers</span></span>
                     @endif
