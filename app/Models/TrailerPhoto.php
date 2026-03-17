@@ -11,6 +11,7 @@ class TrailerPhoto extends Model
         'trailer_id',
         'path',
         'disk',
+        'url',
         'order',
         'is_primary',
     ];
@@ -23,5 +24,19 @@ class TrailerPhoto extends Model
     public function trailer(): BelongsTo
     {
         return $this->belongsTo(Trailer::class);
+    }
+
+    /**
+     * URL to use for the image (external URL or storage path).
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if (! empty($this->url)) {
+            return $this->url;
+        }
+        if (! empty($this->path)) {
+            return storage_asset($this->path);
+        }
+        return null;
     }
 }

@@ -92,9 +92,9 @@
                 @php
                     $primaryPhoto = $trailer->photos->firstWhere('is_primary', true) ?? $trailer->photos->first();
                 @endphp
-                @if($primaryPhoto && $primaryPhoto->path)
+                @if($primaryPhoto && $primaryPhoto->image_url)
                     <div class="aspect-video rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700 mb-4" style="aspect-ratio: 16/9;">
-                        <img src="{{ storage_asset($primaryPhoto->path) }}" alt="{{ $trailer->name }}" width="320" height="180" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ $primaryPhoto->image_url }}" alt="{{ $trailer->name }}" width="320" height="180" class="w-full h-full object-cover" loading="lazy">
                     </div>
                 @endif
                 <p class="text-gray-900 dark:text-gray-100 font-medium">{{ $trailer->name }}</p>

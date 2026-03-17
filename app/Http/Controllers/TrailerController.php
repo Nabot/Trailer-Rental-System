@@ -164,25 +164,40 @@ class TrailerController extends Controller
     }
 
     /**
-     * Upload a photo for the trailer (used on public view).
+     * Upload a photo or add by URL for the trailer (used on public view).
      */
     public function uploadPhoto(Request $request, Trailer $trailer)
     {
         $this->authorize('update', $trailer);
 
         $request->validate([
-            'photo' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+            'photo' => 'required_without:photo_url|nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+            'photo_url' => 'required_without:photo|nullable|url|max:500',
+        ], [
+            'photo.required_without' => 'Either upload a file or enter an image URL.',
+            'photo_url.required_without' => 'Either upload a file or enter an image URL.',
         ]);
-
-        $path = $request->file('photo')->store('trailer-photos/' . $trailer->id, 'public');
 
         $isFirst = $trailer->photos()->count() === 0;
-        $trailer->photos()->create([
-            'path' => $path,
-            'disk' => 'public',
-            'order' => $trailer->photos()->max('order') + 1,
-            'is_primary' => $isFirst,
-        ]);
+
+        if ($request->filled('photo_url')) {
+            $trailer->photos()->create([
+                'path' => '',
+                'disk' => 'public',
+                'url' => $request->input('photo_url'),
+                'order' => $trailer->photos()->max('order') + 1,
+                'is_primary' => $isFirst,
+            ]);
+        } else {
+            $path = $request->file('photo')->store('trailer-photos/' . $trailer->id, 'public');
+            $trailer->photos()->create([
+                'path' => $path,
+                'disk' => 'public',
+                'url' => null,
+                'order' => $trailer->photos()->max('order') + 1,
+                'is_primary' => $isFirst,
+            ]);
+        }
 
         return redirect()->route('trailers.show', $trailer)
             ->with('success', 'Photo added. It will appear on the public trailer listing.');
@@ -217,7 +232,9 @@ class TrailerController extends Controller
             abort(404);
         }
 
-        Storage::disk($photo->disk ?? 'public')->delete($photo->path);
+        if ($photo->path !== null && $photo->path !== '') {
+            Storage::disk($photo->disk ?? 'public')->delete($photo->path);
+        }
         $photo->delete();
 
         $wasPrimary = $photo->is_primary;

@@ -93,12 +93,16 @@
                         <form action="{{ url("/trailers/{$trailer->id}/photos") }}" method="POST" enctype="multipart/form-data" class="mb-6">
                             @csrf
                             <div class="flex flex-wrap items-end gap-4">
-                                <div class="min-w-0">
-                                    <label for="photo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Add photo</label>
-                                    <input type="file" name="photo" id="photo" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" required class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-700 dark:file:bg-orange-900/30 dark:file:text-orange-400 hover:file:bg-orange-100 dark:hover:file:bg-orange-900/50">
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">JPEG, PNG, GIF or WebP. Max 5 MB.</p>
+                                <div class="min-w-0 flex-1">
+                                    <label for="photo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Add photo (upload or URL)</label>
+                                    <input type="file" name="photo" id="photo" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-700 dark:file:bg-orange-900/30 dark:file:text-orange-400 hover:file:bg-orange-100 dark:hover:file:bg-orange-900/50">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Upload: JPEG, PNG, GIF or WebP. Max 5 MB. Or use a URL below.</p>
                                 </div>
-                                <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium">Upload</button>
+                                <div class="min-w-0 flex-1">
+                                    <label for="photo_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Or image URL (e.g. Cloudflare)</label>
+                                    <input type="url" name="photo_url" id="photo_url" value="{{ old('photo_url') }}" placeholder="https://..." class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm">
+                                </div>
+                                <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium">Add photo</button>
                             </div>
                         </form>
                         @endcan
@@ -106,7 +110,13 @@
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                             @foreach($trailer->photos as $p)
                             <div class="relative group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
-                                <img src="{{ storage_asset($p->path) }}" alt="Trailer photo" class="w-full aspect-square object-cover">
+                                @if($p->image_url)
+                                    <img src="{{ $p->image_url }}" alt="Trailer photo" class="w-full aspect-square object-cover">
+                                @else
+                                    <div class="w-full aspect-square bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                        <span class="text-gray-400 text-sm">No image</span>
+                                    </div>
+                                @endif
                                 @if($p->is_primary)
                                     <span class="absolute top-2 left-2 px-2 py-0.5 bg-green-600 text-white text-xs font-medium rounded">Primary</span>
                                 @endif
