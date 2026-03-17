@@ -93,7 +93,7 @@
         $trailersHeading = ($startDate && $endDate) ? 'Available trailers' : 'Our trailers';
         $trailersRatesFrom = (!$startDate || !$endDate) && $minRatePerDay !== null ? ' — Rates from N$' . number_format($minRatePerDay, 2) . '/day' : '';
     @endphp
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ $trailersHeading }}@if($trailersRatesFrom !== '')<span class="font-normal text-gray-500 dark:text-gray-400">{{ $trailersRatesFrom }}</span>@endif</h2>
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ $trailersHeading }}@if($trailersRatesFrom)<span class="font-normal text-gray-500 dark:text-gray-400">{{ $trailersRatesFrom }}</span>@endif</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="trailers-grid">
         @forelse($trailers as $trailer)
             @php
@@ -115,7 +115,7 @@
                 @endif
                 <div class="p-5 flex-1 flex flex-col">
                     <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ $trailer->name }}</h2>
-                    <p class="mt-1 text-gray-600 dark:text-gray-400">{{ $trailer->type }}@if($trailer->axle) · {{ $trailer->axle }} axle@endif</p>
+                    <p class="mt-1 text-gray-600 dark:text-gray-400">{{ $trailer->type }}@if($trailer->axle) · {{ $trailer->axle }} axle @endif</p>
                     <div class="mt-2 flex flex-wrap gap-1.5">
                         @if($trailer->size_m)
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">{{ $trailer->size_m }}m</span>

@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ Auth::user()->hasRole('sales_rep') ? route('inquiries.index') : route('dashboard') }}" class="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded">
-                        <x-application-logo class="block h-9 w-auto sm:h-10" />
+                        <x-application-logo class="block h-28 w-auto sm:h-32" />
                     </a>
                 </div>
 
