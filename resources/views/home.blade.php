@@ -89,16 +89,11 @@
     </div>
 
     <!-- Trailers grid -->
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        @if($startDate && $endDate)
-            Available trailers
-        @else
-            Our trailers
-            @if($minRatePerDay !== null)
-                <span class="font-normal text-gray-500 dark:text-gray-400"> — Rates from N${{ number_format($minRatePerDay, 2) }}/day</span>
-            @endif
-        @endif
-    </h2>
+    @php
+        $trailersHeading = ($startDate && $endDate) ? 'Available trailers' : 'Our trailers';
+        $trailersRatesFrom = (!$startDate || !$endDate) && $minRatePerDay !== null ? ' — Rates from N$' . number_format($minRatePerDay, 2) . '/day' : '';
+    @endphp
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ $trailersHeading }}@if($trailersRatesFrom !== '')<span class="font-normal text-gray-500 dark:text-gray-400">{{ $trailersRatesFrom }}</span>@endif</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="trailers-grid">
         @forelse($trailers as $trailer)
             @php
