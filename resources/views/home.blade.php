@@ -83,17 +83,14 @@
 
     <!-- Why us -->
     <div class="flex flex-wrap justify-center gap-6 mb-10 text-sm text-gray-600 dark:text-gray-400">
-        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Easy online booking</span>
-        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Clear pricing</span>
         <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Well-maintained trailers</span>
     </div>
 
     <!-- Trailers grid -->
     @php
         $trailersHeading = ($startDate && $endDate) ? 'Available trailers' : 'Our trailers';
-        $trailersRatesFrom = (!$startDate || !$endDate) && $minRatePerDay !== null ? ' — Rates from N$' . number_format($minRatePerDay, 2) . '/day' : '';
     @endphp
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ $trailersHeading }}@if($trailersRatesFrom)<span class="font-normal text-gray-500 dark:text-gray-400">{{ $trailersRatesFrom }}</span>@endif</h2>
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ $trailersHeading }}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="trailers-grid">
         @forelse($trailers as $trailer)
             @php

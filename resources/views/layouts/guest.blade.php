@@ -26,24 +26,16 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-            <!-- Logo Section -->
+            <!-- Logo Section (admin: text only; image logo is on frontend only) -->
             <div class="mb-8 text-center">
                 <a href="/" class="inline-block">
-                    @if($logoPath && file_exists(public_path($logoPath)))
-                        <img src="{{ asset($logoPath) }}" alt="{{ $appDisplayName }}" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
-                    @elseif(file_exists(public_path('images/ironaxle-logo.png')))
-                        <img src="{{ asset('images/ironaxle-logo.png') }}" alt="{{ $appDisplayName }}" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
-                    @elseif(file_exists(public_path('images/ironaxle-logo.svg')))
-                        <img src="{{ asset('images/ironaxle-logo.svg') }}" alt="{{ $appDisplayName }}" class="h-16 sm:h-24 w-auto mx-auto mb-2" />
-                    @else
-                        <div class="flex flex-col items-center space-y-2 mb-4">
-                            <div class="text-4xl font-bold">
-                                <span class="text-gray-800 dark:text-gray-200">IRON</span>
-                                <span class="text-orange-600 dark:text-orange-400">AXLE</span>
-                            </div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400 font-medium uppercase tracking-wider">RENTALS</div>
+                    <div class="flex flex-col items-center space-y-2 mb-4">
+                        <div class="text-4xl font-bold">
+                            <span class="text-gray-800 dark:text-gray-200">IRON</span>
+                            <span class="text-orange-600 dark:text-orange-400">AXLE</span>
                         </div>
-                    @endif
+                        <div class="text-sm text-gray-600 dark:text-gray-400 font-medium uppercase tracking-wider">RENTALS</div>
+                    </div>
                 </a>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{{ $appDisplayName }}</h1>
             </div>
