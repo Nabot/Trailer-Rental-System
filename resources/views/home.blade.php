@@ -29,9 +29,9 @@
                     class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 focus:ring-offset-2 text-base">
             </div>
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
-                <button type="submit" id="check-availability-btn" class="w-full sm:w-auto min-h-[44px] bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 rounded-lg font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">Check availability</button>
+                <button type="submit" id="check-availability-btn" class="w-full sm:w-auto min-h-[44px] bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white px-5 py-3 rounded-lg font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-transform duration-100 active:scale-[0.98]">Check availability</button>
                 @if($startDate || $endDate)
-                    <a href="{{ route('home') }}" class="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded px-3">Clear dates</a>
+                    <a href="{{ route('home') }}" class="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded px-3 transition-transform duration-100 active:scale-[0.98]">Clear dates</a>
                 @endif
             </div>
         </form>
@@ -47,41 +47,10 @@
             @if($trailers->isNotEmpty())
                 <span class="text-sm text-gray-600 dark:text-gray-400">{{ $availableCount }} {{ $availableCount === 1 ? 'trailer' : 'trailers' }} available</span>
             @endif
-            <a href="{{ route('home') }}#availability-form" class="min-h-[44px] inline-flex items-center text-sm font-medium text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded -my-1 py-2">Change dates</a>
+            <a href="{{ route('home') }}#availability-form" class="min-h-[44px] inline-flex items-center text-sm font-medium text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded -my-1 py-2 transition-opacity duration-100 active:opacity-70">Change dates</a>
         </span>
     </div>
     @endif
-
-    <!-- How it works (horizontal steps) -->
-    <div class="flex flex-wrap sm:flex-nowrap items-stretch justify-center gap-2 sm:gap-4 mb-6 sm:mb-8">
-        <div class="flex flex-1 min-w-0 sm:min-w-[140px] items-center gap-3 sm:flex-col sm:gap-2 sm:text-center p-3 sm:p-4 rounded-lg bg-orange-50/50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-800/50">
-            <div class="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold text-base sm:text-lg">1</div>
-            <div class="min-w-0">
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Pick your dates</h3>
-                <p class="mt-0.5 text-xs sm:text-sm text-gray-600 dark:text-gray-400">Choose start and end date.</p>
-            </div>
-        </div>
-        <div class="hidden sm:flex flex-shrink-0 items-center text-orange-300 dark:text-orange-600" aria-hidden="true">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </div>
-        <div class="flex flex-1 min-w-0 sm:min-w-[140px] items-center gap-3 sm:flex-col sm:gap-2 sm:text-center p-3 sm:p-4 rounded-lg bg-orange-50/50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-800/50">
-            <div class="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold text-base sm:text-lg">2</div>
-            <div class="min-w-0">
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Choose a trailer</h3>
-                <p class="mt-0.5 text-xs sm:text-sm text-gray-600 dark:text-gray-400">See availability and rates.</p>
-            </div>
-        </div>
-        <div class="hidden sm:flex flex-shrink-0 items-center text-orange-300 dark:text-orange-600" aria-hidden="true">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </div>
-        <div class="flex flex-1 min-w-0 sm:min-w-[140px] items-center gap-3 sm:flex-col sm:gap-2 sm:text-center p-3 sm:p-4 rounded-lg bg-orange-50/50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-800/50">
-            <div class="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold text-base sm:text-lg">3</div>
-            <div class="min-w-0">
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Book online</h3>
-                <p class="mt-0.5 text-xs sm:text-sm text-gray-600 dark:text-gray-400">Submit details, we confirm.</p>
-            </div>
-        </div>
-    </div>
 
     <!-- Trailers grid -->
     @php
@@ -94,15 +63,21 @@
                 $primaryPhoto = $trailer->photos->firstWhere('is_primary', true) ?? $trailer->photos->first();
                 $days = ($startDate && $endDate) ? \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate)) + 1 : null;
                 $estimatedTotal = $days ? $days * $trailer->rate_per_day : null;
+                $bookable = isset($trailer->available_for_dates) && $trailer->available_for_dates && $startDate && $endDate;
+                $bookUrl = $bookable ? route('book.form', ['trailer_id' => $trailer->id, 'start_date' => $startDate, 'end_date' => $endDate]) : null;
             @endphp
+            @if($bookable)
+            <a href="{{ $bookUrl }}" class="group block bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col no-underline text-inherit transition-shadow duration-150 hover:shadow-md active:scale-[0.995] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900" aria-label="Book {{ $trailer->name }} for selected dates">
+            @else
             <article class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+            @endif
                 @if($primaryPhoto && $primaryPhoto->image_url)
-                    <div class="aspect-video bg-gray-200 dark:bg-gray-700 shrink-0" style="aspect-ratio: 16/9;">
-                        <img src="{{ $primaryPhoto->image_url }}" alt="{{ $trailer->name }}" width="400" height="225" class="w-full h-full object-cover" loading="lazy">
+                    <div class="aspect-video bg-gray-200 dark:bg-gray-700 shrink-0 pointer-events-none" style="aspect-ratio: 16/9;">
+                        <img src="{{ $primaryPhoto->image_url }}" alt="{{ $bookable ? '' : $trailer->name }}" width="400" height="225" class="w-full h-full object-cover" loading="lazy" @if($bookable) role="presentation" @endif>
                     </div>
                 @else
-                    <div class="aspect-video bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0" style="aspect-ratio: 16/9;">
-                        <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <div class="aspect-video bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 pointer-events-none" style="aspect-ratio: 16/9;" aria-hidden="true">
+                        <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                         </svg>
                     </div>
@@ -140,14 +115,16 @@
                         @if($estimatedTotal !== null)
                             <p class="text-sm text-gray-600 dark:text-gray-400">{{ $days }} day{{ $days !== 1 ? 's' : '' }} · <span class="font-medium text-gray-900 dark:text-gray-100">N${{ number_format($estimatedTotal, 2) }} total</span></p>
                         @endif
-                        @if(isset($trailer->available_for_dates) && $trailer->available_for_dates && $startDate && $endDate)
-                            <a href="{{ route('book.form', ['trailer_id' => $trailer->id, 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="min-h-[44px] flex items-center justify-center bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
-                                Book now
-                            </a>
+                        @if($bookable)
+                            <span class="min-h-[44px] flex items-center justify-center bg-orange-600 group-hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg pointer-events-none">Book now</span>
                         @endif
                     </div>
                 </div>
+            @if($bookable)
+            </a>
+            @else
             </article>
+            @endif
         @empty
             <div class="col-span-full text-center py-10 sm:py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-4 sm:px-6">
                 <p class="text-gray-600 dark:text-gray-400">No trailers available at the moment. Check back later or get in touch to arrange a rental.</p>

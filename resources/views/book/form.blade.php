@@ -35,12 +35,12 @@
                         </div>
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email <span class="text-gray-400 font-normal">(optional)</span></label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" autocomplete="email">
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" inputmode="email" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" autocomplete="email">
                             @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone <span class="text-red-500">*</span></label>
-                            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" placeholder="e.g. +264 81 234 5678" autocomplete="tel">
+                            <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required inputmode="tel" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" placeholder="e.g. +264 81 234 5678" autocomplete="tel">
                             @error('phone')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div class="sm:col-span-2">
@@ -69,7 +69,7 @@
                         </div>
                         <div>
                             <label for="whatsapp_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">WhatsApp number <span class="text-gray-400 font-normal">(optional)</span></label>
-                            <input type="text" id="whatsapp_number" name="whatsapp_number" value="{{ old('whatsapp_number', old('phone')) }}" placeholder="e.g. +264 81 123 4567" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0">
+                            <input type="tel" id="whatsapp_number" name="whatsapp_number" value="{{ old('whatsapp_number', old('phone')) }}" inputmode="tel" placeholder="e.g. +264 81 123 4567" class="w-full min-h-[44px] rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0" autocomplete="tel">
                             @error('whatsapp_number')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                         </div>
                         <div class="sm:col-span-2">
@@ -79,7 +79,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full sm:w-auto min-h-[44px] bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+                    <button type="submit" class="w-full sm:w-auto min-h-[44px] bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-medium py-3 px-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-transform duration-100 active:scale-[0.99]">
                         Submit booking request
                     </button>
                 </form>
