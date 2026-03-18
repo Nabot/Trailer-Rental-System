@@ -11,6 +11,37 @@
         <p class="mt-2 sm:mt-3 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-1">Trailer hire in Namibia – check availability and book online in a few clicks.</p>
     </div>
 
+    <!-- How it works -->
+    <div class="flex flex-wrap sm:flex-nowrap items-stretch justify-center gap-2 sm:gap-0 mb-6 sm:mb-8">
+        <a href="#availability-form" class="flex flex-1 min-w-0 sm:min-w-[160px] sm:max-w-[200px] items-center gap-3 p-4 sm:p-5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 no-underline text-inherit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2" aria-label="Pick your dates – go to date picker">
+            <div class="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-base">1</div>
+            <div class="min-w-0">
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Pick your dates</h3>
+                <p class="hidden sm:block text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Choose start and end date.</p>
+            </div>
+        </a>
+        <div class="hidden sm:flex flex-shrink-0 items-center text-gray-400 dark:text-gray-500 px-1" aria-hidden="true">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="flex flex-1 min-w-0 sm:min-w-[160px] sm:max-w-[200px] items-center gap-3 p-4 sm:p-5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600">
+            <div class="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-base">2</div>
+            <div class="min-w-0">
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Choose a trailer</h3>
+                <p class="hidden sm:block text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">See availability and rates.</p>
+            </div>
+        </div>
+        <div class="hidden sm:flex flex-shrink-0 items-center text-gray-400 dark:text-gray-500 px-1" aria-hidden="true">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="flex flex-1 min-w-0 sm:min-w-[160px] sm:max-w-[200px] items-center gap-3 p-4 sm:p-5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600">
+            <div class="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-base">3</div>
+            <div class="min-w-0">
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">Book online</h3>
+                <p class="hidden sm:block text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Submit details, we confirm.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Check availability (above the fold) -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
         <h2 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">Check availability</h2>
