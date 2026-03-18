@@ -3,6 +3,18 @@
 @section('title', 'Book ' . $trailer->name . ' – ' . $companyName)
 
 @section('content')
+    @php
+        $trailersUrl = route('home', ['start_date' => $startDate, 'end_date' => $endDate]);
+    @endphp
+    <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <a href="{{ $trailersUrl }}" class="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 transition-colors">
+            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Back to trailers
+        </a>
+        <a href="{{ route('home') }}" class="inline-flex items-center justify-center min-h-[44px] px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
+            Home
+        </a>
+    </div>
     <nav class="mb-4 sm:mb-6 text-sm" aria-label="Breadcrumb">
         <ol class="flex flex-wrap items-center gap-1 text-gray-500 dark:text-gray-400">
             <li><a href="{{ route('home') }}" class="min-h-[44px] inline-flex items-center -my-2 py-2 hover:text-orange-600 dark:hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded">Home</a></li>
