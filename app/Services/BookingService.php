@@ -102,7 +102,8 @@ class BookingService
         // Load relationships if not already loaded
         $booking->load(['trailer', 'customer']);
 
-        $subtotal = $booking->total_amount;
+        $deposit = (float) ($booking->required_deposit ?? 0);
+        $subtotal = $booking->total_amount + $deposit;
         $taxRate = \App\Models\Setting::get('tax_rate', 0);
         $tax = $subtotal * ($taxRate / 100);
         $totalAmount = $subtotal + $tax;
@@ -155,6 +156,16 @@ class BookingService
                 'quantity' => 1,
                 'unit_price' => $booking->damage_waiver_fee,
                 'total' => $booking->damage_waiver_fee,
+            ]);
+        }
+
+        // Add refundable deposit as a proper line item so it contributes to totals
+        if ($deposit > 0) {
+            $invoice->items()->create([
+                'description' => 'Deposit (refundable)',
+                'quantity' => 1,
+                'unit_price' => $deposit,
+                'total' => $deposit,
             ]);
         }
 

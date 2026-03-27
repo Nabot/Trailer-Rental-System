@@ -283,6 +283,9 @@ class InvoiceController extends Controller
             'items'
         ]);
 
+        $this->syncDepositLineItemForInvoice($invoice);
+        $invoice->load(['booking.trailer', 'customer', 'items']);
+
         $companyName = str_replace('IronAxel', 'IronAxle', \App\Models\Setting::get('company_name', 'IronAxle Trailers'));
         $companyRegistrationNo = \App\Models\Setting::get('company_registration_no', '');
         $companyAddress = \App\Models\Setting::get('company_address', 'Kransneus, Namibia');
@@ -499,5 +502,50 @@ class InvoiceController extends Controller
         ];
 
         return $items;
+    }
+
+    /**
+     * Backfill missing refundable deposit line item for existing invoices.
+     */
+    private function syncDepositLineItemForInvoice(Invoice $invoice): void
+    {
+        if (!$invoice->booking) {
+            return;
+        }
+
+        $deposit = (float) ($invoice->booking->required_deposit ?? 0);
+        if ($deposit <= 0) {
+            return;
+        }
+
+        $hasDepositItem = $invoice->items->contains(function ($item) {
+            return stripos((string) $item->description, 'deposit') !== false;
+        });
+
+        if ($hasDepositItem) {
+            return;
+        }
+
+        $invoice->items()->create([
+            'description' => 'Deposit (refundable)',
+            'quantity' => 1,
+            'unit_price' => $deposit,
+            'total' => $deposit,
+        ]);
+
+        $updatedSubtotal = (float) $invoice->items()->sum('total');
+        $taxRateDecimal = $invoice->subtotal > 0
+            ? ((float) $invoice->tax / (float) $invoice->subtotal)
+            : ((float) \App\Models\Setting::get('tax_rate', 0) / 100);
+        $updatedTax = round($updatedSubtotal * $taxRateDecimal, 2);
+        $updatedTotal = round($updatedSubtotal + $updatedTax, 2);
+        $updatedBalance = round($updatedTotal - (float) $invoice->paid_amount, 2);
+
+        $invoice->update([
+            'subtotal' => $updatedSubtotal,
+            'tax' => $updatedTax,
+            'total_amount' => $updatedTotal,
+            'balance' => $updatedBalance,
+        ]);
     }
 }
