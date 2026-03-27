@@ -116,27 +116,23 @@
     </div>
 
     <div class="section">
-    <div class="section-title">6. RESPONSIBILITY &amp; LIABILITY</div>
-    <p>The Lessee is fully responsible for the trailer during the rental period.</p>
-    <p>The Lessee will be liable for:</p>
+    <div class="section-title">6. THEFT &amp; LOSS PROCEDURE</div>
+    <p>In case of theft:</p>
     <ul class="terms-list">
-        <li>Accidents</li>
-        <li>Tyre damage</li>
-        <li>Rim damage</li>
-        <li>Bent axle</li>
-        <li>Electrical plug damage</li>
-        <li>Lights damage</li>
-        <li>Broken boards or panels</li>
-        <li>Theft or loss</li>
+        <li>The Lessee must immediately report the theft to the police.</li>
+        <li>A police case number must be provided to the Lessor within 24 hours.</li>
+        <li>Full replacement value is payable if negligence is involved.</li>
     </ul>
-    <p>In case of theft, the Lessee is liable for <strong>replacement value of trailer: {{ ($booking->trailer->trailer_value ? 'N$ ' . number_format($booking->trailer->trailer_value, 2) : ($trailerReplacementValue ? 'N$ ' . $trailerReplacementValue : 'N$ ________')) }}</strong></p>
+    <p>For the purposes of this Agreement, replacement value of trailer is <strong>{{ ($booking->trailer->trailer_value ? 'N$ ' . number_format($booking->trailer->trailer_value, 2) : ($trailerReplacementValue ? 'N$ ' . $trailerReplacementValue : 'N$ ________')) }}</strong>.</p>
     </div>
 
     <div class="section">
     <div class="section-title">7. BREAKDOWN &amp; REPAIRS</div>
-    <p>The Lessee must immediately inform the Lessor in case of breakdown.</p>
-    <p>No repairs may be done without approval.</p>
-    <p>Unauthorised repairs will not be reimbursed.</p>
+    <ul class="terms-list">
+        <li>The Lessor must be notified immediately in the event of a breakdown.</li>
+        <li>No repairs are permitted without prior approval from the Lessor.</li>
+        <li>Unauthorized repairs will not be reimbursed.</li>
+    </ul>
     </div>
 
     <div class="section">
@@ -156,18 +152,24 @@
     </div>
 
     <div class="section">
-    <div class="section-title">11. TERMINATION</div>
-    <p>The Lessor reserves the right to repossess the trailer if:</p>
+    <div class="section-title">11. TERMINATION &amp; REPOSSESSION</div>
+    <p>The Lessor may repossess the trailer if:</p>
     <ul class="terms-list">
-        <li>The agreement is violated</li>
-        <li>The trailer is misused</li>
-        <li>Payment terms are breached</li>
+        <li>Terms are violated</li>
+        <li>Payment is not made</li>
+        <li>Trailer is misused</li>
     </ul>
-    <p>No refund will be provided in such cases.</p>
+    <p>No refund will be issued in such cases.</p>
+    <p>The Lessee authorizes the Lessor to recover the trailer where legally permissible.</p>
     </div>
 
     <div class="section">
-    <div class="section-title">12. INSPECTION CHECKLIST</div>
+    <div class="section-title">12. INSPECTION &amp; DAMAGE ASSESSMENT</div>
+    <ul class="terms-list">
+        <li>A signed checklist and photos at pickup and return are binding.</li>
+        <li>Photo evidence will be used in case of disputes.</li>
+        <li>The Lessee accepts trailer condition at handover.</li>
+    </ul>
     <table>
         <thead>
             <tr>
@@ -207,12 +209,32 @@
     </div>
 
     <div class="section">
-    <div class="section-title">13. GOVERNING LAW &amp; JURISDICTION</div>
+    <div class="section-title">13. LIMITATION OF LIABILITY</div>
+    <p>The Lessor is not liable for:</p>
+    <ul class="terms-list">
+        <li>Loss of business or income</li>
+        <li>Indirect or consequential damages</li>
+        <li>Loss or damage to goods transported</li>
+    </ul>
+    </div>
+
+    <div class="section">
+    <div class="section-title">14. FORCE MAJEURE</div>
+    <p>The Lessor shall not be liable for failure to perform due to:</p>
+    <ul class="terms-list">
+        <li>Natural disasters</li>
+        <li>Accidents</li>
+        <li>Events beyond reasonable control</li>
+    </ul>
+    </div>
+
+    <div class="section">
+    <div class="section-title">15. GOVERNING LAW &amp; JURISDICTION</div>
     <p>This Agreement shall be governed by the laws of the Republic of Namibia. Any disputes arising from or in connection with this Agreement shall be subject to the exclusive jurisdiction of the Namibian courts.</p>
     </div>
 
     <div class="section">
-    <div class="section-title">14. AGREEMENT</div>
+    <div class="section-title">16. AGREEMENT</div>
     <p>I confirm that I inspected the trailer and accept its condition.</p>
     <p><strong>Corporate / Business Lessee:</strong> Where the Lessee is a company, the signatory binds himself/herself as surety and co-principal debtor.</p>
     <div class="signature-block">
@@ -222,7 +244,7 @@
     </div>
 
     <div class="section">
-    <div class="section-title">15. ATTACHMENTS</div>
+    <div class="section-title">17. ATTACHMENTS</div>
     <p><span class="checkbox">☐</span> Copy of Driver's Licence</p>
     <p><span class="checkbox">☐</span> Copy of ID</p>
     <p><span class="checkbox">☐</span> Vehicle Registration Disc Photo</p>
