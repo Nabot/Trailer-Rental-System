@@ -277,6 +277,11 @@ class InvoiceController extends Controller
         $companyAddress = \App\Models\Setting::get('company_address', 'Kransneus, Namibia');
         $companyPhone = \App\Models\Setting::get('company_phone', '');
         $companyEmail = \App\Models\Setting::get('company_email', 'bookings@ironaxletrailers.com');
+        $companyLogo = \App\Models\Setting::get('company_logo', '');
+        $companyLogoPath = null;
+        if ($companyLogo && file_exists(public_path($companyLogo))) {
+            $companyLogoPath = 'file://' . public_path($companyLogo);
+        }
         $bankAccountName = str_replace('IronAxel', 'IronAxle', \App\Models\Setting::get('bank_account_name', 'IronAxle Trailers'));
         $bankName = \App\Models\Setting::get('bank_name', 'First National Bank Namibia');
         $bankAccountNumber = \App\Models\Setting::get('bank_account_number', '62114687059');
@@ -290,6 +295,7 @@ class InvoiceController extends Controller
             'companyAddress', 
             'companyPhone', 
             'companyEmail',
+            'companyLogoPath',
             'bankAccountName',
             'bankName',
             'bankAccountNumber',

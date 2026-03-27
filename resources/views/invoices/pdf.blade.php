@@ -15,6 +15,12 @@
         .company-info {
             margin-bottom: 20px;
         }
+        .company-logo {
+            max-height: 70px;
+            max-width: 220px;
+            width: auto;
+            margin-bottom: 10px;
+        }
         .invoice-info {
             text-align: right;
         }
@@ -46,12 +52,23 @@
             font-size: 10px;
             color: #666;
         }
+        .banking-details {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            page-break-inside: avoid;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <div style="display: flex; justify-content: space-between;">
             <div class="company-info">
+                @if(!empty($companyLogoPath))
+                <img src="{{ $companyLogoPath }}" alt="{{ $companyName }} logo" class="company-logo">
+                @endif
                 <h1 style="margin: 0; font-size: 24px;">{{ $companyName }}</h1>
                 @if(!empty($companyRegistrationNo))
                 <p style="margin: 5px 0;">Reg. No: {{ $companyRegistrationNo }}</p>
@@ -100,6 +117,32 @@
         @endif
     </div>
     @endif
+
+    <div class="banking-details">
+        <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 14px;">Banking Details:</h3>
+        <table style="width: 100%; border-collapse: collapse; margin: 0;">
+            <tr>
+                <td style="padding: 5px 10px 5px 0; width: 150px;"><strong>Account Name:</strong></td>
+                <td style="padding: 5px 0;">{{ $bankAccountName }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px 10px 5px 0;"><strong>Bank Name:</strong></td>
+                <td style="padding: 5px 0;">{{ $bankName }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px 10px 5px 0;"><strong>Account Number:</strong></td>
+                <td style="padding: 5px 0;">{{ $bankAccountNumber }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px 10px 5px 0;"><strong>Branch Name:</strong></td>
+                <td style="padding: 5px 0;">{{ $bankBranchName }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px 10px 5px 0;"><strong>Branch Code:</strong></td>
+                <td style="padding: 5px 0;">{{ $bankBranchCode }}</td>
+            </tr>
+        </table>
+    </div>
 
     <table>
         <thead>
@@ -163,32 +206,6 @@
         <p><strong>Notes:</strong> {{ $invoice->notes }}</p>
     </div>
     @endif
-
-    <div style="margin-top: 30px; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd;">
-        <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 14px;">Banking Details:</h3>
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-                <td style="padding: 5px 10px 5px 0; width: 150px;"><strong>Account Name:</strong></td>
-                <td style="padding: 5px 0;">{{ $bankAccountName }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 5px 10px 5px 0;"><strong>Bank Name:</strong></td>
-                <td style="padding: 5px 0;">{{ $bankName }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 5px 10px 5px 0;"><strong>Account Number:</strong></td>
-                <td style="padding: 5px 0;">{{ $bankAccountNumber }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 5px 10px 5px 0;"><strong>Branch Name:</strong></td>
-                <td style="padding: 5px 0;">{{ $bankBranchName }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 5px 10px 5px 0;"><strong>Branch Code:</strong></td>
-                <td style="padding: 5px 0;">{{ $bankBranchCode }}</td>
-            </tr>
-        </table>
-    </div>
 
     <div class="footer">
         <p>Thank you for your business!</p>
