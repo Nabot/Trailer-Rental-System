@@ -96,22 +96,28 @@ class InvoiceController extends Controller
         ]);
 
         return DB::transaction(function () use ($validated) {
+            // Get customer from booking if not provided
+            $customerId = $validated['customer_id'] ?? null;
+            $booking = null;
+            if (isset($validated['booking_id'])) {
+                $booking = Booking::findOrFail($validated['booking_id']);
+                if (!$customerId) {
+                    $customerId = $booking->customer_id;
+                }
+            }
+
+            // Ensure refundable deposit is captured as an invoice line item when required
+            $items = $this->ensureDepositLineItem($validated['items'], $booking);
+
             // Calculate totals
             $subtotal = 0;
-            foreach ($validated['items'] as $item) {
+            foreach ($items as $item) {
                 $subtotal += $item['quantity'] * $item['unit_price'];
             }
 
             $taxRate = $validated['tax_rate'] ?? \App\Models\Setting::get('tax_rate', 0);
             $tax = $subtotal * ($taxRate / 100);
             $totalAmount = $subtotal + $tax;
-
-            // Get customer from booking if not provided
-            $customerId = $validated['customer_id'] ?? null;
-            if (!$customerId && isset($validated['booking_id'])) {
-                $booking = Booking::findOrFail($validated['booking_id']);
-                $customerId = $booking->customer_id;
-            }
 
             $invoice = Invoice::create([
                 'booking_id' => $validated['booking_id'] ?? null,
@@ -129,7 +135,7 @@ class InvoiceController extends Controller
             ]);
 
             // Create invoice items
-            foreach ($validated['items'] as $item) {
+            foreach ($items as $item) {
                 $invoice->items()->create([
                     'description' => $item['description'],
                     'quantity' => $item['quantity'],
@@ -205,9 +211,14 @@ class InvoiceController extends Controller
             // Delete existing items
             $invoice->items()->delete();
 
+            $booking = $invoice->booking_id ? Booking::find($invoice->booking_id) : null;
+
+            // Ensure refundable deposit is captured as an invoice line item when required
+            $items = $this->ensureDepositLineItem($validated['items'], $booking);
+
             // Calculate totals
             $subtotal = 0;
-            foreach ($validated['items'] as $item) {
+            foreach ($items as $item) {
                 $subtotal += $item['quantity'] * $item['unit_price'];
             }
 
@@ -231,7 +242,7 @@ class InvoiceController extends Controller
             $invoice->updateBalance();
 
             // Create new invoice items
-            foreach ($validated['items'] as $item) {
+            foreach ($items as $item) {
                 $invoice->items()->create([
                     'description' => $item['description'],
                     'quantity' => $item['quantity'],
@@ -457,5 +468,36 @@ class InvoiceController extends Controller
             'customer_id' => $booking->customer_id,
             'items' => $items,
         ]);
+    }
+
+    /**
+     * Ensure required booking deposit is represented as an invoice line item.
+     */
+    private function ensureDepositLineItem(array $items, ?Booking $booking): array
+    {
+        if (!$booking) {
+            return $items;
+        }
+
+        $deposit = (float) ($booking->required_deposit ?? 0);
+        if ($deposit <= 0) {
+            return $items;
+        }
+
+        $hasDepositItem = collect($items)->contains(function ($item) {
+            return isset($item['description']) && stripos((string) $item['description'], 'deposit') !== false;
+        });
+
+        if ($hasDepositItem) {
+            return $items;
+        }
+
+        $items[] = [
+            'description' => 'Deposit (refundable)',
+            'quantity' => 1,
+            'unit_price' => $deposit,
+        ];
+
+        return $items;
     }
 }
