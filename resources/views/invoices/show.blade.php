@@ -177,6 +177,7 @@
                                         <th class="text-left py-2">Method</th>
                                         <th class="text-left py-2">Reference</th>
                                         <th class="text-right py-2">Amount</th>
+                                        <th class="text-right py-2">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -186,6 +187,18 @@
                                         <td class="py-2">{{ ucfirst($payment->method) }}</td>
                                         <td class="py-2">{{ $payment->reference_number ?? '-' }}</td>
                                         <td class="text-right py-2">N${{ number_format($payment->amount, 2) }}</td>
+                                        <td class="text-right py-2">
+                                            <div class="flex justify-end gap-2">
+                                                <a href="{{ route('payments.show', $payment) }}" class="text-blue-600 hover:underline text-sm">View</a>
+                                                @can('payments.delete')
+                                                <form method="POST" action="{{ route('payments.destroy', $payment) }}" class="inline" onsubmit="return confirm('Delete this payment?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:underline text-sm">Delete</button>
+                                                </form>
+                                                @endcan
+                                            </div>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

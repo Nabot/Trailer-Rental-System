@@ -387,6 +387,7 @@
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Method</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Reference</th>
                                         <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">Amount</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -396,6 +397,18 @@
                                         <td class="px-4 py-2">{{ ucfirst($payment->method) }}</td>
                                         <td class="px-4 py-2">{{ $payment->reference_number ?? '-' }}</td>
                                         <td class="px-4 py-2 text-right">N${{ number_format($payment->amount, 2) }}</td>
+                                        <td class="px-4 py-2 text-right">
+                                            <div class="flex justify-end gap-2">
+                                                <a href="{{ route('payments.show', $payment) }}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm">View</a>
+                                                @can('payments.delete')
+                                                <form method="POST" action="{{ route('payments.destroy', $payment) }}" class="inline" onsubmit="return confirm('Delete this payment?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 dark:text-red-400 hover:underline text-sm">Delete</button>
+                                                </form>
+                                                @endcan
+                                            </div>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -530,28 +543,33 @@
                                 $depositRefundedSidebar = (float) $booking->depositRefunds->where('status', 'paid')->sum('amount');
                                 $refundableByDeposit = max(0, $depositChargedSidebar - $depositRefundedSidebar);
                                 $refundableAmount = min($refundableByDeposit, max(0, (float) $booking->paid_amount));
+                                $canRefundDeposit = $refundableAmount > 0;
                             @endphp
-                            @if($refundableAmount > 0)
                             <form method="POST" action="{{ route('bookings.deposit-refunds.store', $booking) }}" class="space-y-2 mt-2 p-3 border border-amber-200 dark:border-amber-700 rounded-md bg-amber-50/60 dark:bg-amber-900/20">
                                 @csrf
                                 <p class="text-xs text-amber-800 dark:text-amber-300 font-medium">
-                                    Refund deposit (Available: N${{ number_format($refundableAmount, 2) }})
+                                    Refund deposit
                                 </p>
-                                <input type="number" name="amount" step="0.01" min="0.01" max="{{ number_format($refundableAmount, 2, '.', '') }}" value="{{ number_format($refundableAmount, 2, '.', '') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Amount">
-                                <input type="date" name="refund_date" value="{{ now()->format('Y-m-d') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm">
-                                <select name="method" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm">
+                                <p class="text-xs text-amber-800 dark:text-amber-300">
+                                    Available: N${{ number_format($refundableAmount, 2) }}
+                                </p>
+                                <input type="number" name="amount" step="0.01" min="0.01" max="{{ number_format(max(0.01, $refundableAmount), 2, '.', '') }}" value="{{ number_format(max(0.01, $refundableAmount), 2, '.', '') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Amount" {{ $canRefundDeposit ? '' : 'disabled' }}>
+                                <input type="date" name="refund_date" value="{{ now()->format('Y-m-d') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" {{ $canRefundDeposit ? '' : 'disabled' }}>
+                                <select name="method" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" {{ $canRefundDeposit ? '' : 'disabled' }}>
                                     <option value="eft">EFT</option>
                                     <option value="cash">Cash</option>
                                     <option value="card">Card</option>
                                     <option value="other">Other</option>
                                 </select>
-                                <input type="text" name="reference_number" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Reference (optional)">
-                                <textarea name="notes" rows="2" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Notes (optional)"></textarea>
-                                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md text-sm" onclick="return confirm('Record this deposit refund?');">
+                                <input type="text" name="reference_number" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Reference (optional)" {{ $canRefundDeposit ? '' : 'disabled' }}>
+                                <textarea name="notes" rows="2" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Notes (optional)" {{ $canRefundDeposit ? '' : 'disabled' }}></textarea>
+                                <button type="submit" class="w-full px-4 py-2 rounded-md text-sm {{ $canRefundDeposit ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-gray-300 text-gray-600 cursor-not-allowed' }}" {{ $canRefundDeposit ? '' : 'disabled' }} onclick="return confirm('Record this deposit refund?');">
                                     Refund Deposit
                                 </button>
+                                @if(!$canRefundDeposit)
+                                <p class="text-xs text-gray-600 dark:text-gray-400">No refundable amount available yet.</p>
+                                @endif
                             </form>
-                            @endif
                             @endcan
 
                             @can('bookings.view')
