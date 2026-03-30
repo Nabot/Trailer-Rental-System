@@ -76,6 +76,11 @@
                     <!-- Pricing -->
                     <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
                         <h3 class="text-lg font-semibold mb-4">Pricing</h3>
+                        @php
+                            $depositCharged = (float) ($booking->required_deposit ?? 0);
+                            $depositRefunded = (float) $booking->depositRefunds->where('status', 'paid')->sum('amount');
+                            $depositOutstanding = max(0, $depositCharged - $depositRefunded);
+                        @endphp
                         <dl class="space-y-2">
                             <div class="flex justify-between">
                                 <dt class="text-gray-600 dark:text-gray-400">Rental Cost ({{ $booking->total_days }} days × N${{ number_format($booking->rate_per_day, 2) }})</dt>
@@ -111,6 +116,20 @@
                                 <dt class="text-lg font-semibold {{ $booking->balance > 0 ? 'text-red-600' : 'text-green-600' }}">Balance</dt>
                                 <dd class="text-lg font-bold {{ $booking->balance > 0 ? 'text-red-600' : 'text-green-600' }}">
                                     N${{ number_format($booking->balance, 2) }}
+                                </dd>
+                            </div>
+                            <div class="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+                                <dt class="text-gray-600 dark:text-gray-400">Deposit Charged</dt>
+                                <dd>N${{ number_format($depositCharged, 2) }}</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-gray-600 dark:text-gray-400">Deposit Refunded</dt>
+                                <dd class="text-amber-600">N${{ number_format($depositRefunded, 2) }}</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-gray-600 dark:text-gray-400">Deposit Outstanding</dt>
+                                <dd class="font-semibold {{ $depositOutstanding > 0 ? 'text-blue-600' : 'text-green-600' }}">
+                                    N${{ number_format($depositOutstanding, 2) }}
                                 </dd>
                             </div>
                         </dl>
@@ -384,6 +403,45 @@
                         </div>
                     </div>
                     @endif
+
+                    <!-- Deposit Refunds -->
+                    @if($booking->depositRefunds->count() > 0)
+                    <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">Deposit Refund History</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Date</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Method</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Reference</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500">Status</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">Amount</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500">Receipt</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    @foreach($booking->depositRefunds->sortByDesc('refund_date') as $refund)
+                                    <tr>
+                                        <td class="px-4 py-2">{{ $refund->refund_date->format('M d, Y') }}</td>
+                                        <td class="px-4 py-2">{{ strtoupper($refund->method) }}</td>
+                                        <td class="px-4 py-2">{{ $refund->reference_number ?? '-' }}</td>
+                                        <td class="px-4 py-2">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $refund->status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                {{ ucfirst($refund->status) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-2 text-right text-amber-600">N${{ number_format($refund->amount, 2) }}</td>
+                                        <td class="px-4 py-2 text-right">
+                                            <a href="{{ route('deposit-refunds.show', $refund) }}" class="text-blue-600 dark:text-blue-400 hover:underline">View</a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @endif
                 </div>
 
                 <!-- Sidebar Actions -->
@@ -481,6 +539,33 @@
                             <a href="{{ route('payments.create', ['booking_id' => $booking->id]) }}" class="block w-full bg-orange-600 hover:bg-orange-700 text-white text-center px-4 py-2 rounded-md">
                                 Record Payment
                             </a>
+                            @php
+                                $depositChargedSidebar = (float) ($booking->required_deposit ?? 0);
+                                $depositRefundedSidebar = (float) $booking->depositRefunds->where('status', 'paid')->sum('amount');
+                                $refundableByDeposit = max(0, $depositChargedSidebar - $depositRefundedSidebar);
+                                $refundableAmount = min($refundableByDeposit, max(0, (float) $booking->paid_amount));
+                            @endphp
+                            @if($refundableAmount > 0)
+                            <form method="POST" action="{{ route('bookings.deposit-refunds.store', $booking) }}" class="space-y-2 mt-2 p-3 border border-amber-200 dark:border-amber-700 rounded-md bg-amber-50/60 dark:bg-amber-900/20">
+                                @csrf
+                                <p class="text-xs text-amber-800 dark:text-amber-300 font-medium">
+                                    Refund deposit (Available: N${{ number_format($refundableAmount, 2) }})
+                                </p>
+                                <input type="number" name="amount" step="0.01" min="0.01" max="{{ number_format($refundableAmount, 2, '.', '') }}" value="{{ number_format($refundableAmount, 2, '.', '') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Amount">
+                                <input type="date" name="refund_date" value="{{ now()->format('Y-m-d') }}" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm">
+                                <select name="method" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm">
+                                    <option value="eft">EFT</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="card">Card</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <input type="text" name="reference_number" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Reference (optional)">
+                                <textarea name="notes" rows="2" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 text-sm" placeholder="Notes (optional)"></textarea>
+                                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md text-sm" onclick="return confirm('Record this deposit refund?');">
+                                    Refund Deposit
+                                </button>
+                            </form>
+                            @endif
                             @endcan
 
                             @can('bookings.view')

@@ -80,6 +80,11 @@ class Invoice extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function depositRefunds(): HasMany
+    {
+        return $this->hasMany(DepositRefund::class);
+    }
+
     public function updateBalance(): void
     {
         $this->balance = $this->total_amount - $this->paid_amount;

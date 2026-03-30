@@ -111,6 +111,7 @@ class BookingController extends Controller
             'customer',
             'addons',
             'payments',
+            'depositRefunds',
             'inspections.photos',
             'inspections.damageItems',
             'invoices.items',

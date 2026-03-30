@@ -13,6 +13,7 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\DepositRefundController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PublicBookingController;
@@ -53,6 +54,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('payments', PaymentController::class);
     Route::get('/payments/{payment}/download', [PaymentController::class, 'download'])->name('payments.download');
     Route::post('/payments/{payment}/send-whatsapp', [PaymentController::class, 'sendWhatsApp'])->name('payments.send-whatsapp');
+    Route::post('/bookings/{booking}/deposit-refunds', [DepositRefundController::class, 'store'])->name('bookings.deposit-refunds.store');
+    Route::get('/deposit-refunds/{depositRefund}', [DepositRefundController::class, 'show'])->name('deposit-refunds.show');
+    Route::get('/deposit-refunds/{depositRefund}/download', [DepositRefundController::class, 'download'])->name('deposit-refunds.download');
 
     // Inspections
     Route::resource('inspections', InspectionController::class);

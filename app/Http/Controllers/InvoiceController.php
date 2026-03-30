@@ -160,7 +160,8 @@ class InvoiceController extends Controller
             'booking.trailer',
             'customer',
             'items',
-            'payments'
+            'payments',
+            'depositRefunds'
         ]);
 
         return view('invoices.show', compact('invoice'));

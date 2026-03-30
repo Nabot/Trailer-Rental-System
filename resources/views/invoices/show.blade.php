@@ -148,6 +148,21 @@
                             <p class="text-sm text-gray-700"><strong>Notes:</strong> {{ $invoice->notes }}</p>
                         </div>
                         @endif
+
+                        @if($invoice->booking)
+                        @php
+                            $depositCharged = (float) ($invoice->booking->required_deposit ?? 0);
+                            $depositRefunded = (float) $invoice->booking->depositRefunds()->where('status', 'paid')->sum('amount');
+                            $depositOutstanding = max(0, $depositCharged - $depositRefunded);
+                        @endphp
+                        <div class="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200 dark:border-amber-700">
+                            <p class="text-sm text-amber-900 dark:text-amber-200"><strong>Deposit charged:</strong> N${{ number_format($depositCharged, 2) }}</p>
+                            <p class="text-sm text-amber-900 dark:text-amber-200"><strong>Deposit refunded:</strong> N${{ number_format($depositRefunded, 2) }}</p>
+                            <p class="text-sm font-semibold {{ $depositOutstanding > 0 ? 'text-amber-700 dark:text-amber-300' : 'text-green-700 dark:text-green-300' }}">
+                                Deposit outstanding: N${{ number_format($depositOutstanding, 2) }}
+                            </p>
+                        </div>
+                        @endif
                     </div>
 
                     <!-- Payments -->
@@ -171,6 +186,38 @@
                                         <td class="py-2">{{ ucfirst($payment->method) }}</td>
                                         <td class="py-2">{{ $payment->reference_number ?? '-' }}</td>
                                         <td class="text-right py-2">N${{ number_format($payment->amount, 2) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($invoice->depositRefunds->count() > 0)
+                    <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">Deposit Refunds</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="text-left py-2">Date</th>
+                                        <th class="text-left py-2">Method</th>
+                                        <th class="text-left py-2">Reference</th>
+                                        <th class="text-right py-2">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($invoice->depositRefunds as $refund)
+                                    <tr class="border-b">
+                                        <td class="py-2">
+                                            <a href="{{ route('deposit-refunds.show', $refund) }}" class="text-blue-600 hover:underline">
+                                                {{ $refund->refund_date->format('M d, Y') }}
+                                            </a>
+                                        </td>
+                                        <td class="py-2">{{ strtoupper($refund->method) }}</td>
+                                        <td class="py-2">{{ $refund->reference_number ?? '-' }}</td>
+                                        <td class="text-right py-2 text-amber-600">N${{ number_format($refund->amount, 2) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

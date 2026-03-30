@@ -54,4 +54,9 @@ class Customer extends Model
     {
         return $this->hasManyThrough(Payment::class, Booking::class);
     }
+
+    public function depositRefunds(): HasMany
+    {
+        return $this->hasMany(DepositRefund::class);
+    }
 }

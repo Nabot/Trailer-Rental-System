@@ -117,6 +117,11 @@ class Booking extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    public function depositRefunds(): HasMany
+    {
+        return $this->hasMany(DepositRefund::class);
+    }
+
     public function contract()
     {
         return $this->hasOne(Contract::class);
@@ -187,5 +192,20 @@ class Booking extends Model
         }
 
         return $this->save();
+    }
+
+    public function depositCharged(): float
+    {
+        return (float) ($this->required_deposit ?? 0);
+    }
+
+    public function depositRefunded(): float
+    {
+        return (float) $this->depositRefunds()->where('status', 'paid')->sum('amount');
+    }
+
+    public function depositOutstanding(): float
+    {
+        return max(0, $this->depositCharged() - $this->depositRefunded());
     }
 }
