@@ -116,7 +116,7 @@
                                 Edit Payment
                             </a>
                             @endcan
-                            @can('payments.delete')
+                            @if(auth()->user()->can('payments.delete') || auth()->user()->can('payments.edit'))
                             <form method="POST" action="{{ route('payments.destroy', $payment) }}" onsubmit="return confirm('Are you sure you want to delete this payment?');">
                                 @csrf
                                 @method('DELETE')
@@ -124,7 +124,7 @@
                                     Delete Payment
                                 </button>
                             </form>
-                            @endcan
+                            @endif
                         </div>
                     </div>
                 </div>

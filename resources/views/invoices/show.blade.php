@@ -190,13 +190,13 @@
                                         <td class="text-right py-2">
                                             <div class="flex justify-end gap-2">
                                                 <a href="{{ route('payments.show', $payment) }}" class="text-blue-600 hover:underline text-sm">View</a>
-                                                @can('payments.delete')
+                                                @if(auth()->user()->can('payments.delete') || auth()->user()->can('payments.edit'))
                                                 <form method="POST" action="{{ route('payments.destroy', $payment) }}" class="inline" onsubmit="return confirm('Delete this payment?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:underline text-sm">Delete</button>
                                                 </form>
-                                                @endcan
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

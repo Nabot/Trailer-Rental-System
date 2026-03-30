@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Services\WhatsAppService;
 
@@ -182,7 +183,9 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
-        $this->authorize('payments.delete');
+        if (!Gate::any(['payments.delete', 'payments.edit'])) {
+            abort(403, 'You do not have permission to delete payments.');
+        }
         DB::transaction(function () use ($payment) {
             $amount = $payment->amount;
 
