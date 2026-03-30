@@ -132,6 +132,8 @@ class PaymentController extends Controller
     public function edit(Payment $payment)
     {
         $this->authorize('payments.edit');
+        $payment->load(['booking.customer', 'booking.trailer', 'invoice']);
+
         return view('payments.edit', compact('payment'));
     }
 
