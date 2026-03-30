@@ -472,13 +472,6 @@
                                 </form>
                                 @endif
                                 @endcan
-                                @can('inspections.create')
-                                @if($booking->pickupInspection)
-                                <a href="{{ route('inspections.show', $booking->pickupInspection) }}" class="block w-full bg-purple-100 hover:bg-purple-200 text-purple-800 text-center px-4 py-2 rounded-md mt-2">
-                                    View Pickup Inspection
-                                </a>
-                                @endif
-                                @endcan
                             @endif
 
                             @if($booking->status === 'active')
@@ -498,13 +491,6 @@
                                         Return Trailer
                                     </button>
                                 </form>
-                                @endif
-                                @endcan
-                                @can('inspections.create')
-                                @if($booking->returnInspection)
-                                <a href="{{ route('inspections.show', $booking->returnInspection) }}" class="block w-full bg-orange-100 hover:bg-orange-200 text-orange-800 text-center px-4 py-2 rounded-md mt-2">
-                                    View Return Inspection
-                                </a>
                                 @endif
                                 @endcan
                             @endif
@@ -805,6 +791,9 @@
             if (returnForm) {
                 returnForm.addEventListener('submit', function(e) {
                     // Don't prevent default - let form submit normally with files
+                    returnForm.querySelectorAll('input[name="inspection_data"]').forEach(function(el) {
+                        el.remove();
+                    });
                     const inspectionData = {
                         checklist: {
                             exterior: {
@@ -853,7 +842,7 @@
                     input.type = 'hidden';
                     input.name = 'inspection_data';
                     input.value = JSON.stringify(inspectionData);
-                    this.appendChild(input);
+                    returnForm.appendChild(input);
                 });
             }
         });

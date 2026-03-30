@@ -349,46 +349,48 @@ class BookingController extends Controller
     {
         $this->authorize('update', $booking);
 
-        if ($booking->status !== 'active') {
+        $booking->loadMissing('returnInspection');
+        $returnInspection = $booking->returnInspection;
+
+        // Allow active rentals, or rare "returned without inspection" records to be fixed
+        if ($booking->status === 'returned' && $returnInspection) {
+            return redirect()->back()
+                ->with('info', 'This booking is already returned and has a return inspection.');
+        }
+
+        if ($booking->status !== 'active' && $booking->status !== 'returned') {
             return redirect()->back()
                 ->with('error', 'Only active rentals can be returned.');
         }
 
-        // Check if return inspection exists or create from request
-        $returnInspection = $booking->returnInspection;
-        
         if (!$returnInspection) {
-            // If inspection data is provided, create return inspection
-            if ($request->has('inspection_data') && !empty($request->input('inspection_data'))) {
-                $inspectionData = $request->input('inspection_data');
-                // Handle JSON string
-                if (is_string($inspectionData)) {
-                    $inspectionData = json_decode($inspectionData, true);
-                }
-                if (is_array($inspectionData) && !empty($inspectionData)) {
-                    $returnInspection = $this->createReturnInspection($booking, $inspectionData, $request);
-                } else {
-                    return redirect()->route('inspections.create', [
-                        'booking_id' => $booking->id,
-                        'type' => 'return'
-                    ])->with('info', 'Please complete the return inspection before returning the trailer.');
-                }
-            } else {
+            $inspectionData = $this->parseInspectionJsonFromRequest($request);
+            if ($inspectionData === null) {
                 return redirect()->route('inspections.create', [
                     'booking_id' => $booking->id,
                     'type' => 'return'
                 ])->with('info', 'Please complete the return inspection before returning the trailer.');
             }
+            $returnInspection = $this->createReturnInspection($booking, $inspectionData, $request);
         }
 
         $returnedAt = $request->filled('returned_at')
             ? \Carbon\Carbon::parse($request->returned_at)->endOfDay()
             : now();
 
+        if ($booking->status === 'returned') {
+            if ($request->filled('returned_at')) {
+                $booking->update(['returned_at' => $returnedAt]);
+            }
+
+            return redirect()->route('bookings.show', $booking->fresh())
+                ->with('success', 'Return inspection saved successfully.');
+        }
+
+        $lateFeeAdded = false;
         $booking->transitionTo('returned');
         $booking->update(['returned_at' => $returnedAt]);
 
-        $lateFeeAdded = false;
         if ($returnedAt->gt($booking->end_date)) {
             $lateDays = (int) $booking->end_date->diffInDays($returnedAt);
             if ($lateDays > 0) {
@@ -419,6 +421,34 @@ class BookingController extends Controller
 
         return redirect()->route('bookings.show', $booking)
             ->with('success', $message);
+    }
+
+    /**
+     * Decode inspection_data from request (handles duplicate fields sending an array of JSON strings).
+     */
+    private function parseInspectionJsonFromRequest(Request $request): ?array
+    {
+        $raw = $request->input('inspection_data');
+
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+
+        if (is_array($raw)) {
+            $strings = array_values(array_filter($raw, fn ($v) => is_string($v) && $v !== ''));
+            $raw = $strings === [] ? null : end($strings);
+        }
+
+        if (!is_string($raw) || $raw === '') {
+            return null;
+        }
+
+        $decoded = json_decode($raw, true);
+        if (!is_array($decoded) || $decoded === []) {
+            return null;
+        }
+
+        return $decoded;
     }
 
     /**
