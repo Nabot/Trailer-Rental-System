@@ -27,6 +27,7 @@
     @stack('styles')
 </head>
 <body class="public-site font-sans text-gray-900 dark:text-gray-100 antialiased bg-gray-50 dark:bg-gray-900 min-h-screen overflow-x-hidden">
+    <div id="frontend-passcode-protected" class="hidden">
     <a href="#main-content" class="sr-only focus:fixed focus:left-[max(1rem,env(safe-area-inset-left))] focus:top-[max(1rem,env(safe-area-inset-top))] focus:z-50 focus:w-auto focus:h-auto focus:px-4 focus:py-2 focus:m-0 focus:overflow-visible focus:[clip:auto] focus:bg-orange-600 focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">Skip to main content</a>
     <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm pt-[env(safe-area-inset-top)]">
         <div class="max-w-7xl mx-auto px-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1rem+env(safe-area-inset-right))] sm:pl-[calc(1.5rem+env(safe-area-inset-left))] sm:pr-[calc(1.5rem+env(safe-area-inset-right))] lg:pl-[calc(2rem+env(safe-area-inset-left))] lg:pr-[calc(2rem+env(safe-area-inset-right))]">
@@ -57,6 +58,58 @@
     </main>
 
     <x-toast-container />
+    </div>
+
+    <div id="frontend-passcode-lock" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/90 px-4">
+        <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl">
+            <h2 class="text-xl font-semibold text-gray-900">Enter Passcode</h2>
+            <p class="mt-2 text-sm text-gray-600">This page is protected. Enter the passcode to continue.</p>
+
+            <form id="frontend-passcode-form" class="mt-5 space-y-3">
+                <label for="frontend-passcode-input" class="block text-sm font-medium text-gray-700">Passcode</label>
+                <input id="frontend-passcode-input" type="password" autocomplete="off" class="w-full rounded-lg border-gray-300 focus:border-orange-500 focus:ring-orange-500" />
+                <p id="frontend-passcode-error" class="hidden text-sm text-red-600">Incorrect passcode. Please try again.</p>
+                <button type="submit" class="w-full rounded-lg bg-orange-600 px-4 py-2 text-white font-medium hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">Unlock</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const PASSCODE = 'Iron';
+            const STORAGE_KEY = 'frontend_passcode_unlocked';
+            const protectedContent = document.getElementById('frontend-passcode-protected');
+            const lockScreen = document.getElementById('frontend-passcode-lock');
+            const form = document.getElementById('frontend-passcode-form');
+            const input = document.getElementById('frontend-passcode-input');
+            const error = document.getElementById('frontend-passcode-error');
+
+            const unlock = () => {
+                protectedContent.classList.remove('hidden');
+                lockScreen.classList.add('hidden');
+            };
+
+            if (localStorage.getItem(STORAGE_KEY) === '1') {
+                unlock();
+                return;
+            }
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                if (input.value.trim() === PASSCODE) {
+                    localStorage.setItem(STORAGE_KEY, '1');
+                    unlock();
+                    return;
+                }
+
+                error.classList.remove('hidden');
+                input.value = '';
+                input.focus();
+            });
+
+            input.focus();
+        })();
+    </script>
     @stack('scripts')
 </body>
 </html>

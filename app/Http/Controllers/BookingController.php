@@ -365,6 +365,16 @@ class BookingController extends Controller
 
         if (!$returnInspection) {
             $inspectionData = $this->parseInspectionJsonFromRequest($request);
+            if ($inspectionData === null && $request->has('checklist')) {
+                // Fallback for non-JS or failed JS submit: build payload from regular form fields
+                $inspectionData = [
+                    'checklist' => $request->input('checklist', []),
+                    'notes' => $request->input('notes'),
+                    'condition_notes' => $request->input('condition_notes'),
+                    'is_damaged' => (bool) $request->boolean('is_damaged'),
+                    'damage_items' => $request->input('damage_items', []),
+                ];
+            }
             if ($inspectionData === null) {
                 return redirect()->route('inspections.create', [
                     'booking_id' => $booking->id,
