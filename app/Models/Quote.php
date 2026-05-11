@@ -129,7 +129,9 @@ class Quote extends Model
         if (!$this->start_date || !$this->end_date) {
             return 0;
         }
-        return $this->start_date->diffInDays($this->end_date) + 1;
+        // 24-hour-period model: same-day rental = 1 day (minimum),
+        // each additional calendar day = 1 more day.
+        return max(1, (int) $this->start_date->diffInDays($this->end_date));
     }
 
     public function isExpired(): bool

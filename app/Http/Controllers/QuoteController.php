@@ -113,7 +113,9 @@ class QuoteController extends Controller
             $trailer = Trailer::findOrFail($validated['trailer_id']);
             $startDate = \Carbon\Carbon::parse($validated['start_date']);
             $endDate = \Carbon\Carbon::parse($validated['end_date']);
-            $totalDays = $startDate->diffInDays($endDate) + 1;
+            // 24-hour-period model: same-day rental = 1 day (minimum),
+            // each additional calendar day = 1 more day.
+            $totalDays = max(1, (int) $startDate->diffInDays($endDate));
 
             // Get customer from inquiry if not provided
             $customerId = $validated['customer_id'] ?? null;
@@ -231,7 +233,9 @@ class QuoteController extends Controller
         return DB::transaction(function () use ($quote, $validated) {
             $startDate = \Carbon\Carbon::parse($validated['start_date']);
             $endDate = \Carbon\Carbon::parse($validated['end_date']);
-            $totalDays = $startDate->diffInDays($endDate) + 1;
+            // 24-hour-period model: same-day rental = 1 day (minimum),
+            // each additional calendar day = 1 more day.
+            $totalDays = max(1, (int) $startDate->diffInDays($endDate));
 
             $quote->update([
                 'trailer_id' => $validated['trailer_id'],

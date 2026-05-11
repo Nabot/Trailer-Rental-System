@@ -92,7 +92,7 @@
         @forelse($trailers as $trailer)
             @php
                 $primaryPhoto = $trailer->photos->firstWhere('is_primary', true) ?? $trailer->photos->first();
-                $days = ($startDate && $endDate) ? \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate)) + 1 : null;
+                $days = ($startDate && $endDate) ? max(1, (int) \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate))) : null;
                 $estimatedTotal = $days ? $days * $trailer->rate_per_day : null;
                 $bookable = isset($trailer->available_for_dates) && $trailer->available_for_dates && $startDate && $endDate;
                 $bookUrl = $bookable ? route('book.form', ['trailer_id' => $trailer->id, 'start_date' => $startDate, 'end_date' => $endDate]) : null;

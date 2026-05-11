@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->time('pickup_time')->nullable();
-            $table->integer('total_days'); // Calculated days (inclusive)
+            $table->integer('total_days'); // Calculated rental days (24-hour-period model, minimum 1)
             $table->decimal('rate_per_day', 10, 2); // Snapshot of rate at booking time
             $table->decimal('rental_cost', 10, 2); // days * rate_per_day
             $table->decimal('required_deposit', 10, 2)->default(0);

@@ -124,7 +124,9 @@
                         <dd class="text-gray-900 dark:text-gray-100">{{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</dd>
                     </div>
                     @php
-                        $days = \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate)) + 1;
+                        // 24-hour-period model: same-day rental = 1 day (minimum),
+                        // each additional calendar day = 1 more day.
+                        $days = max(1, (int) \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate)));
                         $total = $days * $trailer->rate_per_day;
                     @endphp
                     <div class="flex justify-between">

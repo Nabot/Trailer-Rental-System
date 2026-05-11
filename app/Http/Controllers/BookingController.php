@@ -176,10 +176,12 @@ class BookingController extends Controller
                 ->with('error', 'Trailer is not available for the selected dates.');
         }
 
-        // Recalculate costs
+        // Recalculate costs using a 24-hour-period model: same-day pickup
+        // and return counts as 1 day (minimum), each additional calendar
+        // day adds 1 more day.
         $startDate = \Carbon\Carbon::parse($validated['start_date']);
         $endDate = \Carbon\Carbon::parse($validated['end_date']);
-        $totalDays = $startDate->diffInDays($endDate) + 1;
+        $totalDays = max(1, (int) $startDate->diffInDays($endDate));
         $rentalCost = $totalDays * $trailer->rate_per_day;
         $subtotal = $rentalCost + ($validated['delivery_fee'] ?? 0) + ($validated['straps_fee'] ?? 0) + ($validated['damage_waiver_fee'] ?? 0);
 
@@ -202,8 +204,13 @@ class BookingController extends Controller
 
         $booking->updateBalance();
 
+        // Keep the rental invoice (and its line items) in sync with the
+        // updated booking, so the invoice no longer shows the original
+        // values the client used at the time of booking.
+        $this->bookingService->syncRentalInvoice($booking->fresh());
+
         return redirect()->route('bookings.show', $booking)
-            ->with('success', 'Booking updated successfully.');
+            ->with('success', 'Booking updated successfully. Invoice has been refreshed.');
     }
 
     /**

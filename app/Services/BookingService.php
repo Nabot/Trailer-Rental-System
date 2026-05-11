@@ -27,10 +27,12 @@ class BookingService
                 throw new \Exception('Trailer is not available for the selected dates.');
             }
 
-            // Calculate days (inclusive)
+            // Calculate days using a 24-hour-period model: same-day pickup
+            // and return counts as 1 day (minimum), each additional
+            // calendar day adds 1 more day.
             $startDate = \Carbon\Carbon::parse($data['start_date']);
             $endDate = \Carbon\Carbon::parse($data['end_date']);
-            $totalDays = $startDate->diffInDays($endDate) + 1;
+            $totalDays = max(1, (int) $startDate->diffInDays($endDate));
 
             // Calculate costs
             $ratePerDay = $trailer->rate_per_day;
@@ -78,104 +80,117 @@ class BookingService
             // Audit log
             AuditLog::log('booking.created', $booking, null, $booking->toArray(), "Booking created for trailer {$trailer->name}");
 
-            // Automatically create invoice for the booking
-            $this->createInvoiceForBooking($booking->fresh());
+            // Automatically create/sync the rental invoice for the booking
+            $this->syncRentalInvoice($booking->fresh());
 
             return $booking->fresh();
         });
     }
 
     /**
-     * Automatically create an invoice for a booking.
+     * Create the rental invoice for a booking if it doesn't exist yet,
+     * otherwise rebuild its standard line items (rental, fees, deposit)
+     * from the booking's current values. Any custom items added later
+     * (e.g. extensions, late return fees, manual entries) are preserved.
      */
-    protected function createInvoiceForBooking(Booking $booking): Invoice
+    public function syncRentalInvoice(Booking $booking): Invoice
     {
-        // Check if invoice already exists
-        $existingInvoice = Invoice::where('booking_id', $booking->id)
-            ->where('type', 'rental')
-            ->first();
+        return DB::transaction(function () use ($booking) {
+            $booking->load(['trailer', 'customer']);
 
-        if ($existingInvoice) {
-            return $existingInvoice;
-        }
+            $invoice = Invoice::where('booking_id', $booking->id)
+                ->where('type', 'rental')
+                ->first();
 
-        // Load relationships if not already loaded
-        $booking->load(['trailer', 'customer']);
+            $isNew = false;
+            if (!$invoice) {
+                $invoice = Invoice::create([
+                    'booking_id' => $booking->id,
+                    'customer_id' => $booking->customer_id,
+                    'type' => 'rental',
+                    'invoice_date' => now(),
+                    'due_date' => now()->addDays(14),
+                    'subtotal' => 0,
+                    'tax' => 0,
+                    'total_amount' => 0,
+                    'paid_amount' => 0,
+                    'balance' => 0,
+                    'status' => 'pending',
+                    'notes' => "Rental invoice for booking {$booking->booking_number}",
+                ]);
+                $isNew = true;
+            } else {
+                // Remove standard items only; keep any manually-added or
+                // post-creation items (extensions, late fees, etc.).
+                $invoice->items()
+                    ->where(function ($q) {
+                        $q->where('description', 'like', 'Trailer Rental -%')
+                          ->orWhere('description', 'Delivery Fee')
+                          ->orWhere('description', 'Straps Fee')
+                          ->orWhere('description', 'Damage Waiver Fee')
+                          ->orWhere('description', 'Deposit (refundable)');
+                    })
+                    ->delete();
+            }
 
-        $deposit = (float) ($booking->required_deposit ?? 0);
-        $subtotal = $booking->total_amount + $deposit;
-        $taxRate = \App\Models\Setting::get('tax_rate', 0);
-        $tax = $subtotal * ($taxRate / 100);
-        $totalAmount = $subtotal + $tax;
-
-        $invoice = Invoice::create([
-            'booking_id' => $booking->id,
-            'customer_id' => $booking->customer_id,
-            'type' => 'rental',
-            'invoice_date' => now(),
-            'due_date' => now()->addDays(14),
-            'subtotal' => $subtotal,
-            'tax' => $tax,
-            'total_amount' => $totalAmount,
-            'paid_amount' => 0,
-            'balance' => $totalAmount,
-            'status' => 'pending',
-            'notes' => "Rental invoice for booking {$booking->booking_number}",
-        ]);
-
-        // Add rental cost
-        $invoice->items()->create([
-            'description' => "Trailer Rental - {$booking->trailer->name} ({$booking->total_days} days @ N$" . number_format($booking->rate_per_day, 2) . "/day)",
-            'quantity' => 1,
-            'unit_price' => $booking->rental_cost,
-            'total' => $booking->rental_cost,
-        ]);
-
-        // Add fees if any
-        if ($booking->delivery_fee > 0) {
             $invoice->items()->create([
-                'description' => 'Delivery Fee',
+                'description' => "Trailer Rental - {$booking->trailer->name} ({$booking->total_days} days @ N$" . number_format($booking->rate_per_day, 2) . "/day)",
                 'quantity' => 1,
-                'unit_price' => $booking->delivery_fee,
-                'total' => $booking->delivery_fee,
+                'unit_price' => $booking->rental_cost,
+                'total' => $booking->rental_cost,
             ]);
-        }
 
-        if ($booking->straps_fee > 0) {
-            $invoice->items()->create([
-                'description' => 'Straps Fee',
-                'quantity' => 1,
-                'unit_price' => $booking->straps_fee,
-                'total' => $booking->straps_fee,
-            ]);
-        }
+            if ($booking->delivery_fee > 0) {
+                $invoice->items()->create([
+                    'description' => 'Delivery Fee',
+                    'quantity' => 1,
+                    'unit_price' => $booking->delivery_fee,
+                    'total' => $booking->delivery_fee,
+                ]);
+            }
 
-        if ($booking->damage_waiver_fee > 0) {
-            $invoice->items()->create([
-                'description' => 'Damage Waiver Fee',
-                'quantity' => 1,
-                'unit_price' => $booking->damage_waiver_fee,
-                'total' => $booking->damage_waiver_fee,
-            ]);
-        }
+            if ($booking->straps_fee > 0) {
+                $invoice->items()->create([
+                    'description' => 'Straps Fee',
+                    'quantity' => 1,
+                    'unit_price' => $booking->straps_fee,
+                    'total' => $booking->straps_fee,
+                ]);
+            }
 
-        // Add refundable deposit as a proper line item so it contributes to totals
-        if ($deposit > 0) {
-            $invoice->items()->create([
-                'description' => 'Deposit (refundable)',
-                'quantity' => 1,
-                'unit_price' => $deposit,
-                'total' => $deposit,
-            ]);
-        }
+            if ($booking->damage_waiver_fee > 0) {
+                $invoice->items()->create([
+                    'description' => 'Damage Waiver Fee',
+                    'quantity' => 1,
+                    'unit_price' => $booking->damage_waiver_fee,
+                    'total' => $booking->damage_waiver_fee,
+                ]);
+            }
 
-        Log::info("Invoice automatically created for booking {$booking->booking_number}", [
-            'booking_id' => $booking->id,
-            'invoice_id' => $invoice->id,
-            'invoice_number' => $invoice->invoice_number,
-        ]);
+            $deposit = (float) ($booking->required_deposit ?? 0);
+            if ($deposit > 0) {
+                $invoice->items()->create([
+                    'description' => 'Deposit (refundable)',
+                    'quantity' => 1,
+                    'unit_price' => $deposit,
+                    'total' => $deposit,
+                ]);
+            }
 
-        return $invoice;
+            $invoice->recalculateFromItems();
+
+            Log::info(
+                ($isNew ? 'Rental invoice created' : 'Rental invoice resynced')
+                . " for booking {$booking->booking_number}",
+                [
+                    'booking_id' => $booking->id,
+                    'invoice_id' => $invoice->id,
+                    'invoice_number' => $invoice->invoice_number,
+                ]
+            );
+
+            return $invoice->fresh();
+        });
     }
 
     public function confirmBooking(Booking $booking): bool
